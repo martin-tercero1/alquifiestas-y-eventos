@@ -1,0 +1,37 @@
+{
+  "name": "alquifiestas-y-eventos",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "photos": "node scripts/generate-placeholder-photos.mjs",
+    "import:build": "node scripts/import/build-import-sql.mjs",
+    "import:run": "node scripts/import/run-import.mjs",
+    "import:photos": "node scripts/import/import-photos.mjs",
+    "import:prices": "node scripts/import/import-prices.mjs",
+    "db:clear-estimates": "node scripts/import/clear-estimates.mjs",
+    "db:migrations": "node scripts/dump-migrations.mjs",
+    "db:test": "node scripts/run-availability-tests.mjs",
+    "scrape:prices": "node scripts/scrape/recover-prices.mjs",
+    "scrape:test": "node --test scripts/scrape/parse-odoo.test.mjs"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.3",
+    "@supabase/supabase-js": "^2.110.9",
+    "next": "16.2.12",
+    "postgres": "^3.4.9",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

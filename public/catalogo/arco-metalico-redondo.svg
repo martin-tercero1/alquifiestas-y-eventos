@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" role="presentation">
+  <defs>
+    <filter id="soft"><feGaussianBlur stdDeviation="3.18"/></filter>
+    
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <linearGradient id="flare" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffc978" stop-opacity="0.85"/>
+      <stop offset="46%" stop-color="#ffc978" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.3"/>
+    </linearGradient>
+    <radialGradient id="vig" cx="50%" cy="46%" r="72%">
+      <stop offset="60%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.42"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1080" height="1080" fill="#333a3c"/>
+  <rect y="555" width="1080" height="525" fill="#272c2e"/>
+  <g filter="url(#soft)"><rect x="476" y="441" width="91" height="196" rx="4" fill="#4a5356" opacity="0.56"/><rect x="656" y="330" width="259" height="211" rx="10" fill="#2e3436" opacity="0.84"/><rect x="107" y="262" width="304" height="425" rx="12" fill="#454e51" opacity="0.61"/><rect x="819" y="345" width="304" height="226" rx="12" fill="#4a5356" opacity="0.54"/><rect x="-53" y="309" width="233" height="221" rx="9" fill="#2e3436" opacity="0.70"/></g>
+
+  <g >
+    <ellipse cx="563" cy="802" rx="286" ry="50" fill="#000" opacity="0.26"/>
+    
+    <circle cx="563.1161128789187" cy="569.2416385937047" r="183.1653414851956" fill="none" stroke="#9a9a94" stroke-width="24.803639992786906"/>
+    <rect x="437.18994060784667" y="744.7750908503505" width="251.85234454214395" height="20.987695378511994" rx="9.53986153568727" fill="#9a9a94"/>
+  </g>
+
+  <rect width="1080" height="1080" fill="url(#flare)"/>
+  <rect width="1080" height="1080" fill="url(#vig)"/>
+  <rect width="1080" height="1080" filter="url(#noise)" opacity="0.16" style="mix-blend-mode:overlay"/>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="768" viewBox="0 0 1024 768" role="presentation">
+  <defs>
+    <filter id="soft"><feGaussianBlur stdDeviation="2.26"/></filter>
+    
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <linearGradient id="flare" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffe9c4" stop-opacity="0.5"/>
+      <stop offset="46%" stop-color="#ffe9c4" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.3"/>
+    </linearGradient>
+    <radialGradient id="vig" cx="50%" cy="46%" r="72%">
+      <stop offset="60%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.42"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="768" fill="#8d9086"/>
+  <rect y="518" width="1024" height="250" fill="#63655c"/>
+  <g filter="url(#soft)"><rect x="918" y="372" width="118" height="215" rx="5" fill="#75776d" opacity="0.80"/><rect x="563" y="325" width="182" height="183" rx="7" fill="#9a9c90" opacity="0.54"/><rect x="867" y="373" width="154" height="168" rx="6" fill="#75776d" opacity="0.77"/><rect x="645" y="281" width="297" height="240" rx="12" fill="#84867a" opacity="0.75"/><rect x="240" y="310" width="82" height="278" rx="3" fill="#75776d" opacity="0.71"/><rect x="399" y="436" width="111" height="145" rx="4" fill="#9a9c90" opacity="0.64"/><rect x="165" y="449" width="119" height="82" rx="5" fill="#9a9c90" opacity="0.56"/></g>
+
+  <g >
+    <ellipse cx="361" cy="594" rx="248" ry="43" fill="#000" opacity="0.26"/>
+    
+    <rect x="304.4908039033221" y="289.79494361458285" width="112.33433072332413" height="142.06988885596874" rx="16.5197545181359" fill="#e6e4dd"/>
+    <rect x="291.2750002888134" y="425.2569306632972" width="138.76593795234157" height="26.43160722901744" rx="8.25987725906795" fill="#e6e4dd"/>
+    <rect x="297.8829020960677" y="451.6885378923147" width="14.86777906632231" height="122.24618343420566" fill="#e6e4dd"/>
+    <rect x="408.5652573675783" y="451.6885378923147" width="14.86777906632231" height="122.24618343420566" fill="#e6e4dd"/>
+    <rect x="297.8829020960677" y="514.4636050612311" width="125.55013433783284" height="11.563828162695131" fill="#e6e4dd" opacity="0.75"/>
+  </g>
+
+  <rect width="1024" height="768" fill="url(#flare)"/>
+  <rect width="1024" height="768" fill="url(#vig)"/>
+  <rect width="1024" height="768" filter="url(#noise)" opacity="0.16" style="mix-blend-mode:overlay"/>
+</svg>

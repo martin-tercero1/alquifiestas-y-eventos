@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" role="presentation">
+  <defs>
+    <filter id="soft"><feGaussianBlur stdDeviation="3.18"/></filter>
+    
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <linearGradient id="flare" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffe9c4" stop-opacity="0.5"/>
+      <stop offset="46%" stop-color="#ffe9c4" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.3"/>
+    </linearGradient>
+    <radialGradient id="vig" cx="50%" cy="46%" r="72%">
+      <stop offset="60%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.42"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1080" height="1080" fill="#8d9086"/>
+  <rect y="621" width="1080" height="459" fill="#63655c"/>
+  <g filter="url(#soft)"><rect x="411" y="268" width="260" height="310" rx="10" fill="#75776d" opacity="0.66"/><rect x="708" y="446" width="127" height="211" rx="5" fill="#75776d" opacity="0.51"/><rect x="184" y="365" width="312" height="349" rx="12" fill="#9a9c90" opacity="0.77"/><rect x="427" y="162" width="315" height="417" rx="13" fill="#9a9c90" opacity="0.90"/><rect x="197" y="355" width="161" height="265" rx="6" fill="#84867a" opacity="0.90"/></g>
+
+  <g >
+    <ellipse cx="553" cy="852" rx="255" ry="44" fill="#000" opacity="0.26"/>
+    
+      <path d="M 374.3001276025436 597.6273589900229
+               L 432.06481314165023 597.6273589900229
+               L 421.8710451053373 672.3816579229845
+               L 384.49389563885654 672.3816579229845 Z" fill="#dcd8ce" opacity="0.88"/>
+      <rect x="398.08558635394047" y="668.9837352442134" width="10.193768036312935" height="57.76468553910664" fill="#dcd8ce" opacity="0.8"/>
+      <ellipse cx="403.18247037209693" cy="728.4473821227056" rx="30.581304108938806" ry="8.494806696927446" fill="#dcd8ce" opacity="0.9"/>
+      <path d="M 462.64611725058904 609.5200883657213
+               L 520.4108027896957 609.5200883657213
+               L 510.21703475338273 684.2743872986829
+               L 472.83988528690196 684.2743872986829 Z" fill="#dcd8ce" opacity="0.88"/>
+      <rect x="486.4315760019859" y="680.8764646199119" width="10.193768036312935" height="57.76468553910664" fill="#dcd8ce" opacity="0.8"/>
+      <ellipse cx="491.52846002014235" cy="740.340111498404" rx="30.581304108938806" ry="8.494806696927446" fill="#dcd8ce" opacity="0.9"/>
+      <path d="M 517.0128801109247 621.4128177414198
+               L 574.7775656500314 621.4128177414198
+               L 564.5837976137184 696.1671166743813
+               L 527.2066481472377 696.1671166743813 Z" fill="#dcd8ce" opacity="0.88"/>
+      <rect x="540.7983388623215" y="692.7691939956103" width="10.193768036312935" height="57.76468553910664" fill="#dcd8ce" opacity="0.8"/>
+      <ellipse cx="545.8952228804781" cy="752.2328408741024" rx="30.581304108938806" ry="8.494806696927446" fill="#dcd8ce" opacity="0.9"/>
+      <path d="M 605.3588697589701 597.6273589900229
+               L 663.1235552980768 597.6273589900229
+               L 652.9297872617637 672.3816579229845
+               L 615.5526377952831 672.3816579229845 Z" fill="#dcd8ce" opacity="0.88"/>
+      <rect x="629.1443285103669" y="668.9837352442134" width="10.193768036312935" height="57.76468553910664" fill="#dcd8ce" opacity="0.8"/>
+      <ellipse cx="634.2412125285234" cy="728.4473821227056" rx="30.581304108938806" ry="8.494806696927446" fill="#dcd8ce" opacity="0.9"/>
+      <path d="M 659.7256326193058 609.5200883657213
+               L 717.4903181584125 609.5200883657213
+               L 707.2965501220995 684.2743872986829
+               L 669.9194006556188 684.2743872986829 Z" fill="#dcd8ce" opacity="0.88"/>
+      <rect x="683.5110913707026" y="680.8764646199119" width="10.193768036312935" height="57.76468553910664" fill="#dcd8ce" opacity="0.8"/>
+      <ellipse cx="688.6079753888591" cy="740.340111498404" rx="30.581304108938806" ry="8.494806696927446" fill="#dcd8ce" opacity="0.9"/>
+  </g>
+
+  <rect width="1080" height="1080" fill="url(#flare)"/>
+  <rect width="1080" height="1080" fill="url(#vig)"/>
+  <rect width="1080" height="1080" filter="url(#noise)" opacity="0.16" style="mix-blend-mode:overlay"/>
+</svg>

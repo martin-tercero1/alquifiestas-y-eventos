@@ -1,0 +1,135 @@
+orden,categoria,subcategoria,producto,variante,unidad_alquilable,publicado,precio_24h,cantidad_total,fuente_sugerida,url_producto,nota_interna
+1,Sillas,,Silla ABC,,Silla ABC,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/silla-abc-25,Stock desactualizado
+2,Sillas,,Silla Garden,,Silla Garden,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/silla-garden-10,Stock desactualizado
+3,Sillas,,Silla Plastica,,Silla Plastica,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/silla-plastica-8,Stock pronosticado
+4,Sillas,,Silla Tiffany,,Silla Tiffany,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/silla-tiffany-9,
+5,Mesas,,Caballo Decorativo,,Caballo Decorativo,no,,,a mano,,
+6,Mesas,,Canasta,Grande,Canasta (Grande),no,,,a mano,,
+7,Mesas,,Canasta,Mediano,Canasta (Mediano),no,,,a mano,,
+8,Mesas,,Canasta,Pequeno(a),Canasta (Pequeno(a)),no,,,a mano,,
+9,Mesas,,Deposito,,Deposito,no,,,a mano,,
+10,Mesas,,Estante Triangular,,Estante Triangular,no,,,a mano,,
+11,Mesas,,Letrero Feliz Cumpleaños,,Letrero Feliz Cumpleaños,no,,,a mano,,
+12,Mesas,,Letrero Nuestra Boda,,Letrero Nuestra Boda,no,,,a mano,,
+13,Mesas,,Mesa Buffette de Madera,,Mesa Buffette de Madera,no,,,a mano,,
+14,Mesas,,Mesa Coctelera,,Mesa Coctelera,no,,,a mano,,
+15,Mesas,,Mesa Cuadrada,,Mesa Cuadrada,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/mesa-cuadrada-14,
+16,Mesas,,Mesa Decorativa,Grande,Mesa Decorativa (Grande),no,,,a mano,,
+17,Mesas,,Mesa Decorativa,Mediano,Mesa Decorativa (Mediano),no,,,a mano,,
+18,Mesas,,Mesa Rectangular,Grande,Mesa Rectangular (Grande),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/mesa-rectangular-29,
+19,Mesas,,Mesa Rectangular,Mediano,Mesa Rectangular (Mediano),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/mesa-rectangular-29,
+20,Mesas,,Mesa Redonda,,Mesa Redonda,no,,,a mano,,
+21,Mesas,,Mesa para Niño,,Mesa para Niño,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/mesa-para-nino-81,
+22,Mesas,,Mesas Redonda para 10 personas,Madera,Mesas Redonda para 10 personas (Madera),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/mesas-redonda-para-10-personas-15,
+23,Mesas,,Mesas Redonda para 10 personas,Plastico,Mesas Redonda para 10 personas (Plastico),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/mesas-redonda-para-10-personas-15,
+24,Mesas,,Transporte,,Transporte,no,,,a mano,,
+25,Mantelería,Lazos,Lazo Azul de Organza,,Lazo Azul de Organza,no,,,a mano,,Stock aproximado
+26,Mantelería,Lazos,Lazos Satin,,Lazos Satin,no,,,a mano,,Stock aproximado
+27,Mantelería,Manteles,Bambalina,,Bambalina,no,,,a mano,,
+28,Mantelería,Manteles,Bambalina Mesa Buffete Grande,,Bambalina Mesa Buffete Grande,no,,,a mano,,
+29,Mantelería,Manteles,Mantel Cuadrado,,Mantel Cuadrado,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/mantel-cuadrado-7,Stock aproximado
+30,Mantelería,Manteles,Mantel Rectangular,Grande,Mantel Rectangular (Grande),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/mantel-rectangular-33,4 y 6 varas
+31,Mantelería,Manteles,Mantel Rectangular,Mediano,Mantel Rectangular (Mediano),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/mantel-rectangular-33,4 y 6 varas
+32,Mantelería,Manteles,Mantel Redondo 10 personas,Blanco Liso,Mantel Redondo 10 personas (Blanco Liso),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/mantel-redondo-10-personas-35,
+33,Mantelería,Otros,Camino de Mesa,Satin Dorado,Camino de Mesa (Satin Dorado),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/camino-de-mesa-38,
+34,Mantelería,Otros,Camino de Mesa,Yacar Brocado Azul,Camino de Mesa (Yacar Brocado Azul),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/camino-de-mesa-38,
+35,Mantelería,Otros,Camino de Mesa,Yacar Brocado Rojo,Camino de Mesa (Yacar Brocado Rojo),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/camino-de-mesa-38,
+36,Mantelería,Otros,Camino de Mesa,Yute,Camino de Mesa (Yute),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/camino-de-mesa-38,
+37,Mantelería,Otros,Servilleta de Tela,Blanco,Servilleta de Tela (Blanco),no,,,a mano,,Stock desactualizado
+38,Mantelería,Otros,Servilleta de Tela,Rojo,Servilleta de Tela (Rojo),no,,,a mano,,Stock desactualizado
+39,Mantelería,Otros,Servilleta de Tela,Rosado,Servilleta de Tela (Rosado),no,,,a mano,,Stock desactualizado
+40,Mantelería,Otros,Servilleta de Tela Celeste,,Servilleta de Tela Celeste,no,,,a mano,,
+41,Mantelería,Otros,Vestido Chafer Dish,,Vestido Chafer Dish,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/vestido-chafer-dish-37,Stock pronosticado
+42,Mantelería,Otros,Vestido para Silla,,Vestido para Silla,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/vestido-para-silla-100,Stock pronosticado
+43,Cristalería,,Bandeja Aluminio,Grande,Bandeja Aluminio (Grande),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/bandeja-aluminio-78,Stock aproximado
+44,Cristalería,,Bandeja Aluminio,Mediano,Bandeja Aluminio (Mediano),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/bandeja-aluminio-78,Stock aproximado
+45,Cristalería,,Bandeja Antideslizante,,Bandeja Antideslizante,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/bandeja-antideslizante-77,
+46,Cristalería,,Base de Dispensador de Jugo,,Base de Dispensador de Jugo,no,,,a mano,,
+47,Cristalería,,Cafetera Electrica,,Cafetera Electrica,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cafetera-electrica-47,
+48,Cristalería,,Chafer Dish,,Chafer Dish,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/chafer-dish-70,
+49,Cristalería,,Champañera Aluminio,,Champañera Aluminio,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/champanera-aluminio-51,
+50,Cristalería,,Descorchador,,Descorchador,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/descorchador-69,
+51,Cristalería,,Dispensador Plastico,,Dispensador Plastico,no,,,a mano,,
+52,Cristalería,,Dispensador Vidrio Grande,,Dispensador Vidrio Grande,no,,,a mano,,
+53,Cristalería,,Dispensador Vidrio Pequeno Cuadrado,,Dispensador Vidrio Pequeno Cuadrado,no,,,a mano,,
+54,Cristalería,,Dispensador de Lujo,,Dispensador de Lujo,no,,,a mano,,
+55,Cristalería,,Ensaladera Plastica,,Ensaladera Plastica,no,,,a mano,,
+56,Cristalería,,Ensaladera Vidrio,,Ensaladera Vidrio,no,,,a mano,,Stock pronosticado Puede ser que hayan distintas variantes
+57,Cristalería,,Hielera de Aluminio,,Hielera de Aluminio,no,,,a mano,,Stock pronosticado
+58,Cristalería,,Pichel de Vidrio,,Pichel de Vidrio,no,,,a mano,,Stock pronosticado
+59,Cristalería,,Pinzas para Hieleras,,Pinzas para Hieleras,no,,,a mano,,Stock pronosticado
+60,Cristalería,,Taza para Cafe (Escudilla),,Taza para Cafe (Escudilla),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/taza-para-cafe-escudilla-75,Stock aproximado
+61,Cristalería,,Taza para Consume,,Taza para Consume,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/taza-para-consume-76,Stock aproximado
+62,Cristalería,Copas,Copa de Agua,,Copa de Agua,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/copa-de-agua-19,
+63,Cristalería,Copas,Copa de Champagne,,Copa de Champagne,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/copa-de-champagne-20,Stock aproximado
+64,Cristalería,Copas,Copa de Vino,,Copa de Vino,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/copa-de-vino-18,
+65,Cristalería,Copas,Copas de Novios,,Copas de Novios,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/copas-de-novios-21,No las encontre. Solo encontre una caja con una copa decorada
+66,Cristalería,Cubiertos,Cuchara para Postre,,Cuchara para Postre,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cuchara-para-postre-74,Stock desactualizado Se presume hay 3 marcas o variaciones
+67,Cristalería,Cubiertos,Cucharas para Servir,,Cucharas para Servir,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cucharas-para-servir-54,
+68,Cristalería,Cubiertos,Cuchillo,,Cuchillo,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cuchillo-93,Stock desactualizado
+69,Cristalería,Cubiertos,Espatula y Cuchillo de Queque,,Espatula y Cuchillo de Queque,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/espatula-y-cuchillo-de-queque-53,
+70,Cristalería,Cubiertos,Tenedor,,Tenedor,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/tenedor-22,Stock desactualizado
+71,Cristalería,Cubiertos,Tenedor para Postre,,Tenedor para Postre,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/tenedor-para-postre-23,Stock desactualizado
+72,Cristalería,Platos,Base de Platos,,Base de Platos,no,,,a mano,,
+73,Cristalería,Platos,Plato de Ensalada,,Plato de Ensalada,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/plato-de-ensalada-12,Stock desactualizado
+74,Cristalería,Platos,Plato de Postre,,Plato de Postre,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/plato-de-postre-13,Stock desaactualizado Se presume hay dos marcas
+75,Cristalería,Platos,Plato para Comida,Grande,Plato para Comida (Grande),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/plato-para-comida-11,Stock desactualizado
+76,Cristalería,Platos,Plato para Comida,Normal,Plato para Comida (Normal),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/plato-para-comida-11,Stock desactualizado
+77,Cristalería,Platos,Porta Platos Dorado,,Porta Platos Dorado,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/porta-platos-dorado-16,Stock aproximado
+78,Cristalería,Vasos,Vaso Alto,,Vaso Alto,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/vaso-alto-17,
+79,Cristalería,Vasos,Vasos Jaiboleros,,Vasos Jaiboleros,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/vasos-jaiboleros-55,
+80,Caballo Bayo,,Anafre (Diablitos),,Anafre (Diablitos),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/anafre-diablitos-39,
+81,Caballo Bayo,,Bandeja de Barro,,Bandeja de Barro,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/bandeja-de-barro-57,
+82,Caballo Bayo,,Comal,Grande,Comal (Grande),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/comal-56,
+83,Caballo Bayo,,Comal,Mediano,Comal (Mediano),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/comal-56,
+84,Caballo Bayo,,Comal,Pequeno(a),Comal (Pequeno(a)),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/comal-56,
+85,Caballo Bayo,,Container de Barro,Grande,Container de Barro (Grande),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/container-de-barro-60,
+86,Caballo Bayo,,Container de Barro,Mediano,Container de Barro (Mediano),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/container-de-barro-60,
+87,Caballo Bayo,,Container de Barro,Pequeno(a),Container de Barro (Pequeno(a)),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/container-de-barro-60,
+88,Caballo Bayo,,Cuchara de Madera,,Cuchara de Madera,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cuchara-de-madera-92,
+89,Caballo Bayo,,Cucharas de Jicara,,Cucharas de Jicara,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cucharas-de-jicara-91,
+90,Caballo Bayo,,Cucharita de Madera,,Cucharita de Madera,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cucharita-de-madera-59,
+91,Caballo Bayo,,Gigantona y Enano Cabezon,,Gigantona y Enano Cabezon,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/gigantona-y-enano-cabezon-89,
+92,Caballo Bayo,,Muñeca Típica,,Muñeca Típica,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/muneca-tipica-90,
+93,Caballo Bayo,,Olla para Fresco,,Olla para Fresco,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/olla-para-fresco-58,
+94,Caballo Bayo,,Plato de Barro,,Plato de Barro,no,,,a mano,,
+95,Utensilios,,Cucharoncito,,Cucharoncito,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cucharoncito-98,
+96,Utensilios,,Pala para Hielo,,Pala para Hielo,no,,,a mano,,
+97,Utensilios,,Pinza de Ensalada,,Pinza de Ensalada,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/pinza-de-ensalada-52,
+98,Decoración,,Alfombra Roja (12.5mts),,Alfombra Roja (12.5mts),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/alfombra-roja-12-5mts-64,
+99,Decoración,,Alfombra Verde (4x3),,Alfombra Verde (4x3),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/alfombra-verde-4x3-88,La que esta mala mide 2.5mts x 3mts
+100,Decoración,,Aro Metalico,Cuadrado,Aro Metalico (Cuadrado),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/aro-metalico-66,
+101,Decoración,,Aro Metalico,Ovalado,Aro Metalico (Ovalado),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/aro-metalico-66,
+102,Decoración,,Aro Metalico,Redonda,Aro Metalico (Redonda),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/aro-metalico-66,
+103,Decoración,,Base Rustica,,Base Rustica,no,,,a mano,,
+104,Decoración,,Base para Queque Grande,,Base para Queque Grande,no,,,a mano,,
+105,Decoración,,Base(s) para queque,Grande,Base(s) para queque (Grande),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/base-s-para-queque-86,
+106,Decoración,,Base(s) para queque,Mediano,Base(s) para queque (Mediano),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/base-s-para-queque-86,
+107,Decoración,,Base(s) para queque,Pequeno(a),Base(s) para queque (Pequeno(a)),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/base-s-para-queque-86,
+108,Decoración,,Carrillo,,Carrillo,no,,,a mano,,
+109,Decoración,,Cilindros,Grande,Cilindros (Grande),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cilindros-95,Los 3 valen 500
+110,Decoración,,Cilindros,Mediano,Cilindros (Mediano),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cilindros-95,Los 3 valen 500
+111,Decoración,,Cilindros,Pequeno(a),Cilindros (Pequeno(a)),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cilindros-95,Los 3 valen 500
+112,Decoración,,Cofre,Madera,Cofre (Madera),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cofre-143,
+113,Decoración,,Cofre,Metalico,Cofre (Metalico),si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cofre-143,
+114,Decoración,,Cofre Madera,,Cofre Madera,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cofre-madera-84,
+115,Decoración,,Cortina Luces,,Cortina Luces,no,,,a mano,,
+116,Decoración,,Cortinas,(Blanco,Cortinas ((Blanco),no,,,a mano,,
+117,Decoración,,Cortinas,(Rojo,Cortinas ((Rojo),no,,,a mano,,
+118,Decoración,,Cortinas,Grande),Cortinas (Grande)),no,,,a mano,,
+119,Decoración,,Cortinas,Normal),Cortinas (Normal)),no,,,a mano,,
+120,Decoración,,Cubiculos de Hierro y Madera,,Cubiculos de Hierro y Madera,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/cubiculos-de-hierro-y-madera-97,100 Pequeno150 Mediano200 Grande
+121,Decoración,,Farolito de Luces,,Farolito de Luces,no,,,a mano,,
+122,Decoración,,Floreros,,Floreros,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/floreros-63,
+123,Decoración,,Letrero Happy Birthday,,Letrero Happy Birthday,no,,,a mano,,
+124,Decoración,,Letrero Mr. y Ms.,,Letrero Mr. y Ms.,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/letrero-mr-y-ms-68,
+125,Decoración,,Marco Metalico,,Marco Metalico,no,,,a mano,,
+126,Decoración,,Marco de Madera,,Marco de Madera,no,,,a mano,,
+127,Decoración,,Numero 15,,Numero 15,no,,,a mano,,
+128,Decoración,,Porta Cupcakes,,Porta Cupcakes,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/porta-cupcakes-85,
+129,Decoración,,Pozo,,Pozo,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/pozo-62,
+130,Decoración,,Respaldo de Madera,Cesped Artificial,Respaldo de Madera (Cesped Artificial),no,,,a mano,,
+131,Decoración,,Respaldo de Madera,Madera,Respaldo de Madera (Madera),no,,,a mano,,
+132,Decoración,,Silla Trono,,Silla Trono,si,,,sitio web,https://www.alquifiestasyeventos.com/shop/silla-trono-96,
+133,Decoración,,Toldo,4x4,Toldo (4x4),no,,,a mano,,
+134,Decoración,,Toldo,6x4,Toldo (6x4),no,,,a mano,,

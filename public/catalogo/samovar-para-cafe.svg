@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="presentation">
+  <defs>
+    <filter id="soft"><feGaussianBlur stdDeviation="2.12"/></filter>
+    
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <linearGradient id="flare" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffdfae" stop-opacity="0.4"/>
+      <stop offset="46%" stop-color="#ffdfae" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.3"/>
+    </linearGradient>
+    <radialGradient id="vig" cx="50%" cy="46%" r="72%">
+      <stop offset="60%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.42"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1280" height="720" fill="#6f7b83"/>
+  <rect y="432" width="1280" height="288" fill="#575f66"/>
+  <g filter="url(#soft)"><rect x="1185" y="276" width="110" height="165" rx="4" fill="#68737a" opacity="0.84"/><rect x="371" y="347" width="247" height="112" rx="10" fill="#8b959b" opacity="0.63"/><rect x="953" y="190" width="405" height="213" rx="16" fill="#68737a" opacity="0.70"/><rect x="764" y="368" width="318" height="104" rx="13" fill="#68737a" opacity="0.63"/></g>
+
+  <g >
+    <ellipse cx="434" cy="550" rx="185" ry="32" fill="#000" opacity="0.26"/>
+    
+    <path d="M 342.79289895045844 391.86777407444055
+             Q 434.1368973016739 559.7432305037014 525.4808956528893 391.86777407444055 Z" fill="#b8bcbd"/>
+    <ellipse cx="434.1368973016739" cy="389.39901736224556" rx="93.81275506341048" ry="25.921945478047633" fill="#b8bcbd"/>
+    <ellipse cx="434.1368973016739" cy="386.9302606500505" rx="71.59394465365537" ry="18.515675341462597" fill="#000" opacity="0.22"/>
+    <rect x="323.04284525289836" y="500.4930694110211" width="222.18810409755113" height="16.046918629267584" rx="7.406270136585038" fill="#b8bcbd" opacity="0.8"/>
+  </g>
+
+  <rect width="1280" height="720" fill="url(#flare)"/>
+  <rect width="1280" height="720" fill="url(#vig)"/>
+  <rect width="1280" height="720" filter="url(#noise)" opacity="0.16" style="mix-blend-mode:overlay"/>
+</svg>

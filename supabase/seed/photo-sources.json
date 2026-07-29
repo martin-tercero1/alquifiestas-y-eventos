@@ -1,0 +1,620 @@
+[
+  {
+    "odooId": 39,
+    "slug": "anafre-diablitos",
+    "name": "Anafre (Diablitos)",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/39/image_1920"
+  },
+  {
+    "odooId": 57,
+    "slug": "bandeja-de-barro",
+    "name": "Bandeja de Barro",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/57/image_1920"
+  },
+  {
+    "odooId": 56,
+    "slug": "comal",
+    "name": "Comal",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/56/image_1920"
+  },
+  {
+    "odooId": 60,
+    "slug": "container-de-barro",
+    "name": "Container de Barro",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/60/image_1920"
+  },
+  {
+    "odooId": 92,
+    "slug": "cuchara-de-madera",
+    "name": "Cuchara de Madera",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/92/image_1920"
+  },
+  {
+    "odooId": 91,
+    "slug": "cucharas-de-jicara",
+    "name": "Cucharas de Jícara",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/91/image_1920"
+  },
+  {
+    "odooId": 59,
+    "slug": "cucharita-de-madera",
+    "name": "Cucharita de Madera",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/59/image_1920"
+  },
+  {
+    "odooId": 89,
+    "slug": "gigantona-y-enano-cabezon",
+    "name": "Gigantona y Enano Cabezón",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/89/image_1920"
+  },
+  {
+    "odooId": 90,
+    "slug": "muneca-tipica",
+    "name": "Muñeca Típica",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/90/image_1920"
+  },
+  {
+    "odooId": 58,
+    "slug": "olla-para-fresco",
+    "name": "Olla para Fresco",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/58/image_1920"
+  },
+  {
+    "odooId": 121,
+    "slug": "plato-de-barro",
+    "name": "Plato de Barro",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/121/image_1920"
+  },
+  {
+    "odooId": 78,
+    "slug": "bandeja-aluminio",
+    "name": "Bandeja Aluminio",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/78/image_1920"
+  },
+  {
+    "odooId": 77,
+    "slug": "bandeja-antideslizante",
+    "name": "Bandeja Antideslizante",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/77/image_1920"
+  },
+  {
+    "odooId": 126,
+    "slug": "base-de-dispensador-de-jugo",
+    "name": "Base de Dispensador de Jugo",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/126/image_1920"
+  },
+  {
+    "odooId": 47,
+    "slug": "cafetera-electrica",
+    "name": "Cafetera Eléctrica",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/47/image_1920"
+  },
+  {
+    "odooId": 70,
+    "slug": "chafer-dish",
+    "name": "Chafer Dish",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/70/image_1920"
+  },
+  {
+    "odooId": 51,
+    "slug": "champanera-aluminio",
+    "name": "Champañera Aluminio",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/51/image_1920"
+  },
+  {
+    "odooId": 69,
+    "slug": "descorchador",
+    "name": "Descorchador",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/69/image_1920"
+  },
+  {
+    "odooId": 79,
+    "slug": "dispensador-plastico",
+    "name": "Dispensador Plástico",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/79/image_1920"
+  },
+  {
+    "odooId": 49,
+    "slug": "dispensador-vidrio-grande",
+    "name": "Dispensador Vidrio Grande",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/49/image_1920"
+  },
+  {
+    "odooId": 50,
+    "slug": "dispensador-vidrio-pequeno-cuadrado",
+    "name": "Dispensador Vidrio Pequeño Cuadrado",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/50/image_1920"
+  },
+  {
+    "odooId": 48,
+    "slug": "dispensador-de-lujo",
+    "name": "Dispensador de Lujo",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/48/image_1920"
+  },
+  {
+    "odooId": 44,
+    "slug": "ensaladera-plastica",
+    "name": "Ensaladera Plástica",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/44/image_1920"
+  },
+  {
+    "odooId": 45,
+    "slug": "ensaladera-vidrio",
+    "name": "Ensaladera Vidrio",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/45/image_1920"
+  },
+  {
+    "odooId": 40,
+    "slug": "hielera-de-aluminio",
+    "name": "Hielera de Aluminio",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/40/image_1920"
+  },
+  {
+    "odooId": 46,
+    "slug": "pichel-de-vidrio",
+    "name": "Pichel de Vidrio",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/46/image_1920"
+  },
+  {
+    "odooId": 41,
+    "slug": "pinzas-para-hieleras",
+    "name": "Pinzas para Hieleras",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/41/image_1920"
+  },
+  {
+    "odooId": 75,
+    "slug": "taza-para-cafe-escudilla",
+    "name": "Taza para Café (Escudilla)",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/75/image_1920"
+  },
+  {
+    "odooId": 76,
+    "slug": "taza-para-consome",
+    "name": "Taza para Consomé",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/76/image_1920"
+  },
+  {
+    "odooId": 19,
+    "slug": "copa-de-agua",
+    "name": "Copa de Agua",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/19/image_1920"
+  },
+  {
+    "odooId": 20,
+    "slug": "copa-de-champagne",
+    "name": "Copa de Champagne",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/20/image_1920"
+  },
+  {
+    "odooId": 18,
+    "slug": "copa-de-vino",
+    "name": "Copa de Vino",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/18/image_1920"
+  },
+  {
+    "odooId": 21,
+    "slug": "copas-de-novios",
+    "name": "Copas de Novios",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/21/image_1920"
+  },
+  {
+    "odooId": 74,
+    "slug": "cuchara-para-postre",
+    "name": "Cuchara para Postre",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/74/image_1920"
+  },
+  {
+    "odooId": 54,
+    "slug": "cucharas-para-servir",
+    "name": "Cucharas para Servir",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/54/image_1920"
+  },
+  {
+    "odooId": 93,
+    "slug": "cuchillo",
+    "name": "Cuchillo",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/93/image_1920"
+  },
+  {
+    "odooId": 53,
+    "slug": "espatula-y-cuchillo-de-queque",
+    "name": "Espátula y Cuchillo de Queque",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/53/image_1920"
+  },
+  {
+    "odooId": 22,
+    "slug": "tenedor",
+    "name": "Tenedor",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/22/image_1920"
+  },
+  {
+    "odooId": 23,
+    "slug": "tenedor-para-postre",
+    "name": "Tenedor para Postre",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/23/image_1920"
+  },
+  {
+    "odooId": 141,
+    "slug": "base-de-platos",
+    "name": "Base de Platos",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/141/image_1920"
+  },
+  {
+    "odooId": 12,
+    "slug": "plato-de-ensalada",
+    "name": "Plato de Ensalada",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/12/image_1920"
+  },
+  {
+    "odooId": 13,
+    "slug": "plato-de-postre",
+    "name": "Plato de Postre",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/13/image_1920"
+  },
+  {
+    "odooId": 11,
+    "slug": "plato-para-comida",
+    "name": "Plato para Comida",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/11/image_1920"
+  },
+  {
+    "odooId": 16,
+    "slug": "porta-platos-dorado",
+    "name": "Porta Platos Dorado",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/16/image_1920"
+  },
+  {
+    "odooId": 17,
+    "slug": "vaso-alto",
+    "name": "Vaso Alto",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/17/image_1920"
+  },
+  {
+    "odooId": 55,
+    "slug": "vasos-jaiboleros",
+    "name": "Vasos Jaiboleros",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/55/image_1920"
+  },
+  {
+    "odooId": 64,
+    "slug": "alfombra-roja-12-5mts",
+    "name": "Alfombra Roja (12.5mts)",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/64/image_1920"
+  },
+  {
+    "odooId": 88,
+    "slug": "alfombra-verde-4x3",
+    "name": "Alfombra Verde (4x3)",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/88/image_1920"
+  },
+  {
+    "odooId": 66,
+    "slug": "aro-metalico",
+    "name": "Aro Metálico",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/66/image_1920"
+  },
+  {
+    "odooId": 127,
+    "slug": "base-rustica",
+    "name": "Base Rústica",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/127/image_1920"
+  },
+  {
+    "odooId": 142,
+    "slug": "base-para-queque-grande",
+    "name": "Base para Queque Grande",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/142/image_1920"
+  },
+  {
+    "odooId": 86,
+    "slug": "base-s-para-queque",
+    "name": "Base(s) para queque",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/86/image_1920"
+  },
+  {
+    "odooId": 61,
+    "slug": "carrillo",
+    "name": "Carrillo",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/61/image_1920"
+  },
+  {
+    "odooId": 95,
+    "slug": "cilindros",
+    "name": "Cilindros",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/95/image_1920"
+  },
+  {
+    "odooId": 143,
+    "slug": "cofre",
+    "name": "Cofre",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/143/image_1920"
+  },
+  {
+    "odooId": 84,
+    "slug": "cofre-madera",
+    "name": "Cofre Madera",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/84/image_1920"
+  },
+  {
+    "odooId": 128,
+    "slug": "cortina-luces",
+    "name": "Cortina Luces",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/128/image_1920"
+  },
+  {
+    "odooId": 97,
+    "slug": "cubiculos-de-hierro-y-madera",
+    "name": "Cubículos de Hierro y Madera",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/97/image_1920"
+  },
+  {
+    "odooId": 129,
+    "slug": "farolito-de-luces",
+    "name": "Farolito de Luces",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/129/image_1920"
+  },
+  {
+    "odooId": 63,
+    "slug": "floreros",
+    "name": "Floreros",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/63/image_1920"
+  },
+  {
+    "odooId": 134,
+    "slug": "letrero-happy-birthday",
+    "name": "Letrero Happy Birthday",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/134/image_1920"
+  },
+  {
+    "odooId": 68,
+    "slug": "letrero-mr-y-ms",
+    "name": "Letrero Mr. y Ms.",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/68/image_1920"
+  },
+  {
+    "odooId": 130,
+    "slug": "marco-metalico",
+    "name": "Marco Metálico",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/130/image_1920"
+  },
+  {
+    "odooId": 65,
+    "slug": "marco-de-madera",
+    "name": "Marco de Madera",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/65/image_1920"
+  },
+  {
+    "odooId": 132,
+    "slug": "numero-15",
+    "name": "Número 15",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/132/image_1920"
+  },
+  {
+    "odooId": 85,
+    "slug": "porta-cupcakes",
+    "name": "Porta Cupcakes",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/85/image_1920"
+  },
+  {
+    "odooId": 62,
+    "slug": "pozo",
+    "name": "Pozo",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/62/image_1920"
+  },
+  {
+    "odooId": 115,
+    "slug": "respaldo-de-madera",
+    "name": "Respaldo de Madera",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/115/image_1920"
+  },
+  {
+    "odooId": 96,
+    "slug": "silla-trono",
+    "name": "Silla Trono",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/96/image_1920"
+  },
+  {
+    "odooId": 105,
+    "slug": "toldo",
+    "name": "Toldo",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/105/image_1920"
+  },
+  {
+    "odooId": 83,
+    "slug": "lazo-azul-de-organza",
+    "name": "Lazo Azul de Organza",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/83/image_1920"
+  },
+  {
+    "odooId": 32,
+    "slug": "lazos-satin",
+    "name": "Lazos Satín",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/32/image_1920"
+  },
+  {
+    "odooId": 104,
+    "slug": "bambalina",
+    "name": "Bambalina",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/104/image_1920"
+  },
+  {
+    "odooId": 36,
+    "slug": "bambalina-mesa-buffete-grande",
+    "name": "Bambalina Mesa Buffete Grande",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/36/image_1920"
+  },
+  {
+    "odooId": 7,
+    "slug": "mantel-cuadrado",
+    "name": "Mantel Cuadrado",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/7/image_1920"
+  },
+  {
+    "odooId": 33,
+    "slug": "mantel-rectangular",
+    "name": "Mantel Rectangular",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/33/image_1920"
+  },
+  {
+    "odooId": 35,
+    "slug": "mantel-redondo-10-personas",
+    "name": "Mantel Redondo 10 personas",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/35/image_1920"
+  },
+  {
+    "odooId": 38,
+    "slug": "camino-de-mesa",
+    "name": "Camino de Mesa",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/38/image_1920"
+  },
+  {
+    "odooId": 73,
+    "slug": "servilleta-de-tela",
+    "name": "Servilleta de Tela",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/73/image_1920"
+  },
+  {
+    "odooId": 103,
+    "slug": "servilleta-de-tela-celeste",
+    "name": "Servilleta de Tela Celeste",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/103/image_1920"
+  },
+  {
+    "odooId": 37,
+    "slug": "vestido-chafer-dish",
+    "name": "Vestido Chafer Dish",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/37/image_1920"
+  },
+  {
+    "odooId": 100,
+    "slug": "vestido-para-silla",
+    "name": "Vestido para Silla",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/100/image_1920"
+  },
+  {
+    "odooId": 145,
+    "slug": "caballo-decorativo",
+    "name": "Caballo Decorativo",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/145/image_1920"
+  },
+  {
+    "odooId": 140,
+    "slug": "canasta",
+    "name": "Canasta",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/140/image_1920"
+  },
+  {
+    "odooId": 133,
+    "slug": "deposito",
+    "name": "Depósito",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/133/image_1920"
+  },
+  {
+    "odooId": 148,
+    "slug": "estante-triangular",
+    "name": "Estante Triangular",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/148/image_1920"
+  },
+  {
+    "odooId": 118,
+    "slug": "letrero-feliz-cumpleanos",
+    "name": "Letrero Feliz Cumpleaños",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/118/image_1920"
+  },
+  {
+    "odooId": 146,
+    "slug": "letrero-nuestra-boda",
+    "name": "Letrero Nuestra Boda",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/146/image_1920"
+  },
+  {
+    "odooId": 27,
+    "slug": "mesa-buffette-de-madera",
+    "name": "Mesa Buffette de Madera",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/27/image_1920"
+  },
+  {
+    "odooId": 26,
+    "slug": "mesa-coctelera",
+    "name": "Mesa Coctelera",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/26/image_1920"
+  },
+  {
+    "odooId": 14,
+    "slug": "mesa-cuadrada",
+    "name": "Mesa Cuadrada",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/14/image_1920"
+  },
+  {
+    "odooId": 31,
+    "slug": "mesa-decorativa",
+    "name": "Mesa Decorativa",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/31/image_1920"
+  },
+  {
+    "odooId": 29,
+    "slug": "mesa-rectangular",
+    "name": "Mesa Rectangular",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/29/image_1920"
+  },
+  {
+    "odooId": 24,
+    "slug": "mesa-redonda",
+    "name": "Mesa Redonda",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/24/image_1920"
+  },
+  {
+    "odooId": 81,
+    "slug": "mesa-para-nino",
+    "name": "Mesa para Niño",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/81/image_1920"
+  },
+  {
+    "odooId": 15,
+    "slug": "mesa-redonda-para-10-personas",
+    "name": "Mesa Redonda para 10 personas",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/15/image_1920"
+  },
+  {
+    "odooId": 25,
+    "slug": "silla-abc",
+    "name": "Silla ABC",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/25/image_1920"
+  },
+  {
+    "odooId": 10,
+    "slug": "silla-garden",
+    "name": "Silla Garden",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/10/image_1920"
+  },
+  {
+    "odooId": 8,
+    "slug": "silla-plastica",
+    "name": "Silla Plástica",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/8/image_1920"
+  },
+  {
+    "odooId": 9,
+    "slug": "silla-tiffany",
+    "name": "Silla Tiffany",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/9/image_1920"
+  },
+  {
+    "odooId": 98,
+    "slug": "cucharoncito",
+    "name": "Cucharoncito",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/98/image_1920"
+  },
+  {
+    "odooId": 99,
+    "slug": "pala-para-hielo",
+    "name": "Pala para Hielo",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/99/image_1920"
+  },
+  {
+    "odooId": 52,
+    "slug": "pinza-de-ensalada",
+    "name": "Pinza de Ensalada",
+    "imageUrl": "https://www.alquifiestasyeventos.com/web/image/product.template/52/image_1920"
+  }
+]

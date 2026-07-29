@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="768" viewBox="0 0 1024 768" role="presentation">
+  <defs>
+    <filter id="soft"><feGaussianBlur stdDeviation="2.26"/></filter>
+    <filter id="shake"><feGaussianBlur stdDeviation="2.43 0.4"/></filter>
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <linearGradient id="flare" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff4d8" stop-opacity="0.72"/>
+      <stop offset="46%" stop-color="#fff4d8" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.3"/>
+    </linearGradient>
+    <radialGradient id="vig" cx="50%" cy="46%" r="72%">
+      <stop offset="60%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.42"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="768" fill="#b3a68e"/>
+  <rect y="421" width="1024" height="347" fill="#9c8f7c"/>
+  <g filter="url(#soft)"><rect x="761" y="332" width="253" height="97" rx="10" fill="#c4b79f" opacity="0.82"/><rect x="786" y="188" width="83" height="222" rx="3" fill="#a89a83" opacity="0.79"/><rect x="596" y="253" width="142" height="249" rx="6" fill="#7d8f7a" opacity="0.84"/><rect x="91" y="180" width="116" height="306" rx="5" fill="#7d8f7a" opacity="0.55"/></g>
+
+  <g filter="url(#shake)">
+    <ellipse cx="609" cy="490" rx="241" ry="42" fill="#000" opacity="0.26"/>
+    
+    <path d="M 419.32799285899245 275.2929782535472
+             Q 608.5691722679138 223.9733363799414 797.8103516768351 275.2929782535472
+             L 765.7355755058315 503.02388906767294
+             Q 608.5691722679138 544.7210980899777 451.4027690299961 503.02388906767294 Z"
+          fill="#c9c3b6"/>
+    <path d="M 544.4196199259065 252.84063493384465 L 566.8719632456091 515.8537995360743"
+          stroke="#c9c3b6" stroke-opacity="0.45" stroke-width="25.659820936802898" fill="none"/>
+    <path d="M 679.1336798441218 256.048112550945 L 659.8888141415196 512.646321918974"
+          stroke="#c9c3b6" stroke-opacity="0.35" stroke-width="20.848604511152356" fill="none"/>
+  </g>
+
+  <rect width="1024" height="768" fill="url(#flare)"/>
+  <rect width="1024" height="768" fill="url(#vig)"/>
+  <rect width="1024" height="768" filter="url(#noise)" opacity="0.16" style="mix-blend-mode:overlay"/>
+</svg>

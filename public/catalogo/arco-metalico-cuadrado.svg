@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="presentation">
+  <defs>
+    <filter id="soft"><feGaussianBlur stdDeviation="2.65"/></filter>
+    
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <linearGradient id="flare" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffdfae" stop-opacity="0.4"/>
+      <stop offset="46%" stop-color="#ffdfae" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.3"/>
+    </linearGradient>
+    <radialGradient id="vig" cx="50%" cy="46%" r="72%">
+      <stop offset="60%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.42"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="900" fill="#6f7b83"/>
+  <rect y="469" width="1200" height="431" fill="#575f66"/>
+  <g filter="url(#soft)"><rect x="238" y="154" width="203" height="307" rx="8" fill="#68737a" opacity="0.62"/><rect x="88" y="268" width="263" height="176" rx="11" fill="#68737a" opacity="0.55"/><rect x="416" y="224" width="175" height="225" rx="7" fill="#68737a" opacity="0.61"/><rect x="227" y="142" width="269" height="346" rx="11" fill="#5b666d" opacity="0.61"/></g>
+
+  <g >
+    <ellipse cx="589" cy="556" rx="258" ry="45" fill="#000" opacity="0.26"/>
+    
+    <circle cx="588.6522468701005" cy="346.13618214321775" r="165.1008744208563" fill="none" stroke="#9a9a94" stroke-width="22.35741007782429"/>
+    <rect x="475.1453957057618" y="504.357853463205" width="227.0137023286774" height="18.917808527389784" rx="8.599003876086265" fill="#9a9a94"/>
+  </g>
+
+  <rect width="1200" height="900" fill="url(#flare)"/>
+  <rect width="1200" height="900" fill="url(#vig)"/>
+  <rect width="1200" height="900" filter="url(#noise)" opacity="0.16" style="mix-blend-mode:overlay"/>
+</svg>

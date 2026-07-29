@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="presentation">
+  <defs>
+    <filter id="soft"><feGaussianBlur stdDeviation="2.12"/></filter>
+    <filter id="shake"><feGaussianBlur stdDeviation="2.99 0.4"/></filter>
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <linearGradient id="flare" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffc978" stop-opacity="0.85"/>
+      <stop offset="46%" stop-color="#ffc978" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.3"/>
+    </linearGradient>
+    <radialGradient id="vig" cx="50%" cy="46%" r="72%">
+      <stop offset="60%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.42"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1280" height="720" fill="#333a3c"/>
+  <rect y="391" width="1280" height="329" fill="#272c2e"/>
+  <g filter="url(#soft)"><rect x="6" y="242" width="283" height="169" rx="11" fill="#454e51" opacity="0.69"/><rect x="114" y="192" width="372" height="173" rx="15" fill="#454e51" opacity="0.71"/><rect x="929" y="329" width="399" height="74" rx="16" fill="#3f474a" opacity="0.79"/><rect x="1033" y="260" width="211" height="119" rx="8" fill="#2e3436" opacity="0.75"/><rect x="581" y="338" width="365" height="73" rx="15" fill="#2e3436" opacity="0.62"/><rect x="504" y="254" width="339" height="154" rx="14" fill="#454e51" opacity="0.89"/><rect x="455" y="337" width="321" height="78" rx="13" fill="#4a5356" opacity="0.55"/></g>
+
+  <g filter="url(#shake)">
+    <ellipse cx="849" cy="466" rx="234" ry="41" fill="#000" opacity="0.26"/>
+    
+    <path d="M 665.2128918986467 256.4954665291874
+             Q 849.3923270463944 206.54850106539143 1033.571762194142 256.4954665291874
+             L 1002.3549087792695 478.135125774782
+             Q 849.3923270463944 518.7170352141162 696.4297453135192 478.135125774782 Z"
+          fill="#e2ded4"/>
+    <path d="M 786.9586202166494 234.64366913877666 L 808.8104176070601 490.621867140731"
+          stroke="#e2ded4" stroke-opacity="0.45" stroke-width="24.973482731897985" fill="none"/>
+    <path d="M 918.0694045591139 237.7653544802639 L 899.3392925101904 487.50018179924376"
+          stroke="#e2ded4" stroke-opacity="0.35" stroke-width="20.290954719667113" fill="none"/>
+  </g>
+
+  <rect width="1280" height="720" fill="url(#flare)"/>
+  <rect width="1280" height="720" fill="url(#vig)"/>
+  <rect width="1280" height="720" filter="url(#noise)" opacity="0.16" style="mix-blend-mode:overlay"/>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="768" viewBox="0 0 1024 768" role="presentation">
+  <defs>
+    <filter id="soft"><feGaussianBlur stdDeviation="2.26"/></filter>
+    
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <linearGradient id="flare" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff4d8" stop-opacity="0.72"/>
+      <stop offset="46%" stop-color="#fff4d8" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.3"/>
+    </linearGradient>
+    <radialGradient id="vig" cx="50%" cy="46%" r="72%">
+      <stop offset="60%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.42"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="768" fill="#b3a68e"/>
+  <rect y="485" width="1024" height="283" fill="#9c8f7c"/>
+  <g filter="url(#soft)"><rect x="522" y="330" width="235" height="258" rx="9" fill="#a89a83" opacity="0.62"/><rect x="803" y="390" width="195" height="85" rx="8" fill="#8fa38c" opacity="0.61"/><rect x="817" y="294" width="217" height="266" rx="9" fill="#a89a83" opacity="0.76"/><rect x="660" y="236" width="221" height="279" rx="9" fill="#7d8f7a" opacity="0.72"/></g>
+
+  <g >
+    <ellipse cx="640" cy="570" rx="197" ry="34" fill="#000" opacity="0.26"/>
+    
+    <path d="M 484.59968696097224 393.59791332816883
+             Q 639.94200838089 351.47118209564877 795.2843298008078 393.59791332816883
+             L 768.9551227804827 580.5352831724766
+             Q 639.94200838089 614.7632522988993 510.9288939812973 580.5352831724766 Z"
+          fill="#e2ded4"/>
+    <path d="M 587.2835943402399 375.1674684139413 L 605.7140392544675 591.0669659806067"
+          stroke="#e2ded4" stroke-opacity="0.45" stroke-width="21.063365616260036" fill="none"/>
+    <path d="M 697.8662638256051 377.8003891159738 L 682.0687396134101 588.4340452785742"
+          stroke="#e2ded4" stroke-opacity="0.35" stroke-width="17.11398456321128" fill="none"/>
+  </g>
+
+  <rect width="1024" height="768" fill="url(#flare)"/>
+  <rect width="1024" height="768" fill="url(#vig)"/>
+  <rect width="1024" height="768" filter="url(#noise)" opacity="0.16" style="mix-blend-mode:overlay"/>
+</svg>
