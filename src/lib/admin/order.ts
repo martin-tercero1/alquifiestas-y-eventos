@@ -64,6 +64,10 @@ export type OrderDetail = {
   customerId: string;
   customerName: string;
   customerPhone: string | null;
+  customerCedula: string | null;
+  cedulaRetained: boolean;
+  /** Set by intake when a website request's cédula and phone disagree. */
+  reviewReason: string | null;
   pickupDate: string;
   agreedReturnDate: string;
   actualReturnDate: string | null;
@@ -213,8 +217,11 @@ export const recordPayment = (
     p_reference: reference,
   });
 
-export const markPickedUp = (orderId: string) =>
-  callRpc("mark_picked_up", { p_order_id: orderId });
+export const markPickedUp = (orderId: string, cedula?: string | null) =>
+  callRpc("mark_picked_up", {
+    p_order_id: orderId,
+    p_cedula: cedula?.trim() ? cedula.trim() : null,
+  });
 
 export const recordReturn = (
   orderId: string,

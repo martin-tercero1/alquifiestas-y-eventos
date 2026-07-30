@@ -62,6 +62,7 @@ export type Draft = {
   customerId: string | null;
   customerName: string;
   customerPhone: string;
+  customerCedula: string;
   pickupDate: string;
   returnDate: string;
   lines: DraftLine[];
@@ -102,6 +103,7 @@ export function emptyDraft(): Draft {
     customerId: null,
     customerName: "",
     customerPhone: "",
+    customerCedula: "",
     // The common case is one day, today. It needs no input at all.
     pickupDate: today,
     returnDate: today,
@@ -304,6 +306,7 @@ export async function saveProforma(draft: Draft): Promise<SaveResult> {
       id: draft.customerId,
       name: draft.customerName.trim(),
       phone: draft.customerPhone.trim(),
+      cedula: draft.customerCedula.trim(),
     },
     pickup_date: draft.pickupDate,
     agreed_return_date: draft.returnDate,

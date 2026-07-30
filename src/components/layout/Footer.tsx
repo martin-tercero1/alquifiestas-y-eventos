@@ -20,7 +20,7 @@ export async function Footer() {
             <Wordmark tone="onInk" />
             <p className="mt-4 max-w-xs text-base text-ink-muted">
               Alquiler de artículos para fiestas y eventos. {business.yearsInBusiness}{" "}
-              años atendiendo San Marcos y toda Carazo.
+              años atendiendo San Marcos y todo Carazo.
             </p>
             <p className="type-label mt-5 text-white">{business.tagline}</p>
           </div>

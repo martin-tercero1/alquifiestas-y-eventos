@@ -64,8 +64,48 @@ export function Field({
   );
 }
 
-export function Input({ className, ...props }: ComponentProps<"input">) {
-  return <input className={cn(CONTROL, className)} {...props} />;
+/** Input types whose native picker should open from a tap anywhere in the
+ *  field, not only on the tiny calendar/clock glyph. */
+const PICKER_TYPES = new Set([
+  "date",
+  "time",
+  "datetime-local",
+  "month",
+  "week",
+]);
+
+export function Input({ className, type, ...props }: ComponentProps<"input">) {
+  const isPicker = typeof type === "string" && PICKER_TYPES.has(type);
+
+  // Open the native picker from anywhere in the field. showPicker() is
+  // supported in Chrome on Android (the target), and wrapped so the older
+  // browsers that lack it simply fall back to the default glyph behaviour.
+  const openPicker = isPicker
+    ? (e: { currentTarget: HTMLInputElement }) => {
+        try {
+          e.currentTarget.showPicker?.();
+        } catch {
+          // showPicker throws if called without user activation — ignore and
+          // let the browser's own handling take over.
+        }
+      }
+    : undefined;
+
+  return (
+    <input
+      type={type}
+      className={cn(CONTROL, className)}
+      {...props}
+      onClick={(e) => {
+        openPicker?.(e);
+        props.onClick?.(e);
+      }}
+      onFocus={(e) => {
+        openPicker?.(e);
+        props.onFocus?.(e);
+      }}
+    />
+  );
 }
 
 export function Textarea({ className, ...props }: ComponentProps<"textarea">) {

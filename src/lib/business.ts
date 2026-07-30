@@ -29,6 +29,7 @@ export const business = {
     department: "Carazo",
     country: "Nicaragua",
     mapsUrl: "https://maps.app.goo.gl/yVkBekTwzpGM1Ezi7",
+    wazeUrl: "https://waze.com/ul/hd44ewru7b",
   },
 
   hours: [

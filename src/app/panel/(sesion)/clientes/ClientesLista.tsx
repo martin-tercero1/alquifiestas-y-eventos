@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { money } from "@/lib/format";
 import { cn } from "@/lib/cn";
+import { formatPhone } from "@/lib/admin/phone";
 import type { CustomerRow } from "@/lib/admin/loadCustomers";
 import { ClienteFormSheet } from "./ClienteFormSheet";
 
@@ -78,7 +79,7 @@ export function ClientesLista({ customers }: { customers: CustomerRow[] }) {
                     {c.name}
                   </p>
                   <p className="type-mono mt-0.5 truncate text-sm text-stone-text">
-                    {c.phone ?? "Sin teléfono"}
+                    {formatPhone(c.phone) ?? "Sin teléfono"}
                   </p>
                 </div>
                 {c.owed > 0 && (

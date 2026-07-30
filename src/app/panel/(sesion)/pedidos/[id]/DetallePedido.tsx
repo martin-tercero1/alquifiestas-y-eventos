@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/Badge";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import {
   closeOrder,
-  markPickedUp,
   isOverdue,
   CHARGE_LABEL,
   PAYMENT_KIND_LABEL,
@@ -24,6 +23,7 @@ import {
   ConfirmarSheet,
   EntregaSheet,
   PagoSheet,
+  RetiroSheet,
   RetornoSheet,
 } from "./AccionesSheets";
 
@@ -39,6 +39,7 @@ import {
 
 type SheetName =
   | "pago"
+  | "retiro"
   | "retorno"
   | "cargo"
   | "confirmar"
@@ -70,6 +71,9 @@ export function DetallePedido({ order }: { order: OrderDetail }) {
   const router = useRouter();
   const [sheet, setSheet] = useState<SheetName>(null);
   const [busy, setBusy] = useState(false);
+  // Set after a full return that handed a held cédula back, so staff get a
+  // clear "give the card back" reminder — the thing most likely to be forgotten.
+  const [cedulaReminder, setCedulaReminder] = useState<string | null>(null);
 
   const onSaved = () => router.refresh();
   const overdue = isOverdue(order, todayISO());
@@ -92,10 +96,7 @@ export function DetallePedido({ order }: { order: OrderDetail }) {
       case "pending_request":
         return { label: "Confirmar pedido", run: () => setSheet("confirmar") };
       case "confirmed":
-        return {
-          label: "Marcar retirado",
-          run: () => direct(() => markPickedUp(order.id)),
-        };
+        return { label: "Marcar retirado", run: () => setSheet("retiro") };
       case "picked_up":
       case "partially_returned":
         return { label: "Registrar regreso", run: () => setSheet("retorno") };
@@ -142,9 +143,43 @@ export function DetallePedido({ order }: { order: OrderDetail }) {
         </p>
       )}
 
+      {/* The card is physically in the drawer — say so while it's held, and
+          say it loudly the moment the rental closes and it must go back. */}
+      {cedulaReminder ? (
+        <div
+          role="alert"
+          className="mt-4 flex items-start justify-between gap-3 rounded-md border border-green/40 bg-green/[0.08] px-4 py-3"
+        >
+          <p className="text-base font-semibold text-green-dark">
+            Devolvé la cédula física a {cedulaReminder}. La teníamos guardada
+            hasta este regreso.
+          </p>
+          <button
+            type="button"
+            onClick={() => setCedulaReminder(null)}
+            className="type-label shrink-0 text-green-dark underline"
+          >
+            Entendido
+          </button>
+        </div>
+      ) : (
+        order.cedulaRetained && (
+          <p className="mt-4 rounded-md border border-rule bg-paper px-4 py-3 text-sm font-medium text-stone-text">
+            Tenés la cédula de {order.customerName} guardada. Devolvésela cuando
+            regrese todo.
+          </p>
+        )
+      )}
+
       {order.status === "cancelled" && order.overrideReason && (
         <p className="mt-4 rounded-md border border-rule bg-paper px-4 py-3 text-base text-stone-text">
           Cancelado: {order.overrideReason}
+        </p>
+      )}
+
+      {order.reviewReason && (
+        <p className="mt-4 rounded-md border border-mamey/40 bg-mamey-tint px-4 py-3 text-sm font-medium text-mamey-text">
+          Revisá este cliente: {order.reviewReason}
         </p>
       )}
 
@@ -391,7 +426,14 @@ export function DetallePedido({ order }: { order: OrderDetail }) {
 
       {/* ---- Sheets ---- */}
       <PagoSheet order={order} open={sheet === "pago"} onClose={() => setSheet(null)} onSaved={onSaved} />
-      <RetornoSheet order={order} open={sheet === "retorno"} onClose={() => setSheet(null)} onSaved={onSaved} />
+      <RetiroSheet order={order} open={sheet === "retiro"} onClose={() => setSheet(null)} onSaved={onSaved} />
+      <RetornoSheet
+        order={order}
+        open={sheet === "retorno"}
+        onClose={() => setSheet(null)}
+        onSaved={onSaved}
+        onCedulaReminder={(name) => setCedulaReminder(name ?? order.customerName)}
+      />
       <CargoSheet order={order} open={sheet === "cargo"} onClose={() => setSheet(null)} onSaved={onSaved} />
       <ConfirmarSheet order={order} open={sheet === "confirmar"} onClose={() => setSheet(null)} onSaved={onSaved} />
       <EntregaSheet order={order} open={sheet === "entrega"} onClose={() => setSheet(null)} onSaved={onSaved} />

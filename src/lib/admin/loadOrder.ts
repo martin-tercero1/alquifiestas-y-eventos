@@ -53,7 +53,9 @@ type RawOrder = {
   availability_overridden: boolean;
   override_reason: string | null;
   notes: string | null;
-  customer: { name: string; phone: string | null } | null;
+  cedula_retained: boolean;
+  review_reason: string | null;
+  customer: { name: string; phone: string | null; cedula: string | null } | null;
   order_lines: LineRow[];
   payments: Record<string, unknown>[];
   charges: Record<string, unknown>[];
@@ -176,7 +178,7 @@ export async function loadOrder(id: string): Promise<OrderDetail | null> {
     .select(
       `
       *,
-      customer:customers ( name, phone ),
+      customer:customers ( name, phone, cedula ),
       order_lines (
         id, quantity, unit_price, discount_type, discount_value, option_choice,
         variant:variants ( label, product:products ( name ) ),
@@ -230,6 +232,9 @@ export async function loadOrder(id: string): Promise<OrderDetail | null> {
     customerId: order.customer_id,
     customerName: customer?.name ?? "Cliente",
     customerPhone: customer?.phone ?? null,
+    customerCedula: customer?.cedula ?? null,
+    cedulaRetained: order.cedula_retained,
+    reviewReason: order.review_reason,
     pickupDate: order.pickup_date,
     agreedReturnDate: order.agreed_return_date,
     actualReturnDate: order.actual_return_date,

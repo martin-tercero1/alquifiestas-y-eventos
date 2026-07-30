@@ -157,6 +157,11 @@ export type Database = {
           name: string;
           phone: string | null;
           phone_alt: string | null;
+          /** Generated from phone (last-8 split). Read-only — never write. */
+          phone_cc: string | null;
+          /** Generated from phone (last 8 digits). Read-only — never write. */
+          phone_national: string | null;
+          cedula: string | null;
           email: string | null;
           city: string | null;
           address: string | null;
@@ -171,6 +176,7 @@ export type Database = {
           name: string;
           phone?: string | null;
           phone_alt?: string | null;
+          cedula?: string | null;
           email?: string | null;
           city?: string | null;
           address?: string | null;
@@ -206,6 +212,8 @@ export type Database = {
           override_reason: string | null;
           notes: string | null;
           source: string;
+          cedula_retained: boolean;
+          review_reason: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -599,6 +607,7 @@ export type Database = {
           p_lines: Json;
           p_delivery_address?: string | null;
           p_notes?: string | null;
+          p_cedula?: string | null;
         };
         Returns: Json;
       };
@@ -622,7 +631,10 @@ export type Database = {
         };
         Returns: Json;
       };
-      mark_picked_up: { Args: { p_order_id: string }; Returns: Json };
+      mark_picked_up: {
+        Args: { p_order_id: string; p_cedula?: string | null };
+        Returns: Json;
+      };
       record_return: {
         Args: {
           p_order_id: string;
