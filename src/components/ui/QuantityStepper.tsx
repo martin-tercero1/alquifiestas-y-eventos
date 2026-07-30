@@ -1,6 +1,6 @@
 "use client";
 
-import { useId } from "react";
+import { useEffect, useId, useState } from "react";
 import { cn } from "@/lib/cn";
 import { MinusIcon, PlusIcon } from "./icons";
 
@@ -33,6 +33,17 @@ export function QuantityStepper({
   const id = useId();
   const clamp = (n: number) => Math.min(max, Math.max(min, n));
 
+  // While the field is focused it holds raw text so the visitor can clear it
+  // and retype — "" and mid-edit values are allowed. The clamped number only
+  // travels back up to the parent on blur, or when the +/- buttons are used.
+  const [draft, setDraft] = useState<string | null>(null);
+  // Keep the draft in sync if the value changes from outside while editing
+  // (e.g. the +/- buttons), so what's shown never lags the real value.
+  useEffect(() => {
+    if (draft !== null) setDraft(String(value));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
   const button = cn(
     "grid place-items-center shrink-0 rounded-md border border-rule bg-paper-warm text-ink",
     "transition-[background-color,border-color,transform] duration-press ease-out",
@@ -58,13 +69,24 @@ export function QuantityStepper({
         type="text"
         inputMode="numeric"
         pattern="[0-9]*"
-        value={value}
+        value={draft ?? String(value)}
         aria-label={`Cantidad: ${label}`}
         onChange={(e) => {
           const digits = e.target.value.replace(/\D/g, "");
-          onChange(digits === "" ? min : clamp(Number(digits)));
+          setDraft(digits);
+          // An empty or intermediate field isn't pushed up until blur, but any
+          // real number is clamped and applied live so the rest of the UI keeps
+          // reacting as they type.
+          if (digits !== "") onChange(clamp(Number(digits)));
         }}
-        onFocus={(e) => e.target.select()}
+        onFocus={(e) => {
+          setDraft(String(value));
+          e.target.select();
+        }}
+        onBlur={() => {
+          onChange(draft === null || draft === "" ? min : clamp(Number(draft)));
+          setDraft(null);
+        }}
         className={cn(
           "type-mono w-16 rounded-md border border-rule bg-paper-warm text-center",
           "text-lg font-medium text-ink",

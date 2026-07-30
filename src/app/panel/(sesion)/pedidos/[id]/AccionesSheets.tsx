@@ -6,10 +6,12 @@ import { money } from "@/lib/format";
 import { Sheet } from "@/components/ui/Sheet";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Textarea } from "@/components/ui/Field";
+import { CedulaField } from "@/components/ui/CedulaField";
 import {
   addCharge,
   cancelOrder,
   confirmOrder,
+  markPickedUp,
   recordPayment,
   recordReturn,
   setDelivery,
@@ -44,11 +46,15 @@ function useAction(onSaved: () => void, onClose: () => void) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function run(fn: () => Promise<MutationResult>) {
+  async function run(
+    fn: () => Promise<MutationResult>,
+    onSuccess?: (data: Record<string, unknown>) => void,
+  ) {
     setBusy(true);
     setError(null);
     const result = await fn();
     if (result.ok) {
+      onSuccess?.(result.data);
       onSaved();
       onClose();
     } else {
@@ -114,9 +120,12 @@ function useEntrega(
 function EntregaFields({
   state,
   set,
+  addressError,
 }: {
   state: EntregaState;
   set: (patch: Partial<EntregaState>) => void;
+  /** Shown inline under the address when a delivery is missing one. */
+  addressError?: string | null;
 }) {
   return (
     <div className="flex flex-col gap-4">
@@ -146,12 +155,19 @@ function EntregaFields({
 
       {state.fulfilment === "delivery" && (
         <>
-          <Field label="Dirección" htmlFor="ent-dir" optional>
+          <Field
+            label="Dirección"
+            htmlFor="ent-dir"
+            hint="Dónde lo llevamos, con alguna referencia."
+            error={addressError ?? undefined}
+          >
             <Textarea
               id="ent-dir"
               rows={2}
               value={state.address}
               onChange={(e) => set({ address: e.target.value })}
+              aria-invalid={Boolean(addressError)}
+              aria-describedby={addressError ? "ent-dir-error" : undefined}
             />
           </Field>
           <Field
@@ -175,6 +191,18 @@ function EntregaFields({
   );
 }
 
+/** Delivery has to go somewhere. The orders table requires a delivery_address
+ *  for a delivery, so guard it in the form — a NOT NULL constraint must never
+ *  reach the user as a raw Postgres error. Returns a plain-Spanish message, or
+ *  null when the entrega is fine to save. */
+function entregaAddressError(state: EntregaState): string | null {
+  if (state.fulfilment !== "delivery") return null;
+  if (state.address.trim().length < 6) {
+    return "Para una entrega a domicilio necesitamos la dirección, con alguna referencia.";
+  }
+  return null;
+}
+
 /** Turns the entrega form into the shape setDelivery expects. */
 function entregaInput(state: EntregaState) {
   return {
@@ -189,18 +217,27 @@ function entregaInput(state: EntregaState) {
 
 export function EntregaSheet({ order, open, onClose, onSaved }: SheetProps) {
   const [state, set] = useEntrega(order, open);
+  const [attempted, setAttempted] = useState(false);
   const { busy, error, run } = useAction(onSaved, onClose);
+
+  // Recomputed live once they've tried to save, so the message clears the
+  // moment the address is filled in — no stale error hanging around.
+  const addressError = attempted ? entregaAddressError(state) : null;
 
   return (
     <Sheet open={open} onClose={onClose} title="Editar entrega">
       <div className="flex flex-col gap-5 overflow-y-auto px-5 pb-8">
-        <EntregaFields state={state} set={set} />
+        <EntregaFields state={state} set={set} addressError={addressError} />
         <ErrorNote message={error} />
         <Button
           size="lg"
           full
           disabled={busy}
-          onClick={() => run(() => setDelivery(order.id, entregaInput(state)))}
+          onClick={() => {
+            setAttempted(true);
+            if (entregaAddressError(state)) return;
+            run(() => setDelivery(order.id, entregaInput(state)));
+          }}
         >
           {busy ? "Guardando…" : "Guardar entrega"}
         </Button>
@@ -355,7 +392,81 @@ export function PagoSheet({ order, open, onClose, onSaved }: SheetProps) {
 
 type ReturnRow = { returned: string; missing: string; damaged: string };
 
-export function RetornoSheet({ order, open, onClose, onSaved }: SheetProps) {
+// ---------------------------------------------------------------------------
+// Retiro — pickup, where the physical cédula changes hands
+// ---------------------------------------------------------------------------
+
+/**
+ * Pickup is the moment the customer hands over their cédula, so it is the moment
+ * we require it (Brief 04 §2). The field is pre-filled from what we already hold
+ * and is required here — but validation only warns on the shape, never blocks,
+ * so a tourist or a company with only a RUC can still be picked up.
+ */
+export function RetiroSheet({ order, open, onClose, onSaved }: SheetProps) {
+  const [cedula, setCedula] = useState(order.customerCedula ?? "");
+  const [attempted, setAttempted] = useState(false);
+  const { busy, error, run } = useAction(onSaved, onClose);
+
+  useEffect(() => {
+    if (open) {
+      setCedula(order.customerCedula ?? "");
+      setAttempted(false);
+    }
+  }, [open, order.customerCedula]);
+
+  const missing = attempted && cedula.trim() === "";
+
+  return (
+    <Sheet open={open} onClose={onClose} title="Marcar retirado">
+      <div className="flex flex-col gap-5 overflow-y-auto px-5 pb-8">
+        <p className="text-base text-stone-text">
+          Antes de entregar los artículos, anotá la cédula del cliente. La
+          guardás en físico hasta que regrese todo.
+        </p>
+
+        <CedulaField
+          id="retiro-cedula"
+          value={cedula}
+          onChange={setCedula}
+          required
+          optional={false}
+          hint="Pedila y anotala — la tenés en físico hasta el regreso."
+        />
+        {missing && (
+          <p role="alert" className="-mt-2 text-sm font-medium text-mamey-text">
+            Anotá la cédula para poder marcar el retiro.
+          </p>
+        )}
+
+        <ErrorNote message={error} />
+
+        <Button
+          size="lg"
+          full
+          disabled={busy}
+          onClick={() => {
+            setAttempted(true);
+            if (cedula.trim() === "") return;
+            run(() => markPickedUp(order.id, cedula));
+          }}
+        >
+          {busy ? "Guardando…" : "Confirmar retiro"}
+        </Button>
+      </div>
+    </Sheet>
+  );
+}
+
+export function RetornoSheet({
+  order,
+  open,
+  onClose,
+  onSaved,
+  onCedulaReminder,
+}: SheetProps & {
+  /** Fired on a full return when we were holding the customer's cédula. */
+  onCedulaReminder?: (customerName: string | null) => void;
+}) {
   const outstanding = order.lines.filter((l) => l.accounted < l.quantity);
   const [rows, setRows] = useState<Record<string, ReturnRow>>({});
   const [returnedOn, setReturnedOn] = useState(todayISO());
@@ -383,7 +494,14 @@ export function RetornoSheet({ order, open, onClose, onSaved }: SheetProps) {
       setError("Anotá cuántas unidades regresaron en al menos una línea.");
       return;
     }
-    run(() => recordReturn(order.id, lines, returnedOn));
+    run(
+      () => recordReturn(order.id, lines, returnedOn),
+      (data) => {
+        if (data.return_cedula) {
+          onCedulaReminder?.((data.customer_name as string | null) ?? null);
+        }
+      },
+    );
   }
 
   return (
@@ -552,8 +670,10 @@ export function ConfirmarSheet({ order, open, onClose, onSaved }: SheetProps) {
     order.securityDeposit ? String(order.securityDeposit) : "",
   );
   const [invoice, setInvoice] = useState(order.physicalInvoiceNumber ?? "");
+  const [attempted, setAttempted] = useState(false);
   const { busy, error, run } = useAction(onSaved, onClose);
 
+  const addressError = attempted ? entregaAddressError(entrega) : null;
   const articles = order.totals.linesAfterDiscount;
   const freight =
     entrega.fulfilment === "delivery" && entrega.cost.trim() !== ""
@@ -595,7 +715,11 @@ export function ConfirmarSheet({ order, open, onClose, onSaved }: SheetProps) {
 
         <section className="flex flex-col gap-3">
           <h3 className="type-label text-stone-text">Entrega</h3>
-          <EntregaFields state={entrega} set={setEntrega} />
+          <EntregaFields
+            state={entrega}
+            set={setEntrega}
+            addressError={addressError}
+          />
         </section>
 
         <section className="flex flex-col gap-4">
@@ -626,7 +750,9 @@ export function ConfirmarSheet({ order, open, onClose, onSaved }: SheetProps) {
           size="lg"
           full
           disabled={busy}
-          onClick={() =>
+          onClick={() => {
+            setAttempted(true);
+            if (entregaAddressError(entrega)) return;
             run(async () => {
               // Set delivery first so the order is already carrying the right
               // freight the instant it becomes a confirmed order.
@@ -636,8 +762,8 @@ export function ConfirmarSheet({ order, open, onClose, onSaved }: SheetProps) {
                 securityDeposit: deposit ? Number(deposit) : null,
                 physicalInvoiceNumber: invoice.trim() || null,
               });
-            })
-          }
+            });
+          }}
         >
           {busy ? "Confirmando…" : "Confirmar pedido"}
         </Button>

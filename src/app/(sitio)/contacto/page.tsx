@@ -36,14 +36,22 @@ export default function ContactPage() {
             <div>
               <h2 className="type-label text-stone-text">Cómo llegar</h2>
               <Croquis className="mt-4" />
-              <Button
-                href={business.address.mapsUrl}
-                variant="secondary"
-                full
-                className="mt-4"
-              >
-                Abrir en Google Maps
-              </Button>
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                <Button
+                  href={business.address.mapsUrl}
+                  variant="secondary"
+                  full
+                >
+                  Abrir en Google Maps
+                </Button>
+                <Button
+                  href={business.address.wazeUrl}
+                  variant="secondary"
+                  full
+                >
+                  Abrir en Waze
+                </Button>
+              </div>
             </div>
 
             <div className="flex flex-col gap-8">

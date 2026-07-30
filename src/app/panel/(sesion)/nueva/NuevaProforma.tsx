@@ -197,6 +197,7 @@ export function NuevaProforma() {
           customerId={draft.customerId}
           name={draft.customerName}
           phone={draft.customerPhone}
+          cedula={draft.customerCedula}
           onChange={update}
         />
 

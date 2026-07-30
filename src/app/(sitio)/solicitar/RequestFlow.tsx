@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase/client";
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, OptionCard, Textarea } from "@/components/ui/Field";
+import { CedulaField } from "@/components/ui/CedulaField";
 import { CheckIcon, WhatsAppIcon } from "@/components/ui/icons";
 import { useHoja, returnDate } from "@/components/hoja/HojaProvider";
 import { HojaTable } from "@/components/hoja/HojaTable";
@@ -73,6 +74,7 @@ export function RequestFlow() {
   const [payment, setPayment] = useState<Payment>("efectivo");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [cedula, setCedula] = useState("");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
 
@@ -182,6 +184,7 @@ export function RequestFlow() {
       })),
       p_delivery_address: delivery === "entrega" ? address.trim() : null,
       p_notes: notes.trim() || null,
+      p_cedula: cedula.trim() || null,
     });
 
     setSubmitting(false);
@@ -395,6 +398,13 @@ export function RequestFlow() {
                   aria-describedby={errors.phone ? "telefono-error" : undefined}
                 />
               </Field>
+
+              <CedulaField
+                id="cedula"
+                value={cedula}
+                onChange={setCedula}
+                hint="Podés adelantárnosla para agilizar el retiro. La pedimos en físico ese día."
+              />
 
               <div>
                 <p className="text-base font-semibold text-ink">

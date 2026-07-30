@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { Sheet } from "@/components/ui/Sheet";
 import { Button } from "@/components/ui/Button";
 import { Field, Input } from "@/components/ui/Field";
+import { PhoneField } from "@/components/panel/PhoneField";
+import { CedulaField } from "@/components/ui/CedulaField";
 import { createCustomer, updateCustomer } from "@/lib/admin/customers";
+import { formatCedula } from "@/lib/cedula";
 
 /**
  * The one form Clientes needs, for both a new contact and an edit. A name is
@@ -22,13 +25,23 @@ export function ClienteFormSheet({
 }: {
   open: boolean;
   mode: "create" | "edit";
-  initial?: { id: string; name: string; phone: string | null };
+  initial?: {
+    id: string;
+    name: string;
+    phone: string | null;
+    cedula: string | null;
+  };
   onClose: () => void;
   onCreated?: (id: string) => void;
-  onSaved?: (patch: { name: string; phone: string | null }) => void;
+  onSaved?: (patch: {
+    name: string;
+    phone: string | null;
+    cedula: string | null;
+  }) => void;
 }) {
   const [name, setName] = useState(initial?.name ?? "");
   const [phone, setPhone] = useState(initial?.phone ?? "");
+  const [cedula, setCedula] = useState(formatCedula(initial?.cedula ?? ""));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,9 +49,10 @@ export function ClienteFormSheet({
     if (open) {
       setName(initial?.name ?? "");
       setPhone(initial?.phone ?? "");
+      setCedula(formatCedula(initial?.cedula ?? ""));
       setError(null);
     }
-  }, [open, initial?.name, initial?.phone]);
+  }, [open, initial?.name, initial?.phone, initial?.cedula]);
 
   async function save() {
     const trimmed = name.trim();
@@ -51,17 +65,25 @@ export function ClienteFormSheet({
     setError(null);
 
     if (mode === "create") {
-      const result = await createCustomer(trimmed, phone);
+      const result = await createCustomer(trimmed, phone, cedula);
       setSaving(false);
       if (!result.ok) return setError(result.message);
       onCreated?.(result.id);
       return;
     }
 
-    const result = await updateCustomer(initial!.id, { name: trimmed, phone });
+    const result = await updateCustomer(initial!.id, {
+      name: trimmed,
+      phone,
+      cedula,
+    });
     setSaving(false);
     if (!result.ok) return setError(result.message);
-    onSaved?.({ name: trimmed, phone: phone.trim() || null });
+    onSaved?.({
+      name: trimmed,
+      phone: phone.trim() || null,
+      cedula: cedula.trim() || null,
+    });
     onClose();
   }
 
@@ -86,16 +108,9 @@ export function ClienteFormSheet({
           />
         </Field>
 
-        <Field label="Teléfono" htmlFor="c-phone" optional>
-          <Input
-            id="c-phone"
-            type="tel"
-            inputMode="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="8 dígitos"
-          />
-        </Field>
+        <PhoneField id="c-phone" value={phone} onChange={setPhone} />
+
+        <CedulaField id="c-cedula" value={cedula} onChange={setCedula} />
 
         <div className="flex gap-3 pt-1">
           <Button variant="quiet" full onClick={onClose} disabled={saving}>

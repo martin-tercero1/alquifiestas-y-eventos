@@ -84,7 +84,7 @@ export function LineaArticulo({
           value={line.quantity}
           onChange={(quantity) => onChange({ quantity })}
           label={`Cantidad de ${name}`}
-          min={1}
+          min={0}
         />
 
         {needsPrice ? (

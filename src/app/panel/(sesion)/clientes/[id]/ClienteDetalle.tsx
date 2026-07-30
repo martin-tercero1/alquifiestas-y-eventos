@@ -8,6 +8,7 @@ import { WhatsAppIcon, PhoneIcon } from "@/components/ui/icons";
 import { money, shortDate } from "@/lib/format";
 import { STATUS_LABEL, type OrderStatus } from "@/lib/admin/order";
 import { customerWhatsappLink } from "@/lib/admin/share";
+import { formatPhone } from "@/lib/admin/phone";
 import type { CustomerDetail } from "@/lib/admin/loadCustomers";
 import { ClienteFormSheet } from "../ClienteFormSheet";
 
@@ -41,8 +42,13 @@ export function ClienteDetalle({ initial }: { initial: CustomerDetail }) {
         <div className="min-w-0">
           <h1 className="type-display text-3xl text-ink">{customer.name}</h1>
           <p className="type-mono mt-1 text-base text-stone-text">
-            {customer.phone ?? "Sin teléfono"}
+            {formatPhone(customer.phone) ?? "Sin teléfono"}
           </p>
+          {customer.cedula && (
+            <p className="type-mono mt-0.5 text-sm text-stone-text">
+              Cédula: {customer.cedula}
+            </p>
+          )}
         </div>
         <Button variant="quiet" size="sm" onClick={() => setEditing(true)}>
           Editar
@@ -67,7 +73,7 @@ export function ClienteDetalle({ initial }: { initial: CustomerDetail }) {
             </Button>
           )}
           {customer.phone && (
-            <Button variant="quiet" full href={`tel:${customer.phone}`}>
+            <Button variant="quiet" full href={`tel:+${customer.phone}`}>
               <PhoneIcon className="size-5" />
               Llamar
             </Button>
@@ -122,7 +128,12 @@ export function ClienteDetalle({ initial }: { initial: CustomerDetail }) {
       <ClienteFormSheet
         open={editing}
         mode="edit"
-        initial={{ id: customer.id, name: customer.name, phone: customer.phone }}
+        initial={{
+          id: customer.id,
+          name: customer.name,
+          phone: customer.phone,
+          cedula: customer.cedula,
+        }}
         onClose={() => setEditing(false)}
         onSaved={(patch) => setCustomer((c) => ({ ...c, ...patch }))}
       />

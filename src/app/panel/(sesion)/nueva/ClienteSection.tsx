@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { Field, Input } from "@/components/ui/Field";
+import { PhoneField } from "@/components/panel/PhoneField";
+import { CedulaField } from "@/components/ui/CedulaField";
+import { formatPhone } from "@/lib/admin/phone";
 import { searchCustomers, type CustomerHit } from "@/lib/admin/proforma";
 
 /**
@@ -20,14 +23,22 @@ type Props = {
   customerId: string | null;
   name: string;
   phone: string;
+  cedula: string;
   onChange: (patch: {
     customerId?: string | null;
     customerName?: string;
     customerPhone?: string;
+    customerCedula?: string;
   }) => void;
 };
 
-export function ClienteSection({ customerId, name, phone, onChange }: Props) {
+export function ClienteSection({
+  customerId,
+  name,
+  phone,
+  cedula,
+  onChange,
+}: Props) {
   const [hits, setHits] = useState<CustomerHit[]>([]);
   const [touched, setTouched] = useState(false);
   const requestId = useRef(0);
@@ -96,7 +107,7 @@ export function ClienteSection({ customerId, name, phone, onChange }: Props) {
                     {hit.name}
                   </span>
                   <span className="type-mono text-sm text-stone-text">
-                    {hit.phone ?? "Sin teléfono"}
+                    {formatPhone(hit.phone) ?? "Sin teléfono"}
                     {hit.ordersCount > 0 &&
                       ` · ${hit.ordersCount} ${
                         hit.ordersCount === 1 ? "pedido" : "pedidos"
@@ -112,17 +123,17 @@ export function ClienteSection({ customerId, name, phone, onChange }: Props) {
         </ul>
       )}
 
-      <Field label="Teléfono" htmlFor="cliente-telefono" optional>
-        <Input
-          id="cliente-telefono"
-          type="tel"
-          inputMode="tel"
-          autoComplete="off"
-          value={phone}
-          placeholder="8888 7777"
-          onChange={(e) => onChange({ customerPhone: e.target.value })}
-        />
-      </Field>
+      <PhoneField
+        id="cliente-telefono"
+        value={phone}
+        onChange={(fullDigits) => onChange({ customerPhone: fullDigits })}
+      />
+
+      <CedulaField
+        id="cliente-cedula"
+        value={cedula}
+        onChange={(formatted) => onChange({ customerCedula: formatted })}
+      />
 
       {customerId && (
         <p className="text-sm font-medium text-green">

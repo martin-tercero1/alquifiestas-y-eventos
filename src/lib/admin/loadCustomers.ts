@@ -99,6 +99,7 @@ export type CustomerDetail = {
   id: string;
   name: string;
   phone: string | null;
+  cedula: string | null;
   notes: string | null;
   orders: CustomerOrder[];
   owed: number;
@@ -109,7 +110,7 @@ export async function loadCustomer(id: string): Promise<CustomerDetail | null> {
 
   const { data: customer } = await supabase
     .from("customers")
-    .select("id, name, phone, notes")
+    .select("id, name, phone, cedula, notes")
     .eq("id", id)
     .maybeSingle();
 
@@ -151,6 +152,7 @@ export async function loadCustomer(id: string): Promise<CustomerDetail | null> {
     id: customer.id,
     name: customer.name,
     phone: customer.phone,
+    cedula: customer.cedula,
     notes: customer.notes,
     orders,
     owed,

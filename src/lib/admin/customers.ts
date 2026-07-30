@@ -34,10 +34,15 @@ export type CreateResult =
 export async function createCustomer(
   name: string,
   phone: string,
+  cedula?: string,
 ): Promise<CreateResult> {
   const { data, error } = await panelClient()
     .from("customers")
-    .insert({ name: name.trim(), phone: cleanPhone(phone) })
+    .insert({
+      name: name.trim(),
+      phone: cleanPhone(phone),
+      cedula: cleanPhone(cedula ?? ""),
+    })
     .select("id")
     .single();
 
@@ -47,11 +52,17 @@ export async function createCustomer(
 
 export async function updateCustomer(
   id: string,
-  fields: { name?: string; phone?: string; notes?: string | null },
+  fields: {
+    name?: string;
+    phone?: string;
+    cedula?: string;
+    notes?: string | null;
+  },
 ): Promise<EditResult> {
   const patch: CustomerUpdate = {};
   if (fields.name !== undefined) patch.name = fields.name.trim();
   if (fields.phone !== undefined) patch.phone = cleanPhone(fields.phone);
+  if (fields.cedula !== undefined) patch.cedula = cleanPhone(fields.cedula);
   if ("notes" in fields) patch.notes = fields.notes;
 
   const { error } = await panelClient()

@@ -69,6 +69,13 @@ export function AddToHojaDetail({ variant }: { variant: CatalogVariant }) {
   const [draft, setDraft] = useState(variant.pricePerDay > 200 ? 1 : 10);
   const [justAdded, setJustAdded] = useState(false);
 
+  // The count in bodega is what we have on hand — not a hard limit. When the
+  // draft goes over it we say so, but we never block: a real order for more
+  // than we counted is one we might fill with prestado. The date-specific
+  // availability check still happens server-side when the request is sent.
+  const overStock =
+    variant.totalQuantity !== null && draft > variant.totalQuantity;
+
   function commit() {
     if (draft < 1) return;
     add(toLine(variant), draft);
@@ -90,6 +97,26 @@ export function AddToHojaDetail({ variant }: { variant: CatalogVariant }) {
           max={9999}
         />
       </div>
+
+      {overStock && (
+        <div
+          role="status"
+          className="rounded-lg border border-mamey/30 bg-mamey-tint p-4"
+        >
+          <p className="text-base text-ink">
+            En bodega tenemos{" "}
+            <span className="type-mono font-semibold">
+              {variant.totalQuantity}
+            </span>{" "}
+            contados y estás pidiendo{" "}
+            <span className="type-mono font-semibold">{draft}</span>.
+          </p>
+          <p className="mt-2 text-sm text-stone-text">
+            Podés agregarlo igual — a veces conseguimos prestado. Al mandar la
+            solicitud te confirmamos qué hay disponible para tu fecha.
+          </p>
+        </div>
+      )}
 
       <Button size="lg" full onClick={commit}>
         {justAdded ? (

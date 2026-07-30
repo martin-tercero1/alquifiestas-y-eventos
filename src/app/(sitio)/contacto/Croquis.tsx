@@ -40,11 +40,30 @@ export function Croquis({ className }: { className?: string }) {
           strokeDasharray="14 12"
         />
 
-        {/* Iglesia Católica */}
+        {/* Iglesia Católica — on the right side of the street */}
         <g>
-          <rect x="30" y="26" width="76" height="54" rx="4" fill="#186b57" />
-          <path d="M68 8 L86 26 H50 Z" fill="#186b57" />
-          <path d="M68 12 v10 M63 17 h10" stroke="#f4f6f1" strokeWidth="3" />
+          <rect x="214" y="26" width="76" height="54" rx="4" fill="#186b57" />
+          <path d="M252 8 L270 26 H234 Z" fill="#186b57" />
+          <path d="M252 12 v10 M247 17 h10" stroke="#f4f6f1" strokeWidth="3" />
+          <text
+            x="290"
+            y="98"
+            fill="#12312b"
+            fontSize="13"
+            fontWeight="600"
+            textAnchor="end"
+            fontFamily="var(--font-sans)"
+          >
+            Iglesia Católica
+          </text>
+        </g>
+
+        {/* Parque Central — across the street, in front of the church */}
+        <g>
+          <rect x="30" y="26" width="76" height="54" rx="4" fill="#cfe0cb" />
+          <circle cx="52" cy="46" r="10" fill="#5f9a63" />
+          <circle cx="84" cy="58" r="12" fill="#4e8a55" />
+          <rect x="66" y="42" width="4" height="26" rx="2" fill="#8a6f4d" />
           <text
             x="30"
             y="98"
@@ -53,7 +72,7 @@ export function Croquis({ className }: { className?: string }) {
             fontWeight="600"
             fontFamily="var(--font-sans)"
           >
-            Iglesia Católica
+            Parque Central
           </text>
         </g>
 
@@ -91,27 +110,29 @@ export function Croquis({ className }: { className?: string }) {
           </text>
         </g>
 
-        {/* Us */}
+        {/* Us — on the right side of the street */}
         <g>
-          <rect x="24" y="212" width="88" height="64" rx="4" fill="#12312b" />
-          <rect x="36" y="228" width="64" height="4" rx="2" fill="#e8ebe4" />
-          <rect x="36" y="240" width="44" height="4" rx="2" fill="#8fa79e" />
-          <circle cx="104" cy="244" r="7" fill="#c7401f" />
+          <rect x="208" y="212" width="88" height="64" rx="4" fill="#12312b" />
+          <rect x="220" y="228" width="64" height="4" rx="2" fill="#e8ebe4" />
+          <rect x="220" y="240" width="44" height="4" rx="2" fill="#8fa79e" />
+          <circle cx="216" cy="244" r="7" fill="#c7401f" />
           <text
-            x="24"
+            x="296"
             y="294"
             fill="#12312b"
             fontSize="13"
             fontWeight="700"
+            textAnchor="end"
             fontFamily="var(--font-sans)"
           >
             Alquifiestas
           </text>
           <text
-            x="24"
+            x="296"
             y="310"
             fill="#555c4f"
             fontSize="12"
+            textAnchor="end"
             fontFamily="var(--font-mono)"
           >
             y eventos
@@ -120,10 +141,10 @@ export function Croquis({ className }: { className?: string }) {
 
         {/* CSE, across the street */}
         <g>
-          <rect x="208" y="212" width="84" height="64" rx="4" fill="#a8ac9e" />
-          <rect x="222" y="230" width="56" height="28" rx="2" fill="#f4f6f1" />
+          <rect x="28" y="212" width="84" height="64" rx="4" fill="#a8ac9e" />
+          <rect x="42" y="230" width="56" height="28" rx="2" fill="#f4f6f1" />
           <text
-            x="208"
+            x="28"
             y="294"
             fill="#12312b"
             fontSize="13"
@@ -133,7 +154,7 @@ export function Croquis({ className }: { className?: string }) {
             CSE
           </text>
           <text
-            x="208"
+            x="28"
             y="310"
             fill="#555c4f"
             fontSize="12"
