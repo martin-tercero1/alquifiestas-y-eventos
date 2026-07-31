@@ -23,8 +23,10 @@ import {
   type Draft,
   type DraftLine,
 } from "@/lib/admin/proforma";
+import type { CatalogGroup } from "@/lib/admin/loadInventory";
 import { ClienteSection } from "./ClienteSection";
 import { BuscadorArticulos } from "./BuscadorArticulos";
+import { CatalogoNavegable } from "./CatalogoNavegable";
 import { LineaArticulo } from "./LineaArticulo";
 import { BarraTotal } from "./BarraTotal";
 
@@ -40,7 +42,7 @@ import { BarraTotal } from "./BarraTotal";
  * dropped connection cannot cost her the order.
  */
 
-export function NuevaProforma() {
+export function NuevaProforma({ catalog }: { catalog: CatalogGroup[] }) {
   const router = useRouter();
 
   const [draft, setDraft] = useState<Draft>(emptyDraft);
@@ -310,10 +312,12 @@ export function NuevaProforma() {
         <section className="flex flex-col gap-4">
           <h2 className="type-label text-stone-text">Artículos</h2>
 
-          <BuscadorArticulos
-            onAdd={addItem}
+          <BuscadorArticulos onAdd={addItem} addedVariantIds={addedVariantIds} />
+
+          <CatalogoNavegable
+            groups={catalog}
             addedVariantIds={addedVariantIds}
-            hasLines={draft.lines.length > 0}
+            onAdd={addItem}
           />
 
           {draft.lines.length > 0 && (

@@ -7,6 +7,7 @@ import { money } from "@/lib/format";
 import { photoUrl } from "@/lib/catalog";
 import { cn } from "@/lib/cn";
 import type { InvProduct, InvVariant, InvCategory } from "@/lib/admin/loadInventory";
+import { Collapsible } from "@/components/ui/Collapsible";
 import { VariantEditorSheet } from "./VariantEditorSheet";
 import { ProductEditorSheet } from "./ProductEditorSheet";
 
@@ -184,13 +185,17 @@ export function Inventario({
             : "Nada pendiente acá. Todo al día."}
         </p>
       ) : (
-        <div className="mt-6 flex flex-col gap-8">
+        <div className="mt-6 flex flex-col gap-2">
           {sections.map((section) => (
-            <section key={section.name}>
-              <h2 className="type-label sticky top-0 z-10 -mx-1 bg-limewash/95 px-1 py-1.5 text-stone-text backdrop-blur-sm">
-                {section.name}
-              </h2>
-              <ul className="mt-2 flex flex-col gap-3">
+            <Collapsible
+              key={section.name}
+              title={section.name}
+              count={section.items.length}
+              // While a search or filter is narrowing the list, every shown
+              // section opens so a match is never buried in a collapsed shelf.
+              forceOpen={needle !== "" || filter !== "all"}
+            >
+              <ul className="flex flex-col gap-3 pb-2">
                 {section.items.map((product) => (
                   <ProductCard
                     key={product.productId}
@@ -203,7 +208,7 @@ export function Inventario({
                   />
                 ))}
               </ul>
-            </section>
+            </Collapsible>
           ))}
         </div>
       )}

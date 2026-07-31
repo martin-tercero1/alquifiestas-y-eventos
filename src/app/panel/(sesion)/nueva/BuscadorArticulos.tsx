@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/cn";
-import { money } from "@/lib/format";
 import { Input } from "@/components/ui/Field";
 import { searchCatalog, type CatalogHit } from "@/lib/admin/proforma";
+import { ArticuloBoton } from "./ArticuloBoton";
 
 /**
  * Item search.
@@ -21,15 +20,9 @@ import { searchCatalog, type CatalogHit } from "@/lib/admin/proforma";
 type Props = {
   onAdd: (hit: CatalogHit) => void;
   addedVariantIds: Set<string>;
-  /** Once the order has lines, a blank box must not bury them under results. */
-  hasLines: boolean;
 };
 
-export function BuscadorArticulos({
-  onAdd,
-  addedVariantIds,
-  hasLines,
-}: Props) {
+export function BuscadorArticulos({ onAdd, addedVariantIds }: Props) {
   const [query, setQuery] = useState("");
   const [hits, setHits] = useState<CatalogHit[]>([]);
   const [loading, setLoading] = useState(false);
@@ -79,68 +72,29 @@ export function BuscadorArticulos({
       )}
 
       {/*
-        A blank box shows the catalog as a starting point — but only until she
-        has added something. After that the results would push her own lines
-        off the screen, and the lines are the order.
+        Results only when she is actually searching. A blank box shows nothing —
+        browsing the whole catalog is the category accordion's job now, and two
+        full lists stacked on top of each other only compete.
       */}
-      <ul className="flex flex-col gap-1.5">
-        {(query.trim() === "" && hasLines ? [] : hits).map((hit) => {
-          const added = addedVariantIds.has(hit.variantId);
-          const name = hit.variantLabel
-            ? `${hit.productName} — ${hit.variantLabel}`
-            : hit.productName;
-
-          return (
+      {query.trim() !== "" && (
+        <ul className="flex flex-col gap-1.5">
+          {hits.map((hit) => (
             <li key={hit.variantId}>
-              <button
-                type="button"
-                onClick={() => {
+              <ArticuloBoton
+                hit={hit}
+                added={addedVariantIds.has(hit.variantId)}
+                onAdd={() => {
                   onAdd(hit);
-                  // Clearing the box collapses the results, so the line she
-                  // just added is what she sees next rather than the same
-                  // product listed twice — once as a result, once as a line.
+                  // Clearing the box collapses the results, so the line she just
+                  // added is what she sees next rather than the same product
+                  // listed twice — once as a result, once as a line.
                   setQuery("");
                 }}
-                className={cn(
-                  "flex w-full min-h-14 items-center gap-3 rounded-md border px-4 py-2.5 text-left",
-                  "transition-[background-color,border-color] duration-fast ease-out",
-                  added
-                    ? "border-green/40 bg-green/[0.07]"
-                    : "border-rule bg-paper hover:border-rule-strong",
-                )}
-              >
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-base font-semibold text-ink">
-                    {name}
-                  </span>
-                  <span className="type-label text-stone-text">
-                    {hit.categoryName}
-                    {!hit.published && " · no publicado"}
-                  </span>
-                </span>
-
-                <span className="type-mono shrink-0 text-right text-base tabular-nums">
-                  {hit.pricePerDay === null ? (
-                    <span className="text-mamey-text">Sin precio</span>
-                  ) : (
-                    <span className="text-ink">{money(hit.pricePerDay)}</span>
-                  )}
-                </span>
-
-                <span
-                  aria-hidden
-                  className={cn(
-                    "grid h-8 w-8 shrink-0 place-items-center rounded-full text-lg font-bold",
-                    added ? "bg-green text-white" : "bg-limewash text-green",
-                  )}
-                >
-                  {added ? "✓" : "+"}
-                </span>
-              </button>
+              />
             </li>
-          );
-        })}
-      </ul>
+          ))}
+        </ul>
+      )}
 
       {!loading && !failed && hits.length === 0 && query.trim() !== "" && (
         <p className="text-base text-stone-text">
