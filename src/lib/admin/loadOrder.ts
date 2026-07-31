@@ -42,6 +42,8 @@ type RawOrder = {
   customer_id: string;
   pickup_date: string;
   agreed_return_date: string;
+  pickup_time: string | null;
+  agreed_return_time: string | null;
   actual_return_date: string | null;
   billed_days: number;
   fulfilment: "pickup" | "delivery";
@@ -237,6 +239,8 @@ export async function loadOrder(id: string): Promise<OrderDetail | null> {
     reviewReason: order.review_reason,
     pickupDate: order.pickup_date,
     agreedReturnDate: order.agreed_return_date,
+    pickupTime: order.pickup_time,
+    agreedReturnTime: order.agreed_return_time,
     actualReturnDate: order.actual_return_date,
     billedDays: order.billed_days,
     fulfilment: order.fulfilment,

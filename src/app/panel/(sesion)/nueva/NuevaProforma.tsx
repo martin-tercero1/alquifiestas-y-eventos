@@ -50,6 +50,7 @@ export function NuevaProforma() {
   );
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [attempted, setAttempted] = useState(false);
   const [showOptional, setShowOptional] = useState(false);
 
   // ---- Draft persistence -------------------------------------------------
@@ -150,7 +151,17 @@ export function NuevaProforma() {
   const totals = computeTotals(draft);
   const canSave = draft.lines.length > 0 && draft.customerName.trim() !== "";
 
+  const missingTimes = !draft.pickupTime || !draft.returnTime;
+
   async function onSave() {
+    // The parents always agree a pickup and a return time — the order isn't
+    // ready to hand off without them, so require them here (§4).
+    if (missingTimes) {
+      setAttempted(true);
+      setSaveError("Poné la hora de salida y la de regreso antes de guardar.");
+      return;
+    }
+
     setSaving(true);
     setSaveError(null);
 
@@ -233,6 +244,36 @@ export function NuevaProforma() {
                 min={draft.pickupDate}
                 value={draft.returnDate}
                 onChange={(e) => update({ returnDate: e.target.value })}
+              />
+            </Field>
+
+            <Field
+              label="Hora de salida"
+              htmlFor="hora-salida"
+              error={
+                attempted && !draft.pickupTime ? "Poné la hora." : undefined
+              }
+            >
+              <Input
+                id="hora-salida"
+                type="time"
+                value={draft.pickupTime}
+                onChange={(e) => update({ pickupTime: e.target.value })}
+              />
+            </Field>
+
+            <Field
+              label="Hora de regreso"
+              htmlFor="hora-regreso"
+              error={
+                attempted && !draft.returnTime ? "Poné la hora." : undefined
+              }
+            >
+              <Input
+                id="hora-regreso"
+                type="time"
+                value={draft.returnTime}
+                onChange={(e) => update({ returnTime: e.target.value })}
               />
             </Field>
           </div>

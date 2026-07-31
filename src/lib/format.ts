@@ -69,6 +69,24 @@ export function longDate(iso: string): string {
   return `${d} de ${MONTHS_LONG[m - 1]} de ${y}`;
 }
 
+/**
+ * "8:00 a. m." / "3:30 p. m." — an agreed pickup or return time.
+ *
+ * Takes a Postgres `time` ("HH:MM:SS" or "HH:MM") and shows it the way a
+ * Nicaraguan reads a clock: 12-hour, with the meridiem. Returns "" for a null
+ * or unparseable time so a missing agreed time renders as nothing, not "0:00".
+ */
+export function shortTime(time: string | null | undefined): string {
+  if (!time) return "";
+  const [hStr, mStr] = time.split(":");
+  const h = Number(hStr);
+  const m = Number(mStr);
+  if (!Number.isFinite(h) || !Number.isFinite(m)) return "";
+  const meridiem = h < 12 ? "a. m." : "p. m.";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}:${String(m).padStart(2, "0")} ${meridiem}`;
+}
+
 /** Today in YYYY-MM-DD, local time — the minimum selectable event date. */
 export function todayISO(): string {
   const now = new Date();

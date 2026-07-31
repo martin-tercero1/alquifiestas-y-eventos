@@ -20,6 +20,9 @@ export type BoardCard = {
   fulfilment: "pickup" | "delivery";
   pickupDate: string;
   agreedReturnDate: string;
+  /** Agreed clock times ("HH:MM:SS") or null. The day's lists sort by these. */
+  pickupTime: string | null;
+  agreedReturnTime: string | null;
   itemSummary: string;
   balance: number;
 };
@@ -38,6 +41,8 @@ type RawCard = {
   fulfilment: "pickup" | "delivery";
   pickup_date: string;
   agreed_return_date: string;
+  pickup_time: string | null;
+  agreed_return_time: string | null;
   customer: { name: string } | null;
   order_lines: {
     quantity: number;
@@ -51,6 +56,7 @@ type RawCard = {
 // stitched in below.
 const SELECT = `
   id, number, status, fulfilment, pickup_date, agreed_return_date,
+  pickup_time, agreed_return_time,
   customer:customers ( name ),
   order_lines ( quantity, variant:variants ( label, product:products ( name ) ) )
 `;
@@ -73,6 +79,8 @@ function toCard(row: RawCard, balances: Map<string, number>): BoardCard {
     fulfilment: row.fulfilment,
     pickupDate: row.pickup_date,
     agreedReturnDate: row.agreed_return_date,
+    pickupTime: row.pickup_time,
+    agreedReturnTime: row.agreed_return_time,
     itemSummary: summarize(row.order_lines),
     balance: balances.get(row.id) ?? 0,
   };
@@ -83,11 +91,16 @@ export async function loadBoard(): Promise<Board> {
   const today = managuaToday();
 
   const [sale, ret, late] = await Promise.all([
+    // Each bucket is ordered by its agreed time so the parents read the day top
+    // to bottom — 8-o'clocks first, then 3-o'clocks. Orders with no agreed time
+    // fall to the end of their section (nullsFirst: false) rather than jumping
+    // to the top.
     supabase
       .from("orders")
       .select(SELECT)
       .eq("status", "confirmed")
       .eq("pickup_date", today)
+      .order("pickup_time", { ascending: true, nullsFirst: false })
       .order("number", { ascending: true }),
     supabase
       .from("orders")
@@ -95,6 +108,7 @@ export async function loadBoard(): Promise<Board> {
       .in("status", ["picked_up", "partially_returned"])
       .eq("agreed_return_date", today)
       .is("actual_return_date", null)
+      .order("agreed_return_time", { ascending: true, nullsFirst: false })
       .order("number", { ascending: true }),
     supabase
       .from("orders")
@@ -102,7 +116,8 @@ export async function loadBoard(): Promise<Board> {
       .in("status", ["picked_up", "partially_returned"])
       .lt("agreed_return_date", today)
       .is("actual_return_date", null)
-      .order("agreed_return_date", { ascending: true }),
+      .order("agreed_return_date", { ascending: true })
+      .order("agreed_return_time", { ascending: true, nullsFirst: false }),
   ]);
 
   const rows = [sale, ret, late].flatMap(

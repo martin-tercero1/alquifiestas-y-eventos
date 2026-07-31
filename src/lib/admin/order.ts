@@ -70,6 +70,9 @@ export type OrderDetail = {
   reviewReason: string | null;
   pickupDate: string;
   agreedReturnDate: string;
+  /** Agreed clock times, "HH:MM:SS" from Postgres, or null. Coordination only. */
+  pickupTime: string | null;
+  agreedReturnTime: string | null;
   actualReturnDate: string | null;
   billedDays: number;
   fulfilment: "pickup" | "delivery";
@@ -150,6 +153,9 @@ const ERROR_ES: Record<string, string> = {
   falta_motivo: "Escribí el motivo de la cancelación.",
   linea_invalida: "Una de las líneas no pertenece a este pedido.",
   excede: "Estás regresando más de lo que salió en esa línea.",
+  tiene_historial:
+    "Este pedido ya tiene pagos registrados. Cancelalo en vez de borrarlo, o forzá el borrado si es una prueba.",
+  tiene_pedidos: "Todavía tiene pedidos asociados. No se puede borrar.",
 };
 
 export type MutationResult =
@@ -309,3 +315,18 @@ export const cancelOrder = (orderId: string, reason: string) =>
 
 export const closeOrder = (orderId: string) =>
   callRpc("close_order", { p_order_id: orderId });
+
+/**
+ * Hard-delete — technical-admin only, gated again server-side. For genuine junk
+ * (test orders, duplicates), not for volume. An order that already carries
+ * payments is refused unless `force` is set, so the parents' cancel/void stays
+ * the normal path and forcing is a deliberate choice for clear test data.
+ */
+export const deleteOrder = (orderId: string, force = false) =>
+  callRpc("admin_delete_order", { p_order_id: orderId, p_force: force });
+
+export const deleteCustomer = (customerId: string) =>
+  callRpc("admin_delete_customer", { p_customer_id: customerId });
+
+export const deleteProduct = (productId: string) =>
+  callRpc("admin_delete_product", { p_product_id: productId });

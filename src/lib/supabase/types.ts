@@ -197,6 +197,8 @@ export type Database = {
           status: Database["public"]["Enums"]["order_status"];
           pickup_date: string;
           agreed_return_date: string;
+          pickup_time: string | null;
+          agreed_return_time: string | null;
           actual_return_date: string | null;
           billed_days: number;
           fulfilment: Database["public"]["Enums"]["fulfilment_method"];
@@ -438,12 +440,14 @@ export type Database = {
           user_id: string;
           display_name: string;
           active: boolean;
+          is_tech_admin: boolean;
           created_at: string;
         };
         Insert: {
           user_id: string;
           display_name: string;
           active?: boolean;
+          is_tech_admin?: boolean;
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["staff"]["Insert"]>;
@@ -608,6 +612,7 @@ export type Database = {
           p_delivery_address?: string | null;
           p_notes?: string | null;
           p_cedula?: string | null;
+          p_pickup_time?: string | null;
         };
         Returns: Json;
       };
@@ -655,6 +660,12 @@ export type Database = {
       };
       cancel_order: { Args: { p_order_id: string; p_reason: string }; Returns: Json };
       close_order: { Args: { p_order_id: string }; Returns: Json };
+      admin_delete_order: {
+        Args: { p_order_id: string; p_force?: boolean };
+        Returns: Json;
+      };
+      admin_delete_customer: { Args: { p_customer_id: string }; Returns: Json };
+      admin_delete_product: { Args: { p_product_id: string }; Returns: Json };
     };
     Enums: {
       charge_kind: "late_fee" | "damage" | "missing_item" | "delivery" | "other";

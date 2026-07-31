@@ -4,11 +4,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
-import { money, longDate, shortDate } from "@/lib/format";
+import { money, longDate, shortDate, shortTime } from "@/lib/format";
 import { Badge } from "@/components/ui/Badge";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import {
   closeOrder,
+  deleteOrder,
   isOverdue,
   CHARGE_LABEL,
   PAYMENT_KIND_LABEL,
@@ -16,6 +17,7 @@ import {
   type OrderDetail,
   type OrderStatus,
 } from "@/lib/admin/order";
+import { EliminarSheet } from "@/components/ui/EliminarSheet";
 import { customerWhatsappLink, proformaSummary } from "@/lib/admin/share";
 import {
   CancelarSheet,
@@ -45,6 +47,7 @@ type SheetName =
   | "confirmar"
   | "entrega"
   | "cancelar"
+  | "eliminar"
   | null;
 
 const STATUS_VARIANT: Record<
@@ -67,7 +70,14 @@ function todayISO(): string {
     .slice(0, 10);
 }
 
-export function DetallePedido({ order }: { order: OrderDetail }) {
+export function DetallePedido({
+  order,
+  canDelete = false,
+}: {
+  order: OrderDetail;
+  /** Only a technical admin gets the hard-delete control; absent otherwise. */
+  canDelete?: boolean;
+}) {
   const router = useRouter();
   const [sheet, setSheet] = useState<SheetName>(null);
   const [busy, setBusy] = useState(false);
@@ -196,12 +206,22 @@ export function DetallePedido({ order }: { order: OrderDetail }) {
           <dt className="type-label text-stone-text">Sale</dt>
           <dd className="text-base font-semibold text-ink">
             {shortDate(order.pickupDate)}
+            {order.pickupTime && (
+              <span className="block type-mono text-sm font-normal text-stone-text">
+                {shortTime(order.pickupTime)}
+              </span>
+            )}
           </dd>
         </div>
         <div>
           <dt className="type-label text-stone-text">Regresa</dt>
           <dd className="text-base font-semibold text-ink">
             {shortDate(order.agreedReturnDate)}
+            {order.agreedReturnTime && (
+              <span className="block type-mono text-sm font-normal text-stone-text">
+                {shortTime(order.agreedReturnTime)}
+              </span>
+            )}
           </dd>
         </div>
         <div>
@@ -408,6 +428,24 @@ export function DetallePedido({ order }: { order: OrderDetail }) {
         </div>
       )}
 
+      {/* ---- Danger zone (technical admin only) ---- */}
+      {canDelete && (
+        <div className="mt-10 rounded-lg border border-mamey/25 bg-mamey/[0.04] p-4">
+          <p className="type-label text-mamey-text">Zona técnica</p>
+          <p className="mt-1 text-sm text-stone-text">
+            Borrado permanente, solo para limpiar basura de prueba. Para un
+            pedido real, usá Cancelar.
+          </p>
+          <button
+            type="button"
+            onClick={() => setSheet("eliminar")}
+            className="mt-3 min-h-12 rounded-md border border-mamey/40 px-4 text-base font-semibold text-mamey-text transition-colors duration-fast ease-out hover:bg-mamey/[0.08]"
+          >
+            Eliminar pedido
+          </button>
+        </div>
+      )}
+
       {/* ---- Primary sticky ---- */}
       {primary && (
         <div className="fixed inset-x-0 bottom-20 z-30 border-t border-rule bg-paper/97 backdrop-blur-sm">
@@ -438,6 +476,21 @@ export function DetallePedido({ order }: { order: OrderDetail }) {
       <ConfirmarSheet order={order} open={sheet === "confirmar"} onClose={() => setSheet(null)} onSaved={onSaved} />
       <EntregaSheet order={order} open={sheet === "entrega"} onClose={() => setSheet(null)} onSaved={onSaved} />
       <CancelarSheet order={order} open={sheet === "cancelar"} onClose={() => setSheet(null)} onSaved={onSaved} />
+      {canDelete && (
+        <EliminarSheet
+          open={sheet === "eliminar"}
+          onClose={() => setSheet(null)}
+          onDeleted={() => router.replace("/panel/pedidos")}
+          title="Eliminar pedido"
+          what={`el pedido #${order.number} de ${order.customerName}`}
+          warning={
+            order.payments.length > 0
+              ? "Este pedido ya tiene pagos registrados. Se borrarán junto con él. Si es un pedido real, cancelalo en vez de borrarlo."
+              : undefined
+          }
+          run={() => deleteOrder(order.id, order.payments.length > 0)}
+        />
+      )}
     </div>
   );
 }

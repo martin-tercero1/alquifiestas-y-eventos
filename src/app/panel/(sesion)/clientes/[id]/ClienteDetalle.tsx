@@ -2,15 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { WhatsAppIcon, PhoneIcon } from "@/components/ui/icons";
 import { money, shortDate } from "@/lib/format";
-import { STATUS_LABEL, type OrderStatus } from "@/lib/admin/order";
+import {
+  deleteCustomer,
+  STATUS_LABEL,
+  type OrderStatus,
+} from "@/lib/admin/order";
 import { customerWhatsappLink } from "@/lib/admin/share";
 import { formatPhone } from "@/lib/admin/phone";
 import type { CustomerDetail } from "@/lib/admin/loadCustomers";
 import { ClienteFormSheet } from "../ClienteFormSheet";
+import { EliminarSheet } from "@/components/ui/EliminarSheet";
 
 /**
  * One contact: how to reach them, what they owe, and everything they've rented.
@@ -20,9 +26,22 @@ import { ClienteFormSheet } from "../ClienteFormSheet";
 
 const ACTIVE: OrderStatus[] = ["confirmed", "picked_up", "partially_returned"];
 
-export function ClienteDetalle({ initial }: { initial: CustomerDetail }) {
+export function ClienteDetalle({
+  initial,
+  canDelete = false,
+}: {
+  initial: CustomerDetail;
+  /** Technical admin only; the control is absent otherwise. */
+  canDelete?: boolean;
+}) {
+  const router = useRouter();
   const [customer, setCustomer] = useState(initial);
   const [editing, setEditing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  // A customer with orders is not junk — hide the control entirely (the RPC
+  // refuses it too). Deletion is only for genuine duplicates and test rows.
+  const deletable = canDelete && customer.orders.length === 0;
 
   const wa = customerWhatsappLink(
     customer.phone,
@@ -125,6 +144,23 @@ export function ClienteDetalle({ initial }: { initial: CustomerDetail }) {
         )}
       </section>
 
+      {deletable && (
+        <div className="mt-10 rounded-lg border border-mamey/25 bg-mamey/[0.04] p-4">
+          <p className="type-label text-mamey-text">Zona técnica</p>
+          <p className="mt-1 text-sm text-stone-text">
+            Borrado permanente. Solo para duplicados o clientes de prueba sin
+            pedidos.
+          </p>
+          <button
+            type="button"
+            onClick={() => setDeleting(true)}
+            className="mt-3 min-h-12 rounded-md border border-mamey/40 px-4 text-base font-semibold text-mamey-text transition-colors duration-fast ease-out hover:bg-mamey/[0.08]"
+          >
+            Eliminar cliente
+          </button>
+        </div>
+      )}
+
       <ClienteFormSheet
         open={editing}
         mode="edit"
@@ -137,6 +173,17 @@ export function ClienteDetalle({ initial }: { initial: CustomerDetail }) {
         onClose={() => setEditing(false)}
         onSaved={(patch) => setCustomer((c) => ({ ...c, ...patch }))}
       />
+
+      {deletable && (
+        <EliminarSheet
+          open={deleting}
+          onClose={() => setDeleting(false)}
+          onDeleted={() => router.replace("/panel/clientes")}
+          title="Eliminar cliente"
+          what={customer.name}
+          run={() => deleteCustomer(customer.id)}
+        />
+      )}
     </main>
   );
 }

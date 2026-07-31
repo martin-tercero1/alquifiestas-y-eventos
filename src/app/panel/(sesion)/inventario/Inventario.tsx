@@ -59,9 +59,12 @@ function hasGap(p: InvProduct, filter: Filter): boolean {
 export function Inventario({
   initial,
   categories,
+  canDelete = false,
 }: {
   initial: InvProduct[];
   categories: InvCategory[];
+  /** Technical admin only; passed to the editor for its delete control. */
+  canDelete?: boolean;
 }) {
   const [products, setProducts] = useState(initial);
   const [query, setQuery] = useState("");
@@ -121,6 +124,10 @@ export function Inventario({
     setProducts((prev) =>
       prev.map((p) => (p.productId === productId ? { ...p, ...patch } : p)),
     );
+  }
+
+  function removeProduct(productId: string) {
+    setProducts((prev) => prev.filter((p) => p.productId !== productId));
   }
 
   const visibleCount = sections.reduce((n, s) => n + s.items.length, 0);
@@ -204,8 +211,10 @@ export function Inventario({
       <ProductEditorSheet
         product={editingProduct}
         categories={categories}
+        canDelete={canDelete}
         onClose={() => setEditingProduct(null)}
         onSaved={patchProduct}
+        onDeleted={removeProduct}
       />
       <VariantEditorSheet
         variant={editingVariant?.variant ?? null}

@@ -65,6 +65,10 @@ export type Draft = {
   customerCedula: string;
   pickupDate: string;
   returnDate: string;
+  /** Agreed clock times, "HH:MM". Coordination only — see §4. Required in this
+   *  form's own UI, but empty is a valid intermediate state while typing. */
+  pickupTime: string;
+  returnTime: string;
   lines: DraftLine[];
   fulfilment: "pickup" | "delivery";
   deliveryAddress: string;
@@ -98,15 +102,20 @@ export function daysBetween(start: string, end: string): number {
 }
 
 export function emptyDraft(): Draft {
-  const today = todayISO();
+  // Same-day pickup rarely makes sense — the parents agree a slot ahead of
+  // time — so default to tomorrow. Same-day is still allowed, just not the
+  // default (§4).
+  const pickup = addDays(todayISO(), 1);
   return {
     customerId: null,
     customerName: "",
     customerPhone: "",
     customerCedula: "",
-    // The common case is one day, today. It needs no input at all.
-    pickupDate: today,
-    returnDate: today,
+    // The common case is one day. Return defaults to the pickup day.
+    pickupDate: pickup,
+    returnDate: pickup,
+    pickupTime: "",
+    returnTime: "",
     lines: [],
     fulfilment: "pickup",
     deliveryAddress: "",
@@ -310,6 +319,8 @@ export async function saveProforma(draft: Draft): Promise<SaveResult> {
     },
     pickup_date: draft.pickupDate,
     agreed_return_date: draft.returnDate,
+    pickup_time: draft.pickupTime || null,
+    agreed_return_time: draft.returnTime || null,
     billed_days: billedDays,
     fulfilment: draft.fulfilment,
     delivery_address: draft.deliveryAddress.trim() || null,
