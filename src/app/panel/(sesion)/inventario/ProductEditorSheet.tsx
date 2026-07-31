@@ -131,17 +131,21 @@ export function ProductEditorSheet({
               onClick={() => fileRef.current?.click()}
               disabled={uploading}
             >
-              {uploading ? "Subiendo…" : photo ? "Cambiar foto" : "Tomar foto"}
+              {uploading ? "Subiendo…" : photo ? "Cambiar foto" : "Agregar foto"}
             </Button>
             <p className="text-sm text-stone-text">
               Tomala con la cámara o elegí una del teléfono.
             </p>
           </div>
+          {/*
+            No `capture` attribute on purpose: it would force the camera and hide
+            the gallery. Without it the phone offers both — take a new photo OR
+            pick one already saved — which is what the hint above promises.
+          */}
           <input
             ref={fileRef}
             type="file"
             accept="image/*"
-            capture="environment"
             className="sr-only"
             onChange={(e) => {
               const file = e.target.files?.[0];
