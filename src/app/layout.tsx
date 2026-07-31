@@ -49,6 +49,13 @@ export const metadata: Metadata = {
     description:
       "Sillas, mesas, mantelería y decoración en alquiler en San Marcos, Carazo. Precios por 24 horas, a la vista.",
   },
+  // Installed to the home screen (Brief 04 §6), the panel opens standalone with
+  // its own title bar. The manifest carries the icons; this names the app on iOS.
+  appleWebApp: {
+    capable: true,
+    title: "Alquifiestas",
+    statusBarStyle: "default",
+  },
 };
 
 export const viewport: Viewport = {

@@ -114,7 +114,9 @@ export default async function HoyPage() {
             Buenas, {staff?.name}
           </h1>
         </div>
-        <SalirButton />
+        {/* Logout is technical-admin only (§6): the parents can't get locked
+            out of the phone they run the business from. */}
+        {staff?.isTechAdmin && <SalirButton />}
       </div>
 
       <div className="mt-8 flex flex-col gap-10">
