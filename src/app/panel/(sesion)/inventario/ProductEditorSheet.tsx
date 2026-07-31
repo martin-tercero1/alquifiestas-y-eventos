@@ -62,7 +62,7 @@ export function ProductEditorSheet({
     if (!product) return;
     setUploading(true);
     setError(null);
-    const result = await uploadProductPhoto(product.productId, product.slug, file);
+    const result = await uploadProductPhoto(product.productId, file);
     setUploading(false);
     if (!result.ok) {
       setError(result.message);

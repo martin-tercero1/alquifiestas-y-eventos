@@ -87,21 +87,45 @@ export async function saveProduct(
 // Photo
 // ---------------------------------------------------------------------------
 
-/** Reads a picked image's real pixel size — product_photos needs both. */
-function imageSize(file: File): Promise<{ width: number; height: number }> {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      resolve({ width: img.naturalWidth, height: img.naturalHeight });
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error("no se pudo leer la imagen"));
-    };
-    img.src = url;
+/** The long side we cap phone photos at before upload. A card is never shown
+ *  larger than this, so anything bigger is bytes paid for and never seen. */
+const MAX_EDGE = 1600;
+
+type Compressed = { blob: Blob; width: number; height: number };
+
+/**
+ * Shrink a phone photo and re-encode it as WebP in the browser, before a single
+ * byte is uploaded (Brief 04 §8). A modern phone camera is 12 MP / several MB;
+ * this brings a catalog card down to tens of KB, which is what keeps the free
+ * tier's 1 GB from filling and what keeps the upload quick on warehouse data.
+ *
+ * `createImageBitmap(..., { imageOrientation: "from-image" })` bakes in the
+ * EXIF rotation, so a photo taken sideways on the phone is stored upright rather
+ * than relying on every viewer to honour the orientation flag.
+ */
+async function compressToWebp(file: File): Promise<Compressed> {
+  const bitmap = await createImageBitmap(file, {
+    imageOrientation: "from-image",
   });
+
+  const scale = Math.min(1, MAX_EDGE / Math.max(bitmap.width, bitmap.height));
+  const width = Math.round(bitmap.width * scale);
+  const height = Math.round(bitmap.height * scale);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("sin canvas");
+  ctx.drawImage(bitmap, 0, 0, width, height);
+  bitmap.close();
+
+  const blob = await new Promise<Blob | null>((resolve) =>
+    canvas.toBlob(resolve, "image/webp", 0.82),
+  );
+  if (!blob) throw new Error("no se pudo comprimir");
+
+  return { blob, width, height };
 }
 
 /**
@@ -114,9 +138,13 @@ function imageSize(file: File): Promise<{ width: number; height: number }> {
  * considered as a hand-cropped photo, but it turns "Foto pendiente" into the
  * owners' actual product, which is the whole point.
  *
- * The file is written under a fresh, unguessable path every time, so a replaced
- * photo can never be served from a stale cache. The row is upserted (one per
- * crop), so nothing is deleted — the pointer just moves.
+ * The object is written to ONE deterministic path per product and overwritten
+ * in place (upsert), so a re-upload replaces the file instead of leaving the old
+ * one behind — the pattern that would otherwise grow storage without bound
+ * (Brief 04 §8). Overwriting means the CDN could serve the old bytes from cache,
+ * so the stored `storage_path` carries a `?v=` stamp that changes on every
+ * upload; `photoUrl` passes it straight through, busting the cache while the
+ * object key itself stays stable.
  */
 export type UploadResult =
   | { ok: true; path: string }
@@ -124,35 +152,41 @@ export type UploadResult =
 
 export async function uploadProductPhoto(
   productId: string,
-  slug: string,
   file: File,
 ): Promise<UploadResult> {
   const client = panelClient();
 
-  let size: { width: number; height: number };
+  let image: Compressed;
   try {
-    size = await imageSize(file);
+    image = await compressToWebp(file);
   } catch {
     return { ok: false, message: "No se pudo leer la foto. Probá con otra." };
   }
 
-  const ext = file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "");
+  // Deterministic, keyed on the id (not the slug, which can change on a rename).
+  const key = `products/${productId}/principal.webp`;
   const stamp = Date.now().toString(36);
-  const path = `products/${slug}/staff-${stamp}.${ext && ext.length <= 5 ? ext : "jpg"}`;
 
   const upload = await client.storage
     .from("catalog")
-    .upload(path, file, { cacheControl: "31536000", upsert: false });
+    .upload(key, image.blob, {
+      cacheControl: "31536000",
+      upsert: true,
+      contentType: "image/webp",
+    });
 
   if (upload.error) return fail(upload.error);
+
+  // Cache-busting version lives only in the URL, never in the object key.
+  const path = `${key}?v=${stamp}`;
 
   const rows: PhotoInsert[] = (["square", "portrait", "original"] as const).map(
     (crop) => ({
       product_id: productId,
       crop,
       storage_path: path,
-      width: size.width,
-      height: size.height,
+      width: image.width,
+      height: image.height,
       focal_x: 0.5,
       focal_y: 0.5,
       source_url: null,
