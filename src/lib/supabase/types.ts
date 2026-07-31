@@ -666,6 +666,8 @@ export type Database = {
       };
       admin_delete_customer: { Args: { p_customer_id: string }; Returns: Json };
       admin_delete_product: { Args: { p_product_id: string }; Returns: Json };
+      create_product: { Args: { p: Json }; Returns: Json };
+      create_category: { Args: { p: Json }; Returns: Json };
     };
     Enums: {
       charge_kind: "late_fee" | "damage" | "missing_item" | "delivery" | "other";

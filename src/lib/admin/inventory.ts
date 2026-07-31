@@ -84,6 +84,128 @@ export async function saveProduct(
 }
 
 // ---------------------------------------------------------------------------
+// Creating catalog entries — technical-admin only, gated again server-side.
+// ---------------------------------------------------------------------------
+
+const CREATE_ERROR_ES: Record<string, string> = {
+  no_autorizado: "Solo el administrador técnico puede crear artículos.",
+  falta_nombre: "Escribí un nombre.",
+  categoria_invalida: "Elegí una categoría.",
+  sin_variantes: "Agregá al menos una variante con su precio.",
+  madre_invalida: "La categoría madre ya no existe.",
+};
+
+type CreateResult<T> = { ok: true; data: T } | { ok: false; message: string };
+
+function createFail<T>(error: string | null): CreateResult<T> {
+  return { ok: false, message: CREATE_ERROR_ES[error ?? ""] ?? FAILED };
+}
+
+export type NewVariantInput = {
+  /** Blank for a single-variant product. */
+  label: string;
+  pricePerDay: string;
+  totalQuantity: string;
+};
+
+export type NewProductInput = {
+  name: string;
+  categoryId: string;
+  /** A shared choice picked at rental time (Color/Estilo/…). Blank = none. */
+  optionName: string;
+  optionValues: string[];
+  /** Whether the variants go live on the public site immediately. */
+  published: boolean;
+  variants: NewVariantInput[];
+};
+
+export type CreatedProduct = {
+  productId: string;
+  slug: string;
+  variants: { variantId: string; label: string | null }[];
+};
+
+export async function createProduct(
+  input: NewProductInput,
+): Promise<CreateResult<CreatedProduct>> {
+  const { data, error } = await panelClient().rpc("create_product", {
+    p: {
+      name: input.name.trim(),
+      category_id: input.categoryId,
+      option_name: input.optionName.trim() || null,
+      option_values: input.optionValues,
+      published: input.published,
+      variants: input.variants.map((v) => ({
+        label: v.label.trim() || null,
+        price_per_day: v.pricePerDay.trim() || null,
+        total_quantity: v.totalQuantity.trim() || null,
+      })),
+    },
+  });
+
+  if (error) return fail(error) as CreateResult<CreatedProduct>;
+
+  const result = (data ?? {}) as {
+    ok?: boolean;
+    error?: string;
+    product_id?: string;
+    slug?: string;
+    variants?: { variant_id: string; label: string | null }[];
+  };
+  if (!result.ok) return createFail(result.error ?? null);
+
+  return {
+    ok: true,
+    data: {
+      productId: result.product_id!,
+      slug: result.slug!,
+      variants: (result.variants ?? []).map((v) => ({
+        variantId: v.variant_id,
+        label: v.label,
+      })),
+    },
+  };
+}
+
+export type CreatedCategory = {
+  id: string;
+  name: string;
+  parentId: string | null;
+  topName: string;
+};
+
+export async function createCategory(input: {
+  name: string;
+  parentId: string | null;
+}): Promise<CreateResult<CreatedCategory>> {
+  const { data, error } = await panelClient().rpc("create_category", {
+    p: { name: input.name.trim(), parent_id: input.parentId },
+  });
+
+  if (error) return fail(error) as CreateResult<CreatedCategory>;
+
+  const result = (data ?? {}) as {
+    ok?: boolean;
+    error?: string;
+    id?: string;
+    name?: string;
+    parent_id?: string | null;
+    top_name?: string;
+  };
+  if (!result.ok) return createFail(result.error ?? null);
+
+  return {
+    ok: true,
+    data: {
+      id: result.id!,
+      name: result.name!,
+      parentId: result.parent_id ?? null,
+      topName: result.top_name!,
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Photo
 // ---------------------------------------------------------------------------
 

@@ -183,6 +183,22 @@ export async function loadBrowseCatalog(): Promise<CatalogGroup[]> {
   return groups;
 }
 
+/** Top-level categories, for the "parent" picker when creating a new category. */
+export type TopCategory = { id: string; name: string };
+
+export async function loadTopCategories(): Promise<TopCategory[]> {
+  const supabase = await serverClient();
+  const { data, error } = await supabase
+    .from("categories")
+    .select("id, name, parent_id, display_order")
+    .is("parent_id", null)
+    .order("display_order", { ascending: true })
+    .order("name", { ascending: true });
+
+  if (error || !data) return [];
+  return data.map((c) => ({ id: c.id, name: c.name }));
+}
+
 /** The categories for the "mover" picker, in the business's display order. */
 export type InvCategory = { id: string; name: string; topName: string };
 
