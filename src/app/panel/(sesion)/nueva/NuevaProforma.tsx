@@ -226,14 +226,19 @@ export function NuevaProforma({ catalog }: { catalog: CatalogGroup[] }) {
                 value={draft.pickupDate}
                 onChange={(e) => {
                   const pickupDate = e.target.value;
+                  // Shift the return date by the same number of days the pickup
+                  // moved, so the rental keeps its exact length (a 1-día stays a
+                  // 1-día) and the return never falls behind the pickup.
+                  const delta = Math.round(
+                    (Date.parse(`${pickupDate}T00:00:00Z`) -
+                      Date.parse(`${draft.pickupDate}T00:00:00Z`)) /
+                      86400000,
+                  );
                   update({
                     pickupDate,
-                    // Keep the rental the same length rather than letting the
-                    // return date fall behind the pickup date.
-                    returnDate:
-                      draft.returnDate < pickupDate
-                        ? pickupDate
-                        : draft.returnDate,
+                    returnDate: Number.isNaN(delta)
+                      ? draft.returnDate
+                      : addDays(draft.returnDate, delta),
                   });
                 }}
               />
@@ -290,7 +295,7 @@ export function NuevaProforma({ catalog }: { catalog: CatalogGroup[] }) {
                   type="button"
                   onClick={() =>
                     update({
-                      returnDate: addDays(draft.pickupDate, days - 1),
+                      returnDate: addDays(draft.pickupDate, days),
                     })
                   }
                   className={cn(

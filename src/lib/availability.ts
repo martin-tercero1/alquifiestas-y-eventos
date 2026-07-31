@@ -134,13 +134,13 @@ export function check(
 }
 
 /**
- * The return date for a rental of N days starting on `pickup`.
- * Pricing is linear — the 24-hour price times the number of days — and a
- * one-day rental occupies exactly one day.
+ * The return date for a rental of N days (nights) starting on `pickup`: the day
+ * the item is due back. Pricing is linear — the 24-hour price times the number
+ * of days — and a one-day rental is due back the next day.
  */
 export function occupancyEnd(pickup: string, days: number): string {
   const [y, m, d] = pickup.split("-").map(Number);
-  const end = new Date(Date.UTC(y, m - 1, d + Math.max(days, 1) - 1));
+  const end = new Date(Date.UTC(y, m - 1, d + Math.max(days, 1)));
   return end.toISOString().slice(0, 10);
 }
 
