@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_NI",
     siteName: "Alquifiestas y Eventos",
-    title: "Por una noche, tu patio se vuelve salón",
+    title: "Vos ponés el lugar, nosotros lo hacemos lucir",
     description:
       "Sillas, mesas, mantelería y decoración en alquiler en San Marcos, Carazo. Precios por 24 horas, a la vista.",
   },

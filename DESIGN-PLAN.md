@@ -15,7 +15,7 @@ In San Marcos the room is almost always **a patio** — someone's house, a schoo
 
 Working headline (Nicaraguan Spanish, plain, no wedding-magazine register):
 
-> **Por una noche, tu patio se vuelve salón.**
+> **Vos ponés el lugar, nosotros lo hacemos lucir.**
 > Sillas, mesas, mantelería, cristalería y decoración en alquiler. Precios por 24 horas, a la vista.
 > San Marcos, Carazo. 20 años. #TuEventoDeSiempre
 

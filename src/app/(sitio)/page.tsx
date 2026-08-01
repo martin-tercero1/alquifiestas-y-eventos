@@ -28,7 +28,7 @@ export default async function HomePage() {
           </p>
 
           <h1 className="type-display mt-5 max-w-4xl text-[clamp(2rem,8vw,4.5rem)] text-ink uppercase">
-            Por una noche, tu patio se vuelve salón.
+            Vos ponés el lugar, nosotros lo hacemos lucir.
           </h1>
 
           <p className="mt-6 max-w-xl text-lg text-stone-text">
