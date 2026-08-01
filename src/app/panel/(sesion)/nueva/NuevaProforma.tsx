@@ -23,8 +23,10 @@ import {
   type Draft,
   type DraftLine,
 } from "@/lib/admin/proforma";
+import type { CatalogGroup } from "@/lib/admin/loadInventory";
 import { ClienteSection } from "./ClienteSection";
 import { BuscadorArticulos } from "./BuscadorArticulos";
+import { CatalogoNavegable } from "./CatalogoNavegable";
 import { LineaArticulo } from "./LineaArticulo";
 import { BarraTotal } from "./BarraTotal";
 
@@ -40,7 +42,7 @@ import { BarraTotal } from "./BarraTotal";
  * dropped connection cannot cost her the order.
  */
 
-export function NuevaProforma() {
+export function NuevaProforma({ catalog }: { catalog: CatalogGroup[] }) {
   const router = useRouter();
 
   const [draft, setDraft] = useState<Draft>(emptyDraft);
@@ -50,6 +52,7 @@ export function NuevaProforma() {
   );
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [attempted, setAttempted] = useState(false);
   const [showOptional, setShowOptional] = useState(false);
 
   // ---- Draft persistence -------------------------------------------------
@@ -150,7 +153,17 @@ export function NuevaProforma() {
   const totals = computeTotals(draft);
   const canSave = draft.lines.length > 0 && draft.customerName.trim() !== "";
 
+  const missingTimes = !draft.pickupTime || !draft.returnTime;
+
   async function onSave() {
+    // The parents always agree a pickup and a return time — the order isn't
+    // ready to hand off without them, so require them here (§4).
+    if (missingTimes) {
+      setAttempted(true);
+      setSaveError("Poné la hora de salida y la de regreso antes de guardar.");
+      return;
+    }
+
     setSaving(true);
     setSaveError(null);
 
@@ -213,14 +226,19 @@ export function NuevaProforma() {
                 value={draft.pickupDate}
                 onChange={(e) => {
                   const pickupDate = e.target.value;
+                  // Shift the return date by the same number of days the pickup
+                  // moved, so the rental keeps its exact length (a 1-día stays a
+                  // 1-día) and the return never falls behind the pickup.
+                  const delta = Math.round(
+                    (Date.parse(`${pickupDate}T00:00:00Z`) -
+                      Date.parse(`${draft.pickupDate}T00:00:00Z`)) /
+                      86400000,
+                  );
                   update({
                     pickupDate,
-                    // Keep the rental the same length rather than letting the
-                    // return date fall behind the pickup date.
-                    returnDate:
-                      draft.returnDate < pickupDate
-                        ? pickupDate
-                        : draft.returnDate,
+                    returnDate: Number.isNaN(delta)
+                      ? draft.returnDate
+                      : addDays(draft.returnDate, delta),
                   });
                 }}
               />
@@ -235,6 +253,36 @@ export function NuevaProforma() {
                 onChange={(e) => update({ returnDate: e.target.value })}
               />
             </Field>
+
+            <Field
+              label="Hora de salida"
+              htmlFor="hora-salida"
+              error={
+                attempted && !draft.pickupTime ? "Poné la hora." : undefined
+              }
+            >
+              <Input
+                id="hora-salida"
+                type="time"
+                value={draft.pickupTime}
+                onChange={(e) => update({ pickupTime: e.target.value })}
+              />
+            </Field>
+
+            <Field
+              label="Hora de regreso"
+              htmlFor="hora-regreso"
+              error={
+                attempted && !draft.returnTime ? "Poné la hora." : undefined
+              }
+            >
+              <Input
+                id="hora-regreso"
+                type="time"
+                value={draft.returnTime}
+                onChange={(e) => update({ returnTime: e.target.value })}
+              />
+            </Field>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -247,7 +295,7 @@ export function NuevaProforma() {
                   type="button"
                   onClick={() =>
                     update({
-                      returnDate: addDays(draft.pickupDate, days - 1),
+                      returnDate: addDays(draft.pickupDate, days),
                     })
                   }
                   className={cn(
@@ -269,10 +317,12 @@ export function NuevaProforma() {
         <section className="flex flex-col gap-4">
           <h2 className="type-label text-stone-text">Artículos</h2>
 
-          <BuscadorArticulos
-            onAdd={addItem}
+          <BuscadorArticulos onAdd={addItem} addedVariantIds={addedVariantIds} />
+
+          <CatalogoNavegable
+            groups={catalog}
             addedVariantIds={addedVariantIds}
-            hasLines={draft.lines.length > 0}
+            onAdd={addItem}
           />
 
           {draft.lines.length > 0 && (

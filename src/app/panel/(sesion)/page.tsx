@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { loadBoard, type BoardCard } from "@/lib/admin/loadBoard";
 import { currentStaff } from "@/lib/supabase/server";
-import { money } from "@/lib/format";
+import { money, shortTime } from "@/lib/format";
 import { Badge } from "@/components/ui/Badge";
 import { SalirButton } from "../SalirButton";
 
@@ -23,13 +23,27 @@ function daysLate(agreedReturn: string, today: string): number {
   return Math.max(0, Math.round((b - a) / 86400000));
 }
 
-function Card({ card, late }: { card: BoardCard; late?: number }) {
+function Card({
+  card,
+  time,
+  late,
+}: {
+  card: BoardCard;
+  time?: string | null;
+  late?: number;
+}) {
+  const label = shortTime(time);
   return (
     <li>
       <Link
         href={`/panel/pedidos/${card.id}`}
         className="flex items-center gap-3 rounded-lg border border-rule bg-paper p-4 transition-colors duration-fast ease-out hover:border-rule-strong"
       >
+        {label && (
+          <span className="type-mono w-16 shrink-0 text-sm font-semibold text-ink tabular-nums">
+            {label}
+          </span>
+        )}
         <div className="min-w-0 flex-1">
           <p className="truncate text-base font-semibold text-ink">
             {card.customerName}
@@ -100,7 +114,9 @@ export default async function HoyPage() {
             Buenas, {staff?.name}
           </h1>
         </div>
-        <SalirButton />
+        {/* Logout is technical-admin only (§6): the parents can't get locked
+            out of the phone they run the business from. */}
+        {staff?.isTechAdmin && <SalirButton />}
       </div>
 
       <div className="mt-8 flex flex-col gap-10">
@@ -108,14 +124,18 @@ export default async function HoyPage() {
           title="Sale hoy"
           cards={board.saleToday}
           empty="Nada sale hoy."
-          render={(card) => <Card key={card.id} card={card} />}
+          render={(card) => (
+            <Card key={card.id} card={card} time={card.pickupTime} />
+          )}
         />
 
         <Section
           title="Regresa hoy"
           cards={board.returnToday}
           empty="Nada regresa hoy."
-          render={(card) => <Card key={card.id} card={card} />}
+          render={(card) => (
+            <Card key={card.id} card={card} time={card.agreedReturnTime} />
+          )}
         />
 
         <Section
@@ -126,6 +146,7 @@ export default async function HoyPage() {
             <Card
               key={card.id}
               card={card}
+              time={card.agreedReturnTime}
               late={daysLate(card.agreedReturnDate, board.today)}
             />
           )}

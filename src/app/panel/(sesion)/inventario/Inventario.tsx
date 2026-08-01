@@ -6,9 +6,16 @@ import { Badge } from "@/components/ui/Badge";
 import { money } from "@/lib/format";
 import { photoUrl } from "@/lib/catalog";
 import { cn } from "@/lib/cn";
-import type { InvProduct, InvVariant, InvCategory } from "@/lib/admin/loadInventory";
+import type {
+  InvProduct,
+  InvVariant,
+  InvCategory,
+  TopCategory,
+} from "@/lib/admin/loadInventory";
+import { Collapsible } from "@/components/ui/Collapsible";
 import { VariantEditorSheet } from "./VariantEditorSheet";
 import { ProductEditorSheet } from "./ProductEditorSheet";
+import { NuevoArticuloSheet } from "./NuevoArticuloSheet";
 
 /**
  * Inventario — the catalog as a working document.
@@ -58,14 +65,22 @@ function hasGap(p: InvProduct, filter: Filter): boolean {
 
 export function Inventario({
   initial,
-  categories,
+  categories: categoriesProp,
+  topCategories,
+  isTechAdmin = false,
 }: {
   initial: InvProduct[];
   categories: InvCategory[];
+  topCategories: TopCategory[];
+  /** Technical admin only; unlocks creating and deleting catalog entries. */
+  isTechAdmin?: boolean;
 }) {
   const [products, setProducts] = useState(initial);
+  // Categories become stateful so a newly created one appears in the pickers.
+  const [categories, setCategories] = useState(categoriesProp);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
+  const [creating, setCreating] = useState(false);
   const [editingProduct, setEditingProduct] = useState<InvProduct | null>(null);
   const [editingVariant, setEditingVariant] = useState<{
     variant: InvVariant;
@@ -123,11 +138,36 @@ export function Inventario({
     );
   }
 
+  function removeProduct(productId: string) {
+    setProducts((prev) => prev.filter((p) => p.productId !== productId));
+  }
+
+  function addProduct(product: InvProduct) {
+    setProducts((prev) => [...prev, product]);
+  }
+
+  function addCategory(category: InvCategory) {
+    setCategories((prev) => [...prev, category]);
+  }
+
   const visibleCount = sections.reduce((n, s) => n + s.items.length, 0);
 
   return (
     <main className="mx-auto w-full max-w-2xl px-5 py-8">
-      <h1 className="type-display text-3xl text-ink">Inventario</h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="type-display text-3xl text-ink">Inventario</h1>
+        {/* Creating catalog items is a technical-admin task — absent for the
+            parents, like the delete controls. */}
+        {isTechAdmin && (
+          <button
+            type="button"
+            onClick={() => setCreating(true)}
+            className="min-h-11 shrink-0 rounded-md bg-mamey px-4 text-base font-semibold text-white transition-colors duration-fast ease-out hover:bg-mamey-dark"
+          >
+            ＋ Nuevo
+          </button>
+        )}
+      </div>
 
       <input
         type="search"
@@ -177,13 +217,17 @@ export function Inventario({
             : "Nada pendiente acá. Todo al día."}
         </p>
       ) : (
-        <div className="mt-6 flex flex-col gap-8">
+        <div className="mt-6 flex flex-col gap-2">
           {sections.map((section) => (
-            <section key={section.name}>
-              <h2 className="type-label sticky top-0 z-10 -mx-1 bg-limewash/95 px-1 py-1.5 text-stone-text backdrop-blur-sm">
-                {section.name}
-              </h2>
-              <ul className="mt-2 flex flex-col gap-3">
+            <Collapsible
+              key={section.name}
+              title={section.name}
+              count={section.items.length}
+              // While a search or filter is narrowing the list, every shown
+              // section opens so a match is never buried in a collapsed shelf.
+              forceOpen={needle !== "" || filter !== "all"}
+            >
+              <ul className="flex flex-col gap-3 pb-2">
                 {section.items.map((product) => (
                   <ProductCard
                     key={product.productId}
@@ -196,7 +240,7 @@ export function Inventario({
                   />
                 ))}
               </ul>
-            </section>
+            </Collapsible>
           ))}
         </div>
       )}
@@ -204,9 +248,22 @@ export function Inventario({
       <ProductEditorSheet
         product={editingProduct}
         categories={categories}
+        canDelete={isTechAdmin}
         onClose={() => setEditingProduct(null)}
         onSaved={patchProduct}
+        onDeleted={removeProduct}
       />
+
+      {isTechAdmin && (
+        <NuevoArticuloSheet
+          open={creating}
+          onClose={() => setCreating(false)}
+          categories={categories}
+          topCategories={topCategories}
+          onCreated={addProduct}
+          onCategoryCreated={addCategory}
+        />
+      )}
       <VariantEditorSheet
         variant={editingVariant?.variant ?? null}
         productName={editingVariant?.product.name ?? ""}

@@ -52,7 +52,7 @@ export async function currentStaff() {
 
   const { data: profile } = await supabase
     .from("staff")
-    .select("display_name")
+    .select("display_name, is_tech_admin")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -60,5 +60,8 @@ export async function currentStaff() {
     id: user.id,
     email: user.email ?? "",
     name: profile?.display_name ?? user.email?.split("@")[0] ?? "",
+    // Gates every hard-delete control. The parents' accounts are false, so
+    // those controls are absent from their screens entirely — not disabled.
+    isTechAdmin: profile?.is_tech_admin ?? false,
   };
 }

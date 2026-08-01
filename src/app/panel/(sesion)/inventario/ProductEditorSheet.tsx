@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Field";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
 import { saveProduct, uploadProductPhoto } from "@/lib/admin/inventory";
+import { deleteProduct } from "@/lib/admin/order";
 import { photoUrl } from "@/lib/catalog";
 import type { InvProduct, InvCategory } from "@/lib/admin/loadInventory";
 
@@ -19,13 +20,18 @@ import type { InvProduct, InvCategory } from "@/lib/admin/loadInventory";
 export function ProductEditorSheet({
   product,
   categories,
+  canDelete = false,
   onClose,
   onSaved,
+  onDeleted,
 }: {
   product: InvProduct | null;
   categories: InvCategory[];
+  /** Technical admin only; the delete control is absent otherwise. */
+  canDelete?: boolean;
   onClose: () => void;
   onSaved: (productId: string, patch: Partial<InvProduct>) => void;
+  onDeleted?: (productId: string) => void;
 }) {
   const [name, setName] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -33,6 +39,10 @@ export function ProductEditorSheet({
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Two-step delete inside the editor: reveal, then type BORRAR to confirm.
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleteWord, setDeleteWord] = useState("");
+  const [deleting, setDeleting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -41,6 +51,8 @@ export function ProductEditorSheet({
       setCategoryId(product.categoryId);
       setPhoto(product.photoSquare);
       setError(null);
+      setConfirmingDelete(false);
+      setDeleteWord("");
     }
   }, [product]);
 
@@ -50,7 +62,7 @@ export function ProductEditorSheet({
     if (!product) return;
     setUploading(true);
     setError(null);
-    const result = await uploadProductPhoto(product.productId, product.slug, file);
+    const result = await uploadProductPhoto(product.productId, file);
     setUploading(false);
     if (!result.ok) {
       setError(result.message);
@@ -89,6 +101,22 @@ export function ProductEditorSheet({
     onClose();
   }
 
+  async function remove() {
+    if (!product) return;
+    setDeleting(true);
+    setError(null);
+    const result = await deleteProduct(product.productId);
+    setDeleting(false);
+    if (!result.ok) {
+      setError(result.message);
+      return;
+    }
+    onDeleted?.(product.productId);
+    onClose();
+  }
+
+  const deleteConfirmed = deleteWord.trim().toUpperCase() === "BORRAR";
+
   return (
     <Sheet open={!!product} onClose={onClose} title={`Editar ${product.name}`}>
       <div className="flex flex-col gap-5 overflow-y-auto px-5 pb-8">
@@ -103,17 +131,21 @@ export function ProductEditorSheet({
               onClick={() => fileRef.current?.click()}
               disabled={uploading}
             >
-              {uploading ? "Subiendo…" : photo ? "Cambiar foto" : "Tomar foto"}
+              {uploading ? "Subiendo…" : photo ? "Cambiar foto" : "Agregar foto"}
             </Button>
             <p className="text-sm text-stone-text">
               Tomala con la cámara o elegí una del teléfono.
             </p>
           </div>
+          {/*
+            No `capture` attribute on purpose: it would force the camera and hide
+            the gallery. Without it the phone offers both — take a new photo OR
+            pick one already saved — which is what the hint above promises.
+          */}
           <input
             ref={fileRef}
             type="file"
             accept="image/*"
-            capture="environment"
             className="sr-only"
             onChange={(e) => {
               const file = e.target.files?.[0];
@@ -153,6 +185,56 @@ export function ProductEditorSheet({
             {saving ? "Guardando…" : "Guardar"}
           </Button>
         </div>
+
+        {canDelete && (
+          <div className="mt-4 rounded-lg border border-mamey/25 bg-mamey/[0.04] p-4">
+            <p className="type-label text-mamey-text">Zona técnica</p>
+            {!confirmingDelete ? (
+              <>
+                <p className="mt-1 text-sm text-stone-text">
+                  Borra el artículo y sus variantes para siempre. Solo para
+                  pruebas o duplicados sin pedidos.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setConfirmingDelete(true)}
+                  className="mt-3 min-h-12 rounded-md border border-mamey/40 px-4 text-base font-semibold text-mamey-text transition-colors duration-fast ease-out hover:bg-mamey/[0.08]"
+                >
+                  Eliminar artículo
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="mt-1 text-sm text-ink">
+                  Vas a eliminar{" "}
+                  <span className="font-semibold">{product.name}</span>. No se
+                  puede deshacer.
+                </p>
+                <Field
+                  label="Escribí BORRAR para confirmar"
+                  htmlFor="p-del-confirm"
+                >
+                  <Input
+                    id="p-del-confirm"
+                    value={deleteWord}
+                    onChange={(e) => setDeleteWord(e.target.value)}
+                    autoComplete="off"
+                    autoCapitalize="characters"
+                    placeholder="BORRAR"
+                  />
+                </Field>
+                <button
+                  type="button"
+                  onClick={remove}
+                  disabled={deleting || !deleteConfirmed}
+                  className="mt-3 min-h-12 w-full rounded-md bg-mamey px-4 text-base font-semibold text-white transition-colors duration-fast ease-out disabled:opacity-45"
+                >
+                  {deleting ? "Eliminando…" : "Eliminar para siempre"}
+                </button>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </Sheet>
   );

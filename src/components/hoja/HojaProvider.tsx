@@ -188,11 +188,13 @@ export function useHoja(): HojaContext {
 }
 
 /**
- * The return date, derived from the pickup date and the number of days.
- * A one-day rental occupies exactly one day, so N days ends on pickup + N - 1.
+ * The return date: the day the item is due back, derived from the pickup date
+ * and the number of days. A rental is priced per 24 hours, so N días means the
+ * item comes back N days after pickup (a one-día rental is due back the next
+ * day).
  */
 export function returnDate(eventDate: string, days: number): string {
   const [y, m, d] = eventDate.split("-").map(Number);
-  const date = new Date(Date.UTC(y, m - 1, d + Math.max(days, 1) - 1));
+  const date = new Date(Date.UTC(y, m - 1, d + Math.max(days, 1)));
   return date.toISOString().slice(0, 10);
 }

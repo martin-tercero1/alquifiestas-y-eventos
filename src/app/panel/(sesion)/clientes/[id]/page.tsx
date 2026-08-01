@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { loadCustomer } from "@/lib/admin/loadCustomers";
+import { currentStaff } from "@/lib/supabase/server";
 import { ClienteDetalle } from "./ClienteDetalle";
 
 export const dynamic = "force-dynamic";
@@ -21,8 +22,13 @@ export default async function ClientePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const customer = await loadCustomer(id);
+  const [customer, staff] = await Promise.all([
+    loadCustomer(id),
+    currentStaff(),
+  ]);
   if (!customer) notFound();
 
-  return <ClienteDetalle initial={customer} />;
+  return (
+    <ClienteDetalle initial={customer} canDelete={staff?.isTechAdmin ?? false} />
+  );
 }

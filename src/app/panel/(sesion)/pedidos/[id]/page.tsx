@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { loadOrder } from "@/lib/admin/loadOrder";
+import { currentStaff } from "@/lib/supabase/server";
 import { DetallePedido } from "./DetallePedido";
 
 // This screen is always live per-request: an order changes as she works it,
@@ -23,9 +24,9 @@ export default async function PedidoPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const order = await loadOrder(id);
+  const [order, staff] = await Promise.all([loadOrder(id), currentStaff()]);
 
   if (!order) notFound();
 
-  return <DetallePedido order={order} />;
+  return <DetallePedido order={order} canDelete={staff?.isTechAdmin ?? false} />;
 }

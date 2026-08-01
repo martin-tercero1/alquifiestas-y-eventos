@@ -75,6 +75,7 @@ export function RequestFlow() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [cedula, setCedula] = useState("");
+  const [pickupTime, setPickupTime] = useState("");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
 
@@ -185,6 +186,7 @@ export function RequestFlow() {
       p_delivery_address: delivery === "entrega" ? address.trim() : null,
       p_notes: notes.trim() || null,
       p_cedula: cedula.trim() || null,
+      p_pickup_time: pickupTime || null,
     });
 
     setSubmitting(false);
@@ -309,6 +311,21 @@ export function RequestFlow() {
                   {errors.eventDate}
                 </p>
               )}
+
+              <Field
+                label="¿A qué hora querés retirar?"
+                htmlFor="hora-retiro"
+                optional
+                hint="Opcional. Nos ayuda a organizar el día; lo terminamos de acordar por WhatsApp."
+                className="mt-6 max-w-xs"
+              >
+                <Input
+                  id="hora-retiro"
+                  type="time"
+                  value={pickupTime}
+                  onChange={(e) => setPickupTime(e.target.value)}
+                />
+              </Field>
             </div>
           </fieldset>
         )}

@@ -65,6 +65,10 @@ export type Draft = {
   customerCedula: string;
   pickupDate: string;
   returnDate: string;
+  /** Agreed clock times, "HH:MM". Coordination only — see §4. Required in this
+   *  form's own UI, but empty is a valid intermediate state while typing. */
+  pickupTime: string;
+  returnTime: string;
   lines: DraftLine[];
   fulfilment: "pickup" | "delivery";
   deliveryAddress: string;
@@ -89,24 +93,34 @@ export function addDays(iso: string, days: number): string {
   return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
 }
 
-/** Inclusive: picking up and returning the same day is one billed day. */
+/**
+ * Billed days = nights out. A rental is priced in 24-hour periods, so a pickup
+ * on the 1st due back on the 2nd is ONE día. The return date is the day the
+ * item comes back, not the last day it is out. A same-day return (pickup and
+ * return the same date) is still billed as one día — the minimum.
+ */
 export function daysBetween(start: string, end: string): number {
   const a = Date.parse(`${start}T00:00:00Z`);
   const b = Date.parse(`${end}T00:00:00Z`);
   if (Number.isNaN(a) || Number.isNaN(b)) return 1;
-  return Math.max(1, Math.round((b - a) / 86400000) + 1);
+  return Math.max(1, Math.round((b - a) / 86400000));
 }
 
 export function emptyDraft(): Draft {
-  const today = todayISO();
+  // Same-day pickup rarely makes sense — the parents agree a slot ahead of
+  // time — so default to tomorrow. Same-day is still allowed, just not the
+  // default (§4).
+  const pickup = addDays(todayISO(), 1);
   return {
     customerId: null,
     customerName: "",
     customerPhone: "",
     customerCedula: "",
-    // The common case is one day, today. It needs no input at all.
-    pickupDate: today,
-    returnDate: today,
+    // The common case is one día — a 24-hour rental, due back the next day.
+    pickupDate: pickup,
+    returnDate: addDays(pickup, 1),
+    pickupTime: "",
+    returnTime: "",
     lines: [],
     fulfilment: "pickup",
     deliveryAddress: "",
@@ -275,12 +289,23 @@ export async function searchCustomers(query: string): Promise<CustomerHit[]> {
   }));
 }
 
+/**
+ * Availability for a rental, given its pickup and agreed return dates.
+ *
+ * The engine counts the NIGHTS the item is out — the pickup date through the day
+ * before it's due back. So the query window ends the day before the return date;
+ * a same-day rental still checks the pickup day. Passing the return date itself
+ * would ask about a day this rental doesn't need the item and could invent a
+ * false shortage from a different order that starts then.
+ */
 export async function availabilityFor(
   variantIds: string[],
-  start: string,
-  end: string,
+  pickupDate: string,
+  agreedReturnDate: string,
 ): Promise<Map<string, Availability>> {
-  return getAvailability(variantIds, start, end, panelClient());
+  const occEnd =
+    agreedReturnDate > pickupDate ? addDays(agreedReturnDate, -1) : pickupDate;
+  return getAvailability(variantIds, pickupDate, occEnd, panelClient());
 }
 
 // ---------------------------------------------------------------------------
@@ -310,6 +335,8 @@ export async function saveProforma(draft: Draft): Promise<SaveResult> {
     },
     pickup_date: draft.pickupDate,
     agreed_return_date: draft.returnDate,
+    pickup_time: draft.pickupTime || null,
+    agreed_return_time: draft.returnTime || null,
     billed_days: billedDays,
     fulfilment: draft.fulfilment,
     delivery_address: draft.deliveryAddress.trim() || null,
