@@ -3,7 +3,13 @@ import { business, whatsappLink, whatsappMessages } from "@/lib/business";
 import { getCategories } from "@/lib/catalog";
 import { Container } from "./Container";
 import { Wordmark } from "./Wordmark";
-import { ClockIcon, PinIcon, WhatsAppIcon } from "@/components/ui/icons";
+import {
+  ClockIcon,
+  FacebookIcon,
+  InstagramIcon,
+  PinIcon,
+  WhatsAppIcon,
+} from "@/components/ui/icons";
 
 export async function Footer() {
   // Only categories that actually have something bookable in them — no empty
@@ -77,6 +83,28 @@ export async function Footer() {
                 >
                   <WhatsAppIcon className="size-5 shrink-0 text-ink-muted" />
                   {business.whatsapp.display}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={business.social.instagram.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-3 text-base text-white/85 underline-offset-4 hover:text-white hover:underline"
+                >
+                  <InstagramIcon className="size-5 shrink-0 text-ink-muted" />
+                  {business.social.instagram.display}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={business.social.facebook.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-3 text-base text-white/85 underline-offset-4 hover:text-white hover:underline"
+                >
+                  <FacebookIcon className="size-5 shrink-0 text-ink-muted" />
+                  {business.social.facebook.display}
                 </a>
               </li>
             </ul>

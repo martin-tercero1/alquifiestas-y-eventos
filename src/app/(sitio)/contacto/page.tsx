@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import { business, whatsappLink, whatsappMessages } from "@/lib/business";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/Button";
-import { ClockIcon, PinIcon, WhatsAppIcon } from "@/components/ui/icons";
+import {
+  ClockIcon,
+  FacebookIcon,
+  InstagramIcon,
+  PinIcon,
+  WhatsAppIcon,
+} from "@/components/ui/icons";
 import { Croquis } from "./Croquis";
 
 export const metadata: Metadata = {
@@ -98,6 +104,28 @@ export default function ContactPage() {
                   >
                     <WhatsAppIcon className="size-5" />
                     WhatsApp {business.whatsapp.display}
+                  </Button>
+                </div>
+
+                <h2 className="type-label mt-6 text-stone-text">Seguinos</h2>
+                <div className="mt-4 flex flex-col gap-3">
+                  <Button
+                    href={business.social.instagram.url}
+                    variant="secondary"
+                    size="lg"
+                    full
+                  >
+                    <InstagramIcon className="size-5" />
+                    {business.social.instagram.display}
+                  </Button>
+                  <Button
+                    href={business.social.facebook.url}
+                    variant="secondary"
+                    size="lg"
+                    full
+                  >
+                    <FacebookIcon className="size-5" />
+                    {business.social.facebook.display}
                   </Button>
                 </div>
               </div>

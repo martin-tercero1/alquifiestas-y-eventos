@@ -32,6 +32,18 @@ export const business = {
     display: "+505 8293 7012",
   },
 
+  /** Public social pages. `display` is what the link reads as on screen. */
+  social: {
+    instagram: {
+      url: "https://www.instagram.com/alquifiestas_eventos/",
+      display: "@alquifiestas_eventos",
+    },
+    facebook: {
+      url: "https://www.facebook.com/AlquifiestasYEventos",
+      display: "Alquifiestas y Eventos",
+    },
+  },
+
   address: {
     street: "De la Iglesia Católica, 75 metros al sur, frente al CSE",
     town: "San Marcos",
