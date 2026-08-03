@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { business, whatsappLink, whatsappMessages } from "@/lib/business";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/Button";
-import { ClockIcon, PhoneIcon, PinIcon, WhatsAppIcon } from "@/components/ui/icons";
+import { ClockIcon, PinIcon, WhatsAppIcon } from "@/components/ui/icons";
 import { Croquis } from "./Croquis";
 
 export const metadata: Metadata = {
   title: "Contacto y cómo llegar",
   description:
-    "Estamos en San Marcos, Carazo: de la Iglesia Católica 75 metros al sur, frente al CSE. Horarios, teléfono y WhatsApp.",
+    "Estamos en San Marcos, Carazo: de la Iglesia Católica 75 metros al sur, frente al CSE. Horarios y WhatsApp.",
 };
 
 export default function ContactPage() {
@@ -89,7 +89,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <h2 className="type-label text-stone-text">Escribinos o llamanos</h2>
+                <h2 className="type-label text-stone-text">Escribinos</h2>
                 <div className="mt-4 flex flex-col gap-3">
                   <Button
                     href={whatsappLink(whatsappMessages.general)}
@@ -98,15 +98,6 @@ export default function ContactPage() {
                   >
                     <WhatsAppIcon className="size-5" />
                     WhatsApp {business.whatsapp.display}
-                  </Button>
-                  <Button
-                    href={`tel:${business.phone.number}`}
-                    variant="secondary"
-                    size="lg"
-                    full
-                  >
-                    <PhoneIcon className="size-5" />
-                    Llamar al {business.phone.display}
                   </Button>
                 </div>
               </div>

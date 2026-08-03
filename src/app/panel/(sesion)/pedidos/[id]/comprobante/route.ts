@@ -50,7 +50,7 @@ export async function GET(
         legalName: business.fiscal.legalName,
         ruc: business.fiscal.ruc,
         addressLine: `${business.address.street}, ${business.address.town}, ${business.address.department}`,
-        phone: business.phone.display,
+        whatsapp: business.whatsapp.display,
       },
     }),
   );

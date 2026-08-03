@@ -3,7 +3,7 @@ import { business, whatsappLink, whatsappMessages } from "@/lib/business";
 import { getCategories } from "@/lib/catalog";
 import { Container } from "./Container";
 import { Wordmark } from "./Wordmark";
-import { ClockIcon, PhoneIcon, PinIcon, WhatsAppIcon } from "@/components/ui/icons";
+import { ClockIcon, PinIcon, WhatsAppIcon } from "@/components/ui/icons";
 
 export async function Footer() {
   // Only categories that actually have something bookable in them — no empty
@@ -77,15 +77,6 @@ export async function Footer() {
                 >
                   <WhatsAppIcon className="size-5 shrink-0 text-ink-muted" />
                   {business.whatsapp.display}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`tel:${business.phone.number}`}
-                  className="inline-flex items-center gap-3 text-base text-white/85 underline-offset-4 hover:text-white hover:underline"
-                >
-                  <PhoneIcon className="size-5 shrink-0 text-ink-muted" />
-                  {business.phone.display}
                 </a>
               </li>
             </ul>

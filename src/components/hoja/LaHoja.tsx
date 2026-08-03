@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { money, lineCount as formatLines, compactDate } from "@/lib/format";
-import { business, whatsappLink, whatsappMessages } from "@/lib/business";
+import { whatsappLink, whatsappMessages } from "@/lib/business";
 import { Button } from "@/components/ui/Button";
 import { Sheet } from "@/components/ui/Sheet";
 import { ChevronIcon, SheetIcon, WhatsAppIcon } from "@/components/ui/icons";
@@ -132,9 +132,6 @@ export function LaHoja() {
               Mandarlo por WhatsApp
             </Button>
           </div>
-          <p className="mt-3 text-center text-xs text-stone-text">
-            También podés llamarnos al {business.phone.display}.
-          </p>
         </div>
       </Sheet>
     </>

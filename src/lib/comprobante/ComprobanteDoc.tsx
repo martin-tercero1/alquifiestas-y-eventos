@@ -168,7 +168,8 @@ export type ComprobanteBusiness = {
   legalName: string;
   ruc: string;
   addressLine: string;
-  phone: string;
+  /** The business has no landline; WhatsApp is the real contact channel. */
+  whatsapp: string;
 };
 
 function lineName(l: ComprobanteSnapshot["lines"][number]): string {
@@ -211,7 +212,7 @@ export function ComprobanteDoc({
             <Text style={styles.bizName}>{business.legalName}</Text>
             <Text style={styles.bizLine}>RUC: {business.ruc}</Text>
             <Text style={styles.bizLine}>{business.addressLine}</Text>
-            <Text style={styles.bizLine}>Tel: {business.phone}</Text>
+            <Text style={styles.bizLine}>WhatsApp: {business.whatsapp}</Text>
           </View>
           <View style={styles.docBox}>
             <Text style={styles.docTitle}>COMPROBANTE</Text>
