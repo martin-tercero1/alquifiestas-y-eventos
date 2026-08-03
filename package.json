@@ -18,6 +18,7 @@
     "scrape:test": "node --test scripts/scrape/parse-odoo.test.mjs"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.5.1",
     "@supabase/ssr": "^0.12.3",
     "@supabase/supabase-js": "^2.110.9",
     "libphonenumber-js": "^1.13.10",

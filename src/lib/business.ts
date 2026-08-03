@@ -11,6 +11,21 @@ export const business = {
   tagline: "#TuEventoDeSiempre",
   yearsInBusiness: 20,
 
+  /**
+   * Fiscal identity, printed on the comprobante (Brief 04 §9). The comprobante
+   * is a non-fiscal internal document today; these fields exist so that when
+   * DGI authorization eventually arrives, the layout already carries the RUC and
+   * legal name and only the "no es documento fiscal" label has to come off.
+   *
+   * `ruc` is still a placeholder (like the bank accounts) — it must hold the
+   * business's real RUC before a comprobante is ever shown to a customer.
+   */
+  fiscal: {
+    /** Razón social — the name the RUC is registered under. */
+    legalName: "Alquifiestas y Eventos",
+    ruc: "TODO-RUC-DEL-NEGOCIO",
+  },
+
   /** The business's real WhatsApp — used to build wa.me links. */
   whatsapp: {
     /** International format, digits only — used to build wa.me links. */

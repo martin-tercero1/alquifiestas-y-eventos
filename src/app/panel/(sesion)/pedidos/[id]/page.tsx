@@ -28,5 +28,12 @@ export default async function PedidoPage({
 
   if (!order) notFound();
 
-  return <DetallePedido order={order} canDelete={staff?.isTechAdmin ?? false} />;
+  const isTechAdmin = staff?.isTechAdmin ?? false;
+  return (
+    <DetallePedido
+      order={order}
+      canDelete={isTechAdmin}
+      canIssueComprobante={isTechAdmin}
+    />
+  );
 }

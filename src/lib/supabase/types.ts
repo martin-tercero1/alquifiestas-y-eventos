@@ -588,6 +588,10 @@ export type Database = {
         Args: { p: Json };
         Returns: Json;
       };
+      issue_comprobante: {
+        Args: { p_order_id: string; p_business_ruc?: string | null };
+        Returns: Json;
+      };
       revise_order_lines: {
         Args: { p_order_id: string; p_lines: Json };
         Returns: Json;
