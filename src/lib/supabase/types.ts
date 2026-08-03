@@ -592,6 +592,14 @@ export type Database = {
         Args: { p_order_id: string; p_business_ruc?: string | null };
         Returns: Json;
       };
+      add_variant: {
+        Args: { p_product_id: string; p: Json };
+        Returns: Json;
+      };
+      set_product_option: {
+        Args: { p_product_id: string; p: Json };
+        Returns: Json;
+      };
       revise_order_lines: {
         Args: { p_order_id: string; p_lines: Json };
         Returns: Json;

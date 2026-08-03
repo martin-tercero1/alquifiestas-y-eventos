@@ -93,6 +93,7 @@ const CREATE_ERROR_ES: Record<string, string> = {
   categoria_invalida: "Elegí una categoría.",
   sin_variantes: "Agregá al menos una variante con su precio.",
   madre_invalida: "La categoría madre ya no existe.",
+  producto_invalido: "Ese artículo ya no existe.",
 };
 
 type CreateResult<T> = { ok: true; data: T } | { ok: false; message: string };
@@ -163,6 +164,85 @@ export async function createProduct(
         variantId: v.variant_id,
         label: v.label,
       })),
+    },
+  };
+}
+
+/**
+ * Appends a variant to an existing product — technical-admin only, gated again
+ * in `add_variant`. Blank price or quantity stays null (unknown), exactly like
+ * the create flow; the new variant is stamped 'staff' so an import won't touch
+ * it.
+ */
+export type AddedVariant = { variantId: string; label: string | null };
+
+export async function addVariant(
+  productId: string,
+  input: { label: string; pricePerDay: string; totalQuantity: string; published: boolean },
+): Promise<CreateResult<AddedVariant>> {
+  const { data, error } = await panelClient().rpc("add_variant", {
+    p_product_id: productId,
+    p: {
+      label: input.label.trim() || null,
+      price_per_day: input.pricePerDay.trim() || null,
+      total_quantity: input.totalQuantity.trim() || null,
+      published: input.published,
+    },
+  });
+
+  if (error) return fail(error) as CreateResult<AddedVariant>;
+
+  const result = (data ?? {}) as {
+    ok?: boolean;
+    error?: string;
+    variant_id?: string;
+    label?: string | null;
+  };
+  if (!result.ok) return createFail(result.error ?? null);
+
+  return {
+    ok: true,
+    data: { variantId: result.variant_id!, label: result.label ?? null },
+  };
+}
+
+/**
+ * Sets (or clears) a product's shared rental-time option — technical-admin only.
+ * An option name with no values clears the option entirely, matching the create
+ * flow. Returns the cleaned values so the panel shows exactly what was stored.
+ */
+export type SavedOption = {
+  optionName: string | null;
+  optionValues: string[] | null;
+};
+
+export async function saveProductOption(
+  productId: string,
+  input: { optionName: string; optionValues: string[] },
+): Promise<CreateResult<SavedOption>> {
+  const { data, error } = await panelClient().rpc("set_product_option", {
+    p_product_id: productId,
+    p: {
+      option_name: input.optionName.trim() || null,
+      option_values: input.optionValues,
+    },
+  });
+
+  if (error) return fail(error) as CreateResult<SavedOption>;
+
+  const result = (data ?? {}) as {
+    ok?: boolean;
+    error?: string;
+    option_name?: string | null;
+    option_values?: string[] | null;
+  };
+  if (!result.ok) return createFail(result.error ?? null);
+
+  return {
+    ok: true,
+    data: {
+      optionName: result.option_name ?? null,
+      optionValues: result.option_values ?? null,
     },
   };
 }

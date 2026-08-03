@@ -35,6 +35,9 @@ export type InvProduct = {
   /** Set on the first product of each top category, for section headers. */
   photoSquare: string | null;
   internalNote: string | null;
+  /** The shared rental-time choice (Color/Estilo) and its values, if any. */
+  optionName: string | null;
+  optionValues: string[] | null;
   variants: InvVariant[];
 };
 
@@ -54,6 +57,8 @@ type Row = {
   top_category_name: string;
   photo_square: string | null;
   internal_note: string | null;
+  option_name: string | null;
+  option_values: string[] | null;
 };
 
 export async function loadInventory(): Promise<InvProduct[]> {
@@ -87,6 +92,8 @@ export async function loadInventory(): Promise<InvProduct[]> {
         topCategoryName: r.top_category_name,
         photoSquare: r.photo_square,
         internalNote: r.internal_note,
+        optionName: r.option_name,
+        optionValues: r.option_values,
         variants: [],
       };
       byProduct.set(r.product_id, product);

@@ -3,12 +3,21 @@
 import { useEffect, useRef, useState } from "react";
 import { Sheet } from "@/components/ui/Sheet";
 import { Button } from "@/components/ui/Button";
-import { Field, Input, Select } from "@/components/ui/Field";
+import { Field, Input, Select, Textarea } from "@/components/ui/Field";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
-import { saveProduct, uploadProductPhoto } from "@/lib/admin/inventory";
+import {
+  addVariant,
+  saveProduct,
+  saveProductOption,
+  uploadProductPhoto,
+} from "@/lib/admin/inventory";
 import { deleteProduct } from "@/lib/admin/order";
 import { photoUrl } from "@/lib/catalog";
-import type { InvProduct, InvCategory } from "@/lib/admin/loadInventory";
+import type {
+  InvProduct,
+  InvCategory,
+  InvVariant,
+} from "@/lib/admin/loadInventory";
 
 /**
  * Editing the product itself — its name, which shelf it lives on, and its
@@ -21,17 +30,22 @@ export function ProductEditorSheet({
   product,
   categories,
   canDelete = false,
+  canManageStructure = false,
   onClose,
   onSaved,
   onDeleted,
+  onVariantAdded,
 }: {
   product: InvProduct | null;
   categories: InvCategory[];
   /** Technical admin only; the delete control is absent otherwise. */
   canDelete?: boolean;
+  /** Technical admin only; unlocks editing the option and adding a variant. */
+  canManageStructure?: boolean;
   onClose: () => void;
   onSaved: (productId: string, patch: Partial<InvProduct>) => void;
   onDeleted?: (productId: string) => void;
+  onVariantAdded?: (productId: string, variant: InvVariant) => void;
 }) {
   const [name, setName] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -45,6 +59,22 @@ export function ProductEditorSheet({
   const [deleting, setDeleting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  // Option (Color/Estilo) — technical admin only.
+  const [optionName, setOptionName] = useState("");
+  const [optionValuesText, setOptionValuesText] = useState("");
+  const [savingOption, setSavingOption] = useState(false);
+  const [optionError, setOptionError] = useState<string | null>(null);
+  const [optionSaved, setOptionSaved] = useState(false);
+
+  // Add-a-variant form — technical admin only.
+  const [nvLabel, setNvLabel] = useState("");
+  const [nvPrice, setNvPrice] = useState("");
+  const [nvQty, setNvQty] = useState("");
+  const [nvPublished, setNvPublished] = useState(true);
+  const [addingVariant, setAddingVariant] = useState(false);
+  const [variantError, setVariantError] = useState<string | null>(null);
+  const [addedLabel, setAddedLabel] = useState<string | null>(null);
+
   useEffect(() => {
     if (product) {
       setName(product.name);
@@ -53,6 +83,16 @@ export function ProductEditorSheet({
       setError(null);
       setConfirmingDelete(false);
       setDeleteWord("");
+      setOptionName(product.optionName ?? "");
+      setOptionValuesText((product.optionValues ?? []).join("\n"));
+      setOptionError(null);
+      setOptionSaved(false);
+      setNvLabel("");
+      setNvPrice("");
+      setNvQty("");
+      setNvPublished(true);
+      setVariantError(null);
+      setAddedLabel(null);
     }
   }, [product]);
 
@@ -99,6 +139,72 @@ export function ProductEditorSheet({
       photoSquare: photo,
     });
     onClose();
+  }
+
+  async function saveOption() {
+    if (!product) return;
+    setSavingOption(true);
+    setOptionError(null);
+    setOptionSaved(false);
+
+    const values = optionValuesText
+      .split(/[\n,]/)
+      .map((v) => v.trim())
+      .filter((v) => v !== "");
+
+    const result = await saveProductOption(product.productId, {
+      optionName,
+      optionValues: values,
+    });
+
+    setSavingOption(false);
+    if (!result.ok) {
+      setOptionError(result.message);
+      return;
+    }
+    // Reflect the cleaned values the database actually kept.
+    setOptionName(result.data.optionName ?? "");
+    setOptionValuesText((result.data.optionValues ?? []).join("\n"));
+    setOptionSaved(true);
+    onSaved(product.productId, {
+      optionName: result.data.optionName,
+      optionValues: result.data.optionValues,
+    });
+  }
+
+  async function addNewVariant() {
+    if (!product) return;
+    setAddingVariant(true);
+    setVariantError(null);
+    setAddedLabel(null);
+
+    const result = await addVariant(product.productId, {
+      label: nvLabel,
+      pricePerDay: nvPrice,
+      totalQuantity: nvQty,
+      published: nvPublished,
+    });
+
+    setAddingVariant(false);
+    if (!result.ok) {
+      setVariantError(result.message);
+      return;
+    }
+
+    const variant: InvVariant = {
+      variantId: result.data.variantId,
+      label: result.data.label,
+      pricePerDay: nvPrice.trim() === "" ? null : Number(nvPrice),
+      priceSource: nvPrice.trim() === "" ? null : "staff",
+      totalQuantity: nvQty.trim() === "" ? null : Number(nvQty),
+      quantitySource: nvQty.trim() === "" ? null : "staff",
+      published: nvPublished,
+    };
+    onVariantAdded?.(product.productId, variant);
+    setAddedLabel(result.data.label ?? "Variante");
+    setNvLabel("");
+    setNvPrice("");
+    setNvQty("");
   }
 
   async function remove() {
@@ -185,6 +291,152 @@ export function ProductEditorSheet({
             {saving ? "Guardando…" : "Guardar"}
           </Button>
         </div>
+
+        {canManageStructure && (
+          <>
+            {/* Option (Color/Estilo) — the shared choice picked at rental time. */}
+            <section className="flex flex-col gap-3 border-t border-rule pt-5">
+              <div>
+                <p className="text-base font-semibold text-ink">Opción</p>
+                <p className="text-sm text-stone-text">
+                  Una elección al momento de alquilar, como color o estilo. Dejá
+                  el nombre vacío si el artículo no tiene opciones.
+                </p>
+              </div>
+              <Field label="Nombre de la opción" htmlFor="pe-opt" optional>
+                <Input
+                  id="pe-opt"
+                  value={optionName}
+                  onChange={(e) => {
+                    setOptionName(e.target.value);
+                    setOptionSaved(false);
+                  }}
+                  placeholder="Ej. Color"
+                />
+              </Field>
+              {optionName.trim() !== "" && (
+                <Field
+                  label="Valores"
+                  htmlFor="pe-optvals"
+                  hint="Uno por línea (o separados por coma)."
+                >
+                  <Textarea
+                    id="pe-optvals"
+                    rows={3}
+                    value={optionValuesText}
+                    onChange={(e) => {
+                      setOptionValuesText(e.target.value);
+                      setOptionSaved(false);
+                    }}
+                    placeholder={"Rojo\nAzul\nDorado"}
+                  />
+                </Field>
+              )}
+              {optionError && (
+                <p className="text-sm font-medium text-mamey-text">{optionError}</p>
+              )}
+              {optionSaved && (
+                <p className="text-sm font-medium text-green">Opción guardada.</p>
+              )}
+              <Button
+                variant="quiet"
+                size="sm"
+                onClick={saveOption}
+                disabled={savingOption}
+              >
+                {savingOption ? "Guardando…" : "Guardar opción"}
+              </Button>
+            </section>
+
+            {/* Append a variant to this product. */}
+            <section className="flex flex-col gap-3 border-t border-rule pt-5">
+              <div>
+                <p className="text-base font-semibold text-ink">
+                  Agregar variante
+                </p>
+                <p className="text-sm text-stone-text">
+                  Un tamaño o tipo nuevo con su propio precio, por ejemplo
+                  “Grande”.
+                </p>
+              </div>
+              {product.variants.length === 1 && !product.variants[0].label && (
+                <p className="rounded-md bg-limewash px-3 py-2 text-sm text-ink">
+                  Al agregar una segunda variante, ponele también una etiqueta a
+                  la que ya existe (tocá su línea) para diferenciarlas.
+                </p>
+              )}
+              <Field label="Nombre de la variante" htmlFor="pe-nv-label" optional>
+                <Input
+                  id="pe-nv-label"
+                  value={nvLabel}
+                  onChange={(e) => setNvLabel(e.target.value)}
+                  placeholder="Ej. Grande"
+                />
+              </Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Precio / día" htmlFor="pe-nv-price" optional>
+                  <Input
+                    id="pe-nv-price"
+                    type="number"
+                    inputMode="decimal"
+                    min={0}
+                    value={nvPrice}
+                    onChange={(e) => setNvPrice(e.target.value)}
+                  />
+                </Field>
+                <Field label="Cantidad" htmlFor="pe-nv-qty" optional>
+                  <Input
+                    id="pe-nv-qty"
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    value={nvQty}
+                    onChange={(e) => setNvQty(e.target.value)}
+                  />
+                </Field>
+              </div>
+              <button
+                type="button"
+                onClick={() => setNvPublished((v) => !v)}
+                className="flex items-center justify-between gap-4 rounded-lg border border-rule bg-paper p-3 text-left"
+              >
+                <span className="text-sm font-semibold text-ink">
+                  {nvPublished ? "En la tienda" : "Oculto"}
+                </span>
+                <span
+                  aria-hidden
+                  className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${
+                    nvPublished ? "bg-green" : "bg-rule-strong"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-1 size-5 rounded-full bg-white transition-all ${
+                      nvPublished ? "left-6" : "left-1"
+                    }`}
+                  />
+                </span>
+              </button>
+              {variantError && (
+                <p className="text-sm font-medium text-mamey-text">
+                  {variantError}
+                </p>
+              )}
+              {addedLabel && (
+                <p className="text-sm font-medium text-green">
+                  Agregada “{addedLabel}”. Podés agregar otra.
+                </p>
+              )}
+              <Button
+                variant="quiet"
+                size="sm"
+                onClick={addNewVariant}
+                disabled={addingVariant}
+              >
+                {addingVariant ? "Agregando…" : "＋ Agregar variante"}
+              </Button>
+            </section>
+          </>
+        )}
 
         {canDelete && (
           <div className="mt-4 rounded-lg border border-mamey/25 bg-mamey/[0.04] p-4">
