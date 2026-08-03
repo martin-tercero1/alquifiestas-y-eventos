@@ -18,6 +18,7 @@ import {
   type OrderStatus,
 } from "@/lib/admin/order";
 import { EliminarSheet } from "@/components/ui/EliminarSheet";
+import { ComprobanteBoton } from "./ComprobanteBoton";
 import { customerWhatsappLink, proformaSummary } from "@/lib/admin/share";
 import {
   CancelarSheet,
@@ -73,10 +74,13 @@ function todayISO(): string {
 export function DetallePedido({
   order,
   canDelete = false,
+  canIssueComprobante = false,
 }: {
   order: OrderDetail;
   /** Only a technical admin gets the hard-delete control; absent otherwise. */
   canDelete?: boolean;
+  /** Only a technical admin can generate the comprobante PDF (Brief 04 §9). */
+  canIssueComprobante?: boolean;
 }) {
   const router = useRouter();
   const [sheet, setSheet] = useState<SheetName>(null);
@@ -254,6 +258,18 @@ export function DetallePedido({
           Enviar proforma por WhatsApp
         </a>
       )}
+
+      {/* ---- Comprobante (technical admin only, Brief 04 §9) ---- */}
+      {canIssueComprobante &&
+        order.lines.length > 0 &&
+        order.status !== "cancelled" && (
+          <div className="mt-3">
+            <ComprobanteBoton
+              orderId={order.id}
+              customerName={order.customerName}
+            />
+          </div>
+        )}
 
       {/* ---- Lines ---- */}
       <section className="mt-8">

@@ -1,9 +1,8 @@
 /**
  * Business constants.
  *
- * WhatsApp and the Maps pin are the owners' real details. The landline phone
- * and the bank-transfer accounts are still placeholders (marked TODO) and need
- * the real values before real customers use the transfer flow.
+ * These are the owners' real details. The business has no landline — WhatsApp
+ * is the only phone channel, so nothing here (or in the UI) offers a call.
  */
 
 export const business = {
@@ -11,16 +10,38 @@ export const business = {
   tagline: "#TuEventoDeSiempre",
   yearsInBusiness: 20,
 
+  /**
+   * Fiscal identity, printed on the comprobante (Brief 04 §9). The comprobante
+   * is a non-fiscal internal document today; these fields exist so that when
+   * DGI authorization eventually arrives, the layout already carries the RUC and
+   * legal name and only the "no es documento fiscal" label has to come off.
+   *
+   * `ruc` is still a placeholder (like the bank accounts) — it must hold the
+   * business's real RUC before a comprobante is ever shown to a customer.
+   */
+  fiscal: {
+    /** Razón social — the name the RUC is registered under. */
+    legalName: "Alquifiestas y Eventos",
+    ruc: "043240158000R",
+  },
+
   /** The business's real WhatsApp — used to build wa.me links. */
   whatsapp: {
     /** International format, digits only — used to build wa.me links. */
-    number: "50585791770",
-    display: "+505 8579 1770",
+    number: "50582937012",
+    display: "+505 8293 7012",
   },
 
-  phone: {
-    number: "50525350000",
-    display: "+505 2535 0000",
+  /** Public social pages. `display` is what the link reads as on screen. */
+  social: {
+    instagram: {
+      url: "https://www.instagram.com/alquifiestas_eventos/",
+      display: "@alquifiestas_eventos",
+    },
+    facebook: {
+      url: "https://www.facebook.com/AlquifiestasYEventos",
+      display: "Alquifiestas y Eventos",
+    },
   },
 
   address: {
@@ -35,22 +56,22 @@ export const business = {
   hours: [
     { days: "Lunes a viernes", time: "8:00 a. m. – 5:00 p. m." },
     { days: "Sábado", time: "8:00 a. m. – 4:00 p. m." },
-    { days: "Domingo", time: "Solo con cita previa" },
+    { days: "Domingo", time: "8:00 a.m. - 12:00 p.m." },
   ],
 
   /** Shown to the customer when they choose bank transfer. */
   bankAccounts: [
     {
       bank: "BAC Credomatic",
-      holder: "Alquifiestas y Eventos",
-      account: "TODO-000000000",
+      holder: "Mayra Alfaro",
+      account: "368080495",
       currency: "Córdobas",
     },
     {
-      bank: "Banpro",
-      holder: "Alquifiestas y Eventos",
-      account: "TODO-000000000",
-      currency: "Córdobas",
+      bank: "Lafise",
+      holder: "Mayra Alfaro",
+      account: "109269822",
+      currency: "Dólares",
     },
   ],
 } as const;

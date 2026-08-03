@@ -2,13 +2,19 @@ import type { Metadata } from "next";
 import { business, whatsappLink, whatsappMessages } from "@/lib/business";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/Button";
-import { ClockIcon, PhoneIcon, PinIcon, WhatsAppIcon } from "@/components/ui/icons";
+import {
+  ClockIcon,
+  FacebookIcon,
+  InstagramIcon,
+  PinIcon,
+  WhatsAppIcon,
+} from "@/components/ui/icons";
 import { Croquis } from "./Croquis";
 
 export const metadata: Metadata = {
   title: "Contacto y cómo llegar",
   description:
-    "Estamos en San Marcos, Carazo: de la Iglesia Católica 75 metros al sur, frente al CSE. Horarios, teléfono y WhatsApp.",
+    "Estamos en San Marcos, Carazo: de la Iglesia Católica 75 metros al sur, frente al CSE. Horarios y WhatsApp.",
 };
 
 export default function ContactPage() {
@@ -89,7 +95,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <h2 className="type-label text-stone-text">Escribinos o llamanos</h2>
+                <h2 className="type-label text-stone-text">Escribinos</h2>
                 <div className="mt-4 flex flex-col gap-3">
                   <Button
                     href={whatsappLink(whatsappMessages.general)}
@@ -99,14 +105,27 @@ export default function ContactPage() {
                     <WhatsAppIcon className="size-5" />
                     WhatsApp {business.whatsapp.display}
                   </Button>
+                </div>
+
+                <h2 className="type-label mt-6 text-stone-text">Seguinos</h2>
+                <div className="mt-4 flex flex-col gap-3">
                   <Button
-                    href={`tel:${business.phone.number}`}
+                    href={business.social.instagram.url}
                     variant="secondary"
                     size="lg"
                     full
                   >
-                    <PhoneIcon className="size-5" />
-                    Llamar al {business.phone.display}
+                    <InstagramIcon className="size-5" />
+                    {business.social.instagram.display}
+                  </Button>
+                  <Button
+                    href={business.social.facebook.url}
+                    variant="secondary"
+                    size="lg"
+                    full
+                  >
+                    <FacebookIcon className="size-5" />
+                    {business.social.facebook.display}
                   </Button>
                 </div>
               </div>

@@ -154,6 +154,9 @@ export function NuevoArticuloSheet({
       topCategoryName: cat?.topName ?? "",
       photoSquare: null,
       internalNote: null,
+      optionName: optionName.trim() || null,
+      optionValues:
+        optionName.trim() && optionValues.length > 0 ? optionValues : null,
       variants: result.data.variants.map((v, i) => {
         const priceStr = variants[i]?.pricePerDay.trim() ?? "";
         const qtyStr = variants[i]?.totalQuantity.trim() ?? "";

@@ -146,6 +146,16 @@ export function Inventario({
     setProducts((prev) => [...prev, product]);
   }
 
+  function addVariantToProduct(productId: string, variant: InvVariant) {
+    setProducts((prev) =>
+      prev.map((p) =>
+        p.productId === productId
+          ? { ...p, variants: [...p.variants, variant] }
+          : p,
+      ),
+    );
+  }
+
   function addCategory(category: InvCategory) {
     setCategories((prev) => [...prev, category]);
   }
@@ -249,9 +259,11 @@ export function Inventario({
         product={editingProduct}
         categories={categories}
         canDelete={isTechAdmin}
+        canManageStructure={isTechAdmin}
         onClose={() => setEditingProduct(null)}
         onSaved={patchProduct}
         onDeleted={removeProduct}
+        onVariantAdded={addVariantToProduct}
       />
 
       {isTechAdmin && (
