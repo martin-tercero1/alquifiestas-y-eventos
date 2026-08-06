@@ -15,7 +15,9 @@
     "db:migrations": "node scripts/dump-migrations.mjs",
     "db:test": "node scripts/run-availability-tests.mjs",
     "scrape:prices": "node scripts/scrape/recover-prices.mjs",
-    "scrape:test": "node --test scripts/scrape/parse-odoo.test.mjs"
+    "scrape:test": "node --test scripts/scrape/parse-odoo.test.mjs",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.5.1",
@@ -29,6 +31,7 @@
     "sharp": "^0.35.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
