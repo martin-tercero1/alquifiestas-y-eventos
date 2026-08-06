@@ -4,6 +4,7 @@ import { currentStaff } from "@/lib/supabase/server";
 import { money, shortTime } from "@/lib/format";
 import { Badge } from "@/components/ui/Badge";
 import { SalirButton } from "../SalirButton";
+import { NotificacionesToggle } from "./NotificacionesToggle";
 
 export const metadata = { title: "Hoy" };
 export const dynamic = "force-dynamic";
@@ -114,9 +115,12 @@ export default async function HoyPage() {
             Buenas, {staff?.name}
           </h1>
         </div>
-        {/* Logout is technical-admin only (§6): the parents can't get locked
-            out of the phone they run the business from. */}
-        {staff?.isTechAdmin && <SalirButton />}
+        <div className="flex shrink-0 items-start gap-1">
+          <NotificacionesToggle />
+          {/* Logout is technical-admin only (§6): the parents can't get
+              locked out of the phone they run the business from. */}
+          {staff?.isTechAdmin && <SalirButton />}
+        </div>
       </div>
 
       <div className="mt-8 flex flex-col gap-10">

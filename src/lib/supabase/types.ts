@@ -453,6 +453,28 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["staff"]["Insert"]>;
         Relationships: [];
       };
+      push_subscriptions: {
+        Row: {
+          id: string;
+          user_id: string;
+          endpoint: string;
+          p256dh: string;
+          auth: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          endpoint: string;
+          p256dh: string;
+          auth: string;
+          created_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["push_subscriptions"]["Insert"]
+        >;
+        Relationships: [];
+      };
     };
     Views: {
       order_totals: {
@@ -602,6 +624,14 @@ export type Database = {
       };
       revise_order_lines: {
         Args: { p_order_id: string; p_lines: Json };
+        Returns: Json;
+      };
+      save_push_subscription: {
+        Args: { p_subscription: Json };
+        Returns: Json;
+      };
+      delete_push_subscription: {
+        Args: { p_endpoint: string };
         Returns: Json;
       };
       apply_discount: {
