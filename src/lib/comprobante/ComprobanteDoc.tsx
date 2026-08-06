@@ -15,11 +15,11 @@ import {
 /**
  * The comprobante PDF (Brief 04 §9).
  *
- * A non-fiscal internal document — it says so, loudly, near the top. The pre-
- * printed facturas membretadas remain the legal document; this is the customer's
- * receipt and the business's internal control. It is laid out the way the fiscal
- * version will be, so that when DGI authorization arrives the change is removing
- * the banner and turning it on for staff, not a redesign.
+ * A non-fiscal internal document — a discreet notice in the footer says so. The
+ * pre-printed facturas membretadas remain the legal document; this is the
+ * customer's receipt and the business's internal control. It is laid out the way
+ * the fiscal version will be, so that when DGI authorization arrives the change
+ * is dropping the footer notice and turning it on for staff, not a redesign.
  *
  * It renders only from the frozen snapshot the database wrote at issue time, so
  * two people printing the same comprobante number always get an identical page.
@@ -69,19 +69,6 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   docMeta: { fontSize: 8.5, color: STONE, lineHeight: 1.3 },
-
-  // Non-fiscal banner
-  banner: {
-    marginTop: 16,
-    borderWidth: 1,
-    borderColor: MAMEY,
-    borderRadius: 4,
-    paddingVertical: 7,
-    paddingHorizontal: 10,
-    backgroundColor: "#fbf0ec",
-  },
-  bannerTitle: { fontSize: 9.5, fontFamily: "Helvetica-Bold", color: MAMEY },
-  bannerBody: { fontSize: 8, color: "#8a3418", marginTop: 1 },
 
   // Two-column info strip
   strip: { flexDirection: "row", marginTop: 18, gap: 18 },
@@ -226,16 +213,18 @@ export function ComprobanteDoc({
           </View>
         </View>
 
-        {/* Non-fiscal banner */}
-        <View style={styles.banner}>
-          <Text style={styles.bannerTitle}>
-            Comprobante interno — no es un documento fiscal
-          </Text>
-          <Text style={styles.bannerBody}>
-            No sustituye a la factura membretada, que es el documento fiscal
-            válido. Sirve como constancia para el cliente y control del negocio.
-          </Text>
-        </View>
+        {/*
+          The prominent non-fiscal banner that used to sit here was removed at
+          the owner's request — too disruptive on the page. The discreet notice
+          in the footer ("Comprobante interno sin valor fiscal") now carries the
+          disclaimer on its own. Kept here for reference, in case the fuller
+          wording is ever needed again:
+
+            Title: "Comprobante interno — no es un documento fiscal"
+            Body:  "No sustituye a la factura membretada, que es el documento
+                    fiscal válido. Sirve como constancia para el cliente y
+                    control del negocio."
+        */}
 
         {/* Customer */}
         <View style={styles.strip}>
