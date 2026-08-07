@@ -86,6 +86,10 @@ Deno.serve(async (req) => {
             keys: { p256dh: sub.p256dh, auth: sub.auth },
           },
           payload,
+          // High urgency so Android/FCM wakes a Doze'd device and delivers
+          // promptly even when the PWA is closed; TTL caps how long the push
+          // service holds it if the device is offline.
+          { urgency: "high", TTL: 3600 },
         );
         sent++;
       } catch (err) {
