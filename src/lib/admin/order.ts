@@ -89,6 +89,7 @@ export type OrderDetail = {
   charges: Charge[];
   history: StatusEvent[];
   totals: {
+    linesTotal: number;
     linesAfterDiscount: number;
     chargesTotal: number;
     totalCharged: number;

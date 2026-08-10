@@ -405,16 +405,18 @@ type ReturnRow = { returned: string; missing: string; damaged: string };
 export function RetiroSheet({ order, open, onClose, onSaved }: SheetProps) {
   const [cedula, setCedula] = useState(order.customerCedula ?? "");
   const [attempted, setAttempted] = useState(false);
+  const [skip, setSkip] = useState(false);
   const { busy, error, run } = useAction(onSaved, onClose);
 
   useEffect(() => {
     if (open) {
       setCedula(order.customerCedula ?? "");
       setAttempted(false);
+      setSkip(false);
     }
   }, [open, order.customerCedula]);
 
-  const missing = attempted && cedula.trim() === "";
+  const missing = attempted && !skip && cedula.trim() === "";
 
   return (
     <Sheet open={open} onClose={onClose} title="Marcar retirado">
@@ -426,17 +428,39 @@ export function RetiroSheet({ order, open, onClose, onSaved }: SheetProps) {
 
         <CedulaField
           id="retiro-cedula"
-          value={cedula}
+          value={skip ? "" : cedula}
           onChange={setCedula}
           required
           optional={false}
+          disabled={skip}
           hint="Pedila y anotala — la tenés en físico hasta el regreso."
         />
         {missing && (
           <p role="alert" className="-mt-2 text-sm font-medium text-mamey-text">
-            Anotá la cédula para poder marcar el retiro.
+            Anotá la cédula para poder marcar el retiro (o marcá que no se
+            pidió).
           </p>
         )}
+
+        <button
+          type="button"
+          onClick={() => {
+            setSkip((s) => !s);
+            setAttempted(false);
+          }}
+          className={cn(
+            "min-h-12 rounded-md border px-3 py-2 text-left text-sm font-semibold",
+            "transition-colors duration-fast ease-out",
+            skip
+              ? "border-green bg-green/10 text-green"
+              : "border-rule text-stone-text",
+          )}
+        >
+          No pidió cédula (cliente de confianza)
+          <span className="mt-0.5 block text-xs font-normal text-stone-text">
+            No se le va a retener la cédula esta vez.
+          </span>
+        </button>
 
         <ErrorNote message={error} />
 
@@ -446,8 +470,8 @@ export function RetiroSheet({ order, open, onClose, onSaved }: SheetProps) {
           disabled={busy}
           onClick={() => {
             setAttempted(true);
-            if (cedula.trim() === "") return;
-            run(() => markPickedUp(order.id, cedula));
+            if (!skip && cedula.trim() === "") return;
+            run(() => markPickedUp(order.id, skip ? null : cedula));
           }}
         >
           {busy ? "Guardando…" : "Confirmar retiro"}

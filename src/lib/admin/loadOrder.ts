@@ -278,6 +278,7 @@ export async function loadOrder(id: string): Promise<OrderDetail | null> {
       }))
       .sort((a, b) => a.changedAt.localeCompare(b.changedAt)),
     totals: {
+      linesTotal: n(totals?.lines_total),
       linesAfterDiscount: n(totals?.lines_after_discount),
       chargesTotal: n(totals?.charges_total),
       totalCharged: n(totals?.total_charged),

@@ -25,6 +25,7 @@ export function CedulaField({
   optional = true,
   required = false,
   hint = "El número de la cédula. La tenemos en físico hasta que regresen los artículos.",
+  disabled = false,
 }: {
   id: string;
   value: string;
@@ -34,8 +35,9 @@ export function CedulaField({
   /** Marks the field visually required (e.g. at pickup). Never hard-blocks. */
   required?: boolean;
   hint?: string;
+  disabled?: boolean;
 }) {
-  const warning = cedulaWarning(value);
+  const warning = disabled ? null : cedulaWarning(value);
 
   return (
     <Field
@@ -54,6 +56,7 @@ export function CedulaField({
         onChange={(e) => onChange(formatCedula(e.target.value))}
         aria-invalid={Boolean(warning)}
         aria-required={required}
+        disabled={disabled}
       />
     </Field>
   );

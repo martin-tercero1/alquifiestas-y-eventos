@@ -330,7 +330,28 @@ export function DetallePedido({
       {/* ---- Money ---- */}
       <section className="mt-8 rounded-lg border border-rule bg-paper p-5">
         <dl className="flex flex-col gap-2 text-base">
-          <Row label="Artículos" value={money(order.totals.linesAfterDiscount)} />
+          {(() => {
+            const discount =
+              order.totals.linesTotal - order.totals.linesAfterDiscount;
+            if (discount > 0) {
+              return (
+                <>
+                  <Row label="Subtotal" value={money(order.totals.linesTotal)} />
+                  <Row label="Descuento" value={`− ${money(discount)}`} />
+                  <Row
+                    label="Artículos"
+                    value={money(order.totals.linesAfterDiscount)}
+                  />
+                </>
+              );
+            }
+            return (
+              <Row
+                label="Artículos"
+                value={money(order.totals.linesAfterDiscount)}
+              />
+            );
+          })()}
           {order.deliveryCost !== null && order.deliveryCost > 0 && (
             <Row label="Envío" value={money(order.deliveryCost)} />
           )}
