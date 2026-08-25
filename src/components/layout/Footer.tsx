@@ -125,6 +125,18 @@ export async function Footer() {
             Precios por 24 horas, sujetos a disponibilidad.
           </p>
         </div>
+
+        <p className="type-mono mt-4 text-center text-xs text-ink-muted">
+          Desarrollado por{" "}
+          <a
+            href="https://martin-tercero.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/85 underline-offset-4 hover:text-white hover:underline"
+          >
+            Martin Tercero
+          </a>
+        </p>
       </Container>
     </footer>
   );

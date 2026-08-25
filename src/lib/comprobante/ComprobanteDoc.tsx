@@ -136,6 +136,31 @@ const styles = StyleSheet.create({
     fontSize: 8.5,
   },
 
+  // Company policies (mirrors the terms printed on the physical factura).
+  policies: {
+    marginTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: RULE,
+    paddingTop: 8,
+  },
+  policiesTitle: {
+    fontSize: 7.5,
+    fontFamily: "Helvetica-Bold",
+    color: STONE,
+    textTransform: "uppercase",
+    letterSpacing: 0.6,
+    marginBottom: 5,
+  },
+  policyItem: { flexDirection: "row", marginBottom: 3 },
+  policyNum: {
+    width: 14,
+    fontSize: 7.5,
+    fontFamily: "Helvetica-Bold",
+    color: STONE,
+  },
+  policyText: { flex: 1, fontSize: 7.5, color: INK, lineHeight: 1.35 },
+  policyStrong: { fontFamily: "Helvetica-Bold" },
+
   // Footer, pinned
   footer: {
     position: "absolute",
@@ -150,6 +175,21 @@ const styles = StyleSheet.create({
 });
 
 const c$ = (n: number) => `C$ ${moneyAmount(n)}`;
+
+// Company policies, mirrored from the pre-printed factura and lightly edited for
+// grammar/clarity (meaning unchanged). The last item stays fully uppercase for
+// emphasis, as on the physical document.
+const RENTAL_POLICIES: readonly string[] = [
+  "Toda factura debe cancelarse antes del evento; como mínimo se debe abonar el 50% para reservar.",
+  "El arreglo del local y el desmontaje de los artículos en el mismo son responsabilidad del cliente.",
+  "El cliente deberá revisar cada uno de los artículos al momento de RECIBIRLOS y ENTREGARLOS, haciéndose responsable de su buen estado mientras estén en su poder.",
+  "Todo daño (quemadura; mancha de grasa, parafina o tinta; artículo faltante; quebradura o reventadura) deberá ser pagado por el cliente. No se aceptan artículos distintos a los de nuestro inventario.",
+  "La cristalería se entrega limpia y debe devolverse limpia; de lo contrario, se cobrará el servicio de limpieza.",
+  "El contrato de alquiler es por 24 horas. Si el cliente retiene los artículos por más tiempo del establecido, deberá pagar por cada día de retraso en la entrega.",
+  "Si el evento se cancela por cualquier motivo, se cobrará el 30% del total de la factura. Cualquier cambio al pedido deberá solicitarse con al menos 3 semanas de anticipación.",
+  "El depósito se retiene como garantía y se aplica a cubrir daños, faltantes o mora; el saldo se devuelve tras la revisión de los artículos al momento de la entrega.",
+  "UNA VEZ ENTREGADO EL ALQUILER, NO SE ACEPTAN DEVOLUCIONES DE NINGÚN TIPO.",
+];
 
 export type ComprobanteBusiness = {
   legalName: string;
@@ -369,6 +409,24 @@ export function ComprobanteDoc({
             Más {c$(deposit)} de depósito, que se devuelve al regresar todo.
           </Text>
         )}
+
+        {/* Company policies */}
+        <View style={styles.policies} wrap={false}>
+          <Text style={styles.policiesTitle}>Políticas de la empresa</Text>
+          {RENTAL_POLICIES.map((policy, i) => (
+            <View style={styles.policyItem} key={i} wrap={false}>
+              <Text style={styles.policyNum}>{i + 1}.</Text>
+              <Text
+                style={[
+                  styles.policyText,
+                  i === RENTAL_POLICIES.length - 1 ? styles.policyStrong : {},
+                ]}
+              >
+                {policy}
+              </Text>
+            </View>
+          ))}
+        </View>
 
         {/* Footer */}
         <View style={styles.footer} fixed>

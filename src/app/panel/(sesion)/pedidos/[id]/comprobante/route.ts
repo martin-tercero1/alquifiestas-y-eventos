@@ -9,9 +9,9 @@ import { business } from "@/lib/business";
  * A route handler, not a page: it produces a real application/pdf body so the
  * phone's share sheet can hand the file straight to WhatsApp, and the browser
  * can save or print it. Authorization is the database's job — issue_comprobante
- * is gated on is_tech_admin() — so a parent's session gets no_autorizado here,
- * which we turn into a 403. The PDF is rendered from the frozen snapshot, never
- * from the live order.
+ * is granted to the authenticated role, so any staff session can issue one; an
+ * anon/expired session gets no_autorizado, which we turn into a 403. The PDF is
+ * rendered from the frozen snapshot, never from the live order.
  */
 
 // react-pdf renders with Node APIs (fontkit, streams); keep this off the edge.
@@ -31,7 +31,7 @@ export async function GET(
     const status = result.error === "no_autorizado" ? 403 : 404;
     const message =
       result.error === "no_autorizado"
-        ? "Solo el administrador técnico puede generar el comprobante."
+        ? "Tu sesión no tiene permiso. Iniciá sesión de nuevo."
         : result.error === "pedido_inexistente"
           ? "No encontramos ese pedido."
           : "No se pudo generar el comprobante.";

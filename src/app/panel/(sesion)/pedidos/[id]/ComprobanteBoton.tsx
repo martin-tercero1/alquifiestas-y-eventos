@@ -4,8 +4,8 @@ import { useState } from "react";
 import { SheetIcon } from "@/components/ui/icons";
 
 /**
- * "Compartir comprobante" — the technical-admin action that turns an order into
- * a PDF and hands it off (Brief 04 §9).
+ * "Enviar documento/comprobante" — the staff action that turns an order into a
+ * PDF and hands it off (Brief 04 §9).
  *
  * On a phone it opens the native share sheet with the PDF already attached, so
  * she taps WhatsApp → the customer's chat (two taps, no WhatsApp API). Sending a
@@ -14,8 +14,8 @@ import { SheetIcon } from "@/components/ui/icons";
  * anywhere the share sheet can't take a file, it opens the PDF in a new tab to
  * save or print.
  *
- * The button never renders for the parents: the page only mounts it for a
- * technical admin, and the route itself refuses anyone else.
+ * Available to every staff member: the page mounts it for anyone with a panel
+ * session, and issue_comprobante is granted to the authenticated role.
  */
 
 export function ComprobanteBoton({
@@ -36,11 +36,7 @@ export function ComprobanteBoton({
     try {
       const res = await fetch(url, { headers: { accept: "application/pdf" } });
       if (!res.ok) {
-        setError(
-          res.status === 403
-            ? "Solo el administrador técnico puede generar el comprobante."
-            : "No se pudo generar el comprobante. Probá otra vez.",
-        );
+        setError("No se pudo generar el documento. Probá otra vez.");
         return;
       }
 
@@ -92,7 +88,7 @@ export function ComprobanteBoton({
         className="flex min-h-13 w-full items-center justify-center gap-2 rounded-md border border-rule bg-paper px-4 text-base font-semibold text-ink transition-colors duration-fast ease-out hover:border-rule-strong disabled:opacity-45"
       >
         <SheetIcon className="h-5 w-5" />
-        {busy ? "Preparando…" : "Compartir comprobante"}
+        {busy ? "Preparando…" : "Enviar documento/comprobante"}
       </button>
       {error && (
         <p className="mt-2 text-sm font-medium text-mamey-text">{error}</p>

@@ -29,11 +29,13 @@ export default async function PedidoPage({
   if (!order) notFound();
 
   const isTechAdmin = staff?.isTechAdmin ?? false;
+  // The comprobante is open to every staff member (delete stays tech-admin only).
+  const isStaff = staff != null;
   return (
     <DetallePedido
       order={order}
       canDelete={isTechAdmin}
-      canIssueComprobante={isTechAdmin}
+      canIssueComprobante={isStaff}
     />
   );
 }
