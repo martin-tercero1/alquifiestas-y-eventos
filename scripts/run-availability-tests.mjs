@@ -1,7 +1,7 @@
 /**
  * Runs the availability engine regression suite.
  *
- *   npm run db:test
+ *   pnpm db:test
  *
  * The suite lives in the database (tests.availability_suite) because the engine
  * does, and testing the real SQL against real Postgres is the only test worth

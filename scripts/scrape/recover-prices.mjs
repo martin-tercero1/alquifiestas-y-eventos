@@ -3,9 +3,9 @@
  * business's own live Odoo shop, before the subscription lapses and the pages
  * disappear.
  *
- *   npm run scrape:prices              # resume (uses the cache)
- *   npm run scrape:prices -- --refresh # ignore the cache and re-fetch
- *   npm run scrape:prices -- --limit 5 # smoke test against a few products
+ *   pnpm scrape:prices              # resume (uses the cache)
+ *   pnpm scrape:prices -- --refresh # ignore the cache and re-fetch
+ *   pnpm scrape:prices -- --limit 5 # smoke test against a few products
  *
  * Writes precios-recuperados.csv and precios-fallidos.csv at the repo root.
  * It reads catalogo-limpio.csv and writes nothing else — merging the recovered

@@ -2,7 +2,7 @@
  * Database types.
  *
  * GENERATED — do not hand-edit. Regenerate after every migration with:
- *   npx supabase gen types typescript --project-id gxjrbxtafkshgsimhzek > src/lib/supabase/types.ts
+ *   pnpm dlx supabase gen types typescript --project-id gxjrbxtafkshgsimhzek > src/lib/supabase/types.ts
  *
  * The verbose generic helpers Supabase emits are replaced at the bottom with
  * short equivalents; the schema itself is verbatim, because that is the part

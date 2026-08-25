@@ -2,7 +2,7 @@
 
 Brief 02. Supabase project `gxjrbxtafkshgsimhzek` (`alquifiestas-y-eventos`, free tier).
 
-The 11 migrations that build this schema live in [`supabase/migrations/`](supabase/migrations/). Re-mirror them after any change with `npm run db:migrations`.
+The 11 migrations that build this schema live in [`supabase/migrations/`](supabase/migrations/). Re-mirror them after any change with `pnpm db:migrations`.
 
 > **Connect through the Session pooler, not the direct connection.** `db.<ref>.supabase.co` has no A record — it is IPv6-only and fails with `ENOTFOUND` on an IPv4 network. The scripts detect that and print the fix.
 
@@ -65,7 +65,7 @@ The engine returns a **result**. It never raises and never vetoes. The public si
 
 ### Tests
 
-21 assertions in `tests.availability_suite()`, run with `npm run db:test`. They run inside a rolled-back subtransaction, so the suite is safe against a database holding real orders.
+21 assertions in `tests.availability_suite()`, run with `pnpm db:test`. They run inside a rolled-back subtransaction, so the suite is safe against a database holding real orders.
 
 Covered: exact-boundary handover, overdue blocking the far future, receipt releasing it, partial returns, worst-day-in-range, one short interior day, cancellation freeing stock, unknown ≠ zero, damaged units held until written off, batch/single agreement.
 
@@ -195,9 +195,9 @@ The over-clamped-availability bug lived here: `create_staff_order` first tested 
 ## Import
 
 ```bash
-npm run import:build    # CSVs -> supabase/seed/*.sql
-npm run import:run      # apply (needs SUPABASE_DB_URL)
-npm run import:photos   # copy photos off Odoo (needs SUPABASE_SERVICE_ROLE_KEY)
+pnpm import:build    # CSVs -> supabase/seed/*.sql
+pnpm import:run      # apply (needs SUPABASE_DB_URL)
+pnpm import:photos   # copy photos off Odoo (needs SUPABASE_SERVICE_ROLE_KEY)
 ```
 
 Idempotent, keyed on `unidad_alquilable`. **Never writes `price_per_day` or `total_quantity`** — on insert or update. Names respect `name_overridden` / `label_overridden`, so an edit made in the admin panel survives a re-import.
@@ -220,10 +220,10 @@ The export stripped accents from most product names. `scripts/import/name-correc
 Brief 02b. The Odoo subscription is lapsing, and the CSV export omitted every price — so the prices were read back off the business's own live shop before the pages disappear.
 
 ```bash
-npm run scrape:test               # parsing tests, no network
-npm run scrape:prices             # resume (cached pages, no refetch)
-npm run scrape:prices -- --refresh
-npm run scrape:prices -- --limit 5   # writes *-parcial.csv, never over the real files
+pnpm scrape:test               # parsing tests, no network
+pnpm scrape:prices             # resume (cached pages, no refetch)
+pnpm scrape:prices -- --refresh
+pnpm scrape:prices -- --limit 5   # writes *-parcial.csv, never over the real files
 ```
 
 Output is **CSV only** — [`precios-recuperados.csv`](precios-recuperados.csv) and [`precios-fallidos.csv`](precios-fallidos.csv). It touches neither the database nor the cleaned seed files, because merging is a reviewable step and staff-entered data still wins over imported data.
@@ -265,9 +265,9 @@ Odoo's own `free_qty` is recorded in `notas` and deliberately **not** in a colum
 The catalog import never writes `price_per_day` or `total_quantity`. One script does, and only this one:
 
 ```bash
-npm run import:prices -- --dry-run     # show the plan, write nothing
-npm run import:prices                  # recovered values only
-npm run import:prices -- --estimates   # also invent the gaps, for testing
+pnpm import:prices -- --dry-run     # show the plan, write nothing
+pnpm import:prices                  # recovered values only
+pnpm import:prices -- --estimates   # also invent the gaps, for testing
 ```
 
 ### Provenance, because three kinds of number now share two columns
@@ -295,8 +295,8 @@ Verified, not assumed: a row marked `staff` and a row with a non-null price and 
 ### Getting the invented data back out
 
 ```bash
-npm run db:clear-estimates -- --dry-run
-npm run db:clear-estimates
+pnpm db:clear-estimates -- --dry-run
+pnpm db:clear-estimates
 ```
 
 `select * from estimated_values` lists every variant still carrying invented data. **That view must be empty before the site serves a real customer.** It is revoked from `anon`.

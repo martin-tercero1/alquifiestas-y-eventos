@@ -1,0 +1,7 @@
+# Not a monorepo — this file exists only to hold pnpm settings that pnpm 11+
+# reads from here rather than from package.json. `allowBuilds` is pnpm's
+# supply-chain guard: a dependency's install/build scripts do NOT run unless it
+# is set true here. sharp places its native binary; everything else stays
+# blocked by default.
+allowBuilds:
+  sharp: true

@@ -13,7 +13,7 @@ Public website for a family-run party and event rental business in San Marcos, C
 
 The site reads live data from Supabase and the reservation form writes real orders. **82 items are live in the catalog** — 74 priced from the recovered Odoo data, the rest carrying estimates so the site can be tested end to end.
 
-> ⚠️ **There is invented data in the database right now.** 55 prices and 60 quantities are estimates, not numbers this business charges. `select * from estimated_values` lists them, and `npm run db:clear-estimates` removes them. That view must be empty before a real customer sees the site.
+> ⚠️ **There is invented data in the database right now.** 55 prices and 60 quantities are estimates, not numbers this business charges. `select * from estimated_values` lists them, and `pnpm db:clear-estimates` removes them. That view must be empty before a real customer sees the site.
 
 - [`DATA-MODEL.md`](DATA-MODEL.md) — schema, availability rules, security, import and price recovery. **The reference for everything server-side.**
 - [`DESIGN-PLAN.md`](DESIGN-PLAN.md) — the design direction and the reasoning behind it
@@ -23,7 +23,7 @@ The site reads live data from Supabase and the reservation form writes real orde
 ## Running it
 
 ```bash
-npm install
+pnpm install
 ```
 
 Copy [`.env.example`](.env.example) to `.env.local` and fill it in. The file explains each variable; two of them matter enough to repeat here:
@@ -32,11 +32,11 @@ Copy [`.env.example`](.env.example) to `.env.local` and fill it in. The file exp
 - `SUPABASE_DB_URL` must be the **Session pooler** string. The direct host is IPv6-only and fails with `ENOTFOUND` on an IPv4 network; the scripts detect that and print the fix.
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 ```bash
-npm run build
+pnpm build
 ```
 
 ## Routes
@@ -57,17 +57,17 @@ There is no `/campanas` route. Brief 01 shipped a campaign landing template agai
 ## Scripts
 
 ```bash
-npm run scrape:test      # price-parser tests — no network, no database
-npm run scrape:prices    # recover prices off the live Odoo shop (resumable, cached)
+pnpm scrape:test      # price-parser tests — no network, no database
+pnpm scrape:prices    # recover prices off the live Odoo shop (resumable, cached)
 
-npm run import:build     # CSVs -> supabase/seed/*.sql
-npm run import:run       # apply the import          (needs SUPABASE_DB_URL)
-npm run import:photos    # copy photos off Odoo      (needs SUPABASE_SERVICE_ROLE_KEY)
-npm run import:prices    # load recovered prices and quantities  (--dry-run, --estimates)
+pnpm import:build     # CSVs -> supabase/seed/*.sql
+pnpm import:run       # apply the import          (needs SUPABASE_DB_URL)
+pnpm import:photos    # copy photos off Odoo      (needs SUPABASE_SERVICE_ROLE_KEY)
+pnpm import:prices    # load recovered prices and quantities  (--dry-run, --estimates)
 
-npm run db:test              # availability engine suite (needs SUPABASE_DB_URL)
-npm run db:migrations        # mirror applied migrations into supabase/migrations/
-npm run db:clear-estimates   # strip every invented price and quantity back out
+pnpm db:test              # availability engine suite (needs SUPABASE_DB_URL)
+pnpm db:migrations        # mirror applied migrations into supabase/migrations/
+pnpm db:clear-estimates   # strip every invented price and quantity back out
 ```
 
 The import is **idempotent** and keyed on `unidad_alquilable`. It never writes `price_per_day` or `total_quantity`, and never overwrites a name staff have edited — re-run it as often as the source CSVs are corrected. Details in [`DATA-MODEL.md`](DATA-MODEL.md).
@@ -98,13 +98,13 @@ The vocabulary follows the business: *alquiler*, *proforma*, *cotizar*, *apartar
 
 The remaining **40 have no photo in Odoo either** — it serves a grey placeholder with a 200 rather than a 404, which is why the import calibrates itself against a known-missing product and rejects byte-identical responses. They are queued in `products_missing_photo`.
 
-`public/catalogo/` still holds the 49 generated SVG placeholders from brief 01, and `npm run photos` still regenerates them. **No page references them any more** — they are dead weight pending a decision to delete them.
+`public/catalogo/` still holds the 49 generated SVG placeholders from brief 01, and `pnpm photos` still regenerates them. **No page references them any more** — they are dead weight pending a decision to delete them.
 
 When the missing photographs are supplied, upload them through Supabase Storage rather than this folder. [`PhotoFrame`](src/components/ui/PhotoFrame.tsx) is still a plain `<img>`; swapping it for `next/image` is a one-file change.
 
 ## Before this goes live
 
-- [ ] **`select * from estimated_values` must come back empty.** 55 prices and 60 quantities are currently invented test data. Confirm each with the owners and mark it `staff`, or run `npm run db:clear-estimates` to strip them.
+- [ ] **`select * from estimated_values` must come back empty.** 55 prices and 60 quantities are currently invented test data. Confirm each with the owners and mark it `staff`, or run `pnpm db:clear-estimates` to strip them.
 - [ ] **The 8 `revisar` rows in [`precios-recuperados.csv`](precios-recuperados.csv)** — seven are variants the old shop never published, and *Aro Metálico* is stored in Odoo at a **per-hour** rate, not per 24 h.
 - [ ] Decide whether the 47 unpublished variants should be sold online at all. They are priced but not published, so they stay invisible until someone says so.
 - [ ] Real WhatsApp and phone numbers in [`src/lib/business.ts`](src/lib/business.ts) — the current ones are placeholders

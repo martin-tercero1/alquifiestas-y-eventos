@@ -1,9 +1,9 @@
 /**
  * Loads recovered prices and quantities into `variants`.
  *
- *   npm run import:prices -- --dry-run    # show the plan, write nothing
- *   npm run import:prices                 # recovered values only
- *   npm run import:prices -- --estimates  # also invent the gaps, for testing
+ *   pnpm import:prices -- --dry-run    # show the plan, write nothing
+ *   pnpm import:prices                 # recovered values only
+ *   pnpm import:prices -- --estimates  # also invent the gaps, for testing
  *
  * This is the one script allowed to write `price_per_day` and `total_quantity`
  * — the catalog import deliberately never touches them. Two rules keep that
@@ -42,7 +42,7 @@ const ESTIMATES = args.includes("--estimates");
 
 if (!existsSync(RECOVERED)) {
   console.error(
-    `Missing ${RECOVERED}.\nRun: npm run scrape:prices`,
+    `Missing ${RECOVERED}.\nRun: pnpm scrape:prices`,
   );
   process.exit(1);
 }
@@ -231,7 +231,7 @@ try {
     console.log(
       "\n⚠  Hay datos inventados en la base. No son precios reales.\n" +
         "   Verlos   : select * from estimated_values;\n" +
-        "   Borrarlos: npm run db:clear-estimates",
+        "   Borrarlos: pnpm db:clear-estimates",
     );
   }
 } catch (error) {

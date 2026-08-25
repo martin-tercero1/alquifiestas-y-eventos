@@ -1,7 +1,7 @@
 /**
  * Tests for the Odoo page parsing.
  *
- *   npm run scrape:test
+ *   pnpm scrape:test
  *
  * The decimal separator is the reason this file exists. Reading `1.500,00` as
  * 1.5 would corrupt every four-digit price in a way no downstream check would

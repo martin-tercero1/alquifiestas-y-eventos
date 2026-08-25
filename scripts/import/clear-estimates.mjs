@@ -1,8 +1,8 @@
 /**
  * Removes every invented price and quantity from the database.
  *
- *   npm run db:clear-estimates -- --dry-run
- *   npm run db:clear-estimates
+ *   pnpm db:clear-estimates -- --dry-run
+ *   pnpm db:clear-estimates
  *
  * The estimates exist so the site can be tested end to end before the real
  * numbers are known. They are not prices this business charges, and this is
