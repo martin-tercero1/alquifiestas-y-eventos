@@ -30,7 +30,8 @@ export type OrderRow = {
   balance: number;
 };
 
-const VARIANT: Record<OrderStatus, "neutral" | "scarce" | "brand"> = {
+const VARIANT: Record<OrderStatus, "neutral" | "scarce" | "brand" | "quote"> = {
+  quote: "quote",
   pending_request: "scarce",
   confirmed: "brand",
   picked_up: "brand",
@@ -43,7 +44,9 @@ const VARIANT: Record<OrderStatus, "neutral" | "scarce" | "brand"> = {
 type Segment = "activos" | "solicitudes" | "historial" | "todos";
 
 const IN_SEGMENT: Record<Segment, (s: OrderStatus) => boolean> = {
-  solicitudes: (s) => s === "pending_request",
+  // Quotes live here with website requests: both are orders awaiting a decision
+  // to confirm, and neither reserves any stock yet.
+  solicitudes: (s) => s === "pending_request" || s === "quote",
   activos: (s) =>
     s === "confirmed" ||
     s === "picked_up" ||

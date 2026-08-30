@@ -323,10 +323,20 @@ const SAVE_ERRORS: Record<string, string> = {
     "Revisá las fechas: la de regreso no puede ser antes de la de salida.",
 };
 
-export async function saveProforma(draft: Draft): Promise<SaveResult> {
+/**
+ * The status a newly created order starts in. A quote reserves nothing and can
+ * be turned into a real order later; confirmed reserves the stock immediately.
+ */
+export type NewOrderStatus = "quote" | "confirmed";
+
+export async function saveProforma(
+  draft: Draft,
+  status: NewOrderStatus = "confirmed",
+): Promise<SaveResult> {
   const billedDays = daysBetween(draft.pickupDate, draft.returnDate);
 
   const payload = {
+    status,
     customer: {
       id: draft.customerId,
       name: draft.customerName.trim(),

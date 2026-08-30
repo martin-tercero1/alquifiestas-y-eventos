@@ -104,6 +104,7 @@ export type OrderDetail = {
 // ---------------------------------------------------------------------------
 
 export const STATUS_LABEL: Record<OrderStatus, string> = {
+  quote: "Cotización",
   pending_request: "Solicitud",
   confirmed: "Confirmado",
   picked_up: "Retirado",
@@ -144,6 +145,8 @@ export function isOverdue(order: OrderDetail, todayIso: string): boolean {
 const ERROR_ES: Record<string, string> = {
   no_encontrado: "No se encontró el pedido.",
   no_es_solicitud: "Este pedido ya no es una solicitud pendiente.",
+  no_editable: "Este pedido ya no se puede editar.",
+  fechas_invalidas: "Revisá las fechas: el regreso no puede ser antes de la salida.",
   no_autorizado: "Tenés que iniciar sesión de nuevo.",
   sin_articulos: "Dejá al menos un artículo en el pedido.",
   no_confirmado: "El pedido tiene que estar confirmado primero.",
@@ -304,11 +307,41 @@ export type RevisedLine = {
   option_choice: string | null;
 };
 
-/** Replaces a pending request's lines. Refused once the order is confirmed. */
+/**
+ * Replaces an order's lines. Allowed while it is a quote, a pending request, or
+ * confirmed — refused once it has gone out of the warehouse.
+ */
 export const reviseOrderLines = (orderId: string, lines: RevisedLine[]) =>
   callRpc("revise_order_lines", {
     p_order_id: orderId,
     p_lines: lines as unknown as Database["public"]["Functions"]["revise_order_lines"]["Args"]["p_lines"],
+  });
+
+/**
+ * Edits an order's dates, times and money terms. Same open window as the line
+ * editor (quote / pending / confirmed). Recomputes billed days from the dates.
+ */
+export const updateOrderDetails = (
+  orderId: string,
+  input: {
+    pickupDate: string;
+    returnDate: string;
+    pickupTime: string | null;
+    returnTime: string | null;
+    securityDeposit: number | null;
+    notes: string | null;
+    physicalInvoiceNumber: string | null;
+  },
+) =>
+  callRpc("update_order_details", {
+    p_order_id: orderId,
+    p_pickup_date: input.pickupDate,
+    p_return_date: input.returnDate,
+    p_pickup_time: input.pickupTime,
+    p_return_time: input.returnTime,
+    p_security_deposit: input.securityDeposit,
+    p_notes: input.notes,
+    p_physical_invoice_number: input.physicalInvoiceNumber,
   });
 
 export const cancelOrder = (orderId: string, reason: string) =>

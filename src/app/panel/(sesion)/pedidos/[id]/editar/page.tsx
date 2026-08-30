@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { loadRequestForEdit } from "@/lib/admin/loadOrder";
 import { EditarArticulos } from "./EditarArticulos";
 
-export const metadata: Metadata = { title: "Editar artículos" };
+export const metadata: Metadata = { title: "Editar pedido" };
 export const dynamic = "force-dynamic";
 
 export default async function EditarPage({
@@ -14,8 +14,8 @@ export default async function EditarPage({
   const { id } = await params;
   const request = await loadRequestForEdit(id);
 
-  // Only a still-pending request can have its lines edited. Anything else —
-  // already confirmed, cancelled, or not found — goes back to the detail view.
+  // Editable while the order is a quote, a website request, or confirmed.
+  // Anything past pickup — or not found — goes back to the detail view.
   if (!request) redirect(`/panel/pedidos/${id}`);
 
   return <EditarArticulos request={request} />;

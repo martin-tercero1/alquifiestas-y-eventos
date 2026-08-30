@@ -53,8 +53,9 @@ type SheetName =
 
 const STATUS_VARIANT: Record<
   OrderStatus,
-  "neutral" | "scarce" | "brand"
+  "neutral" | "scarce" | "brand" | "quote"
 > = {
+  quote: "quote",
   pending_request: "scarce",
   confirmed: "brand",
   picked_up: "brand",
@@ -107,6 +108,7 @@ export function DetallePedido({
   // Which action is the primary one right now.
   const primary = (() => {
     switch (order.status) {
+      case "quote":
       case "pending_request":
         return { label: "Confirmar pedido", run: () => setSheet("confirmar") };
       case "confirmed":
@@ -197,6 +199,13 @@ export function DetallePedido({
         </p>
       )}
 
+      {order.status === "quote" && (
+        <p className="mt-4 rounded-md border border-rule-strong border-dashed bg-paper px-4 py-3 text-sm font-medium text-stone-text">
+          Es una cotización: los artículos <strong className="text-ink">no están
+          reservados</strong> todavía. Confirmá el pedido para apartarlos.
+        </p>
+      )}
+
       {order.availabilityOverridden && live && (
         <p className="mt-4 rounded-md border border-mamey/30 bg-mamey/[0.06] px-4 py-3 text-sm font-medium text-mamey-text">
           Este pedido se tomó por encima de la disponibilidad.
@@ -279,6 +288,17 @@ export function DetallePedido({
             const name = line.variantLabel
               ? `${line.productName} — ${line.variantLabel}`
               : line.productName;
+            // Mirror the database's per-line discount (apply_discount over
+            // quantity × price × days) so the line here shows the same money the
+            // PDF and the order total already do.
+            const gross = line.unitPrice * line.quantity * order.billedDays;
+            const net =
+              line.discountType === "amount"
+                ? Math.max(gross - (line.discountValue ?? 0), 0)
+                : line.discountType === "percent"
+                  ? Math.round(gross * (1 - (line.discountValue ?? 0) / 100) * 100) / 100
+                  : gross;
+            const discounted = line.discountType != null && net < gross;
             const returnedNote =
               line.accounted > 0
                 ? [
@@ -305,24 +325,38 @@ export function DetallePedido({
                     {line.quantity} × {money(line.unitPrice)}
                     {order.billedDays > 1 && ` × ${order.billedDays} días`}
                   </p>
+                  {discounted && (
+                    <p className="type-label mt-0.5 text-mamey-text">
+                      Con descuento
+                    </p>
+                  )}
                   {returnedNote && (
                     <p className="mt-1 text-sm text-green">Regresó: {returnedNote}</p>
                   )}
                 </div>
-                <p className="type-mono shrink-0 text-right text-base font-medium text-ink tabular-nums">
-                  {money(line.unitPrice * line.quantity * order.billedDays)}
-                </p>
+                <div className="shrink-0 text-right">
+                  {discounted && (
+                    <p className="type-mono text-sm text-stone-text line-through tabular-nums">
+                      {money(gross)}
+                    </p>
+                  )}
+                  <p className="type-mono text-base font-medium text-ink tabular-nums">
+                    {money(net)}
+                  </p>
+                </div>
               </li>
             );
           })}
         </ul>
 
-        {order.status === "pending_request" && (
+        {(order.status === "quote" ||
+          order.status === "pending_request" ||
+          order.status === "confirmed") && (
           <Link
             href={`/panel/pedidos/${order.id}/editar`}
             className="mt-3 flex min-h-13 items-center justify-center rounded-md border border-rule bg-paper px-4 text-base font-semibold text-ink transition-colors duration-fast ease-out hover:border-rule-strong"
           >
-            Editar artículos
+            Editar pedido
           </Link>
         )}
       </section>
@@ -456,7 +490,8 @@ export function DetallePedido({
               Agregar cargo
             </SecondaryButton>
           )}
-          {(order.status === "pending_request" ||
+          {(order.status === "quote" ||
+            order.status === "pending_request" ||
             order.status === "confirmed") && (
             <SecondaryButton onClick={() => setSheet("cancelar")} tone="danger">
               Cancelar

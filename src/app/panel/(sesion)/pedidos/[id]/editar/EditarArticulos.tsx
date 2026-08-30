@@ -3,28 +3,35 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { money, shortDate } from "@/lib/format";
+import { money } from "@/lib/format";
+import { Field, Input, Textarea } from "@/components/ui/Field";
 import type { Availability } from "@/lib/availability";
 import {
   availabilityFor,
+  daysBetween,
   fromCents,
   lineCents,
   type CatalogHit,
   type DraftLine,
 } from "@/lib/admin/proforma";
-import { reviseOrderLines, type RevisedLine } from "@/lib/admin/order";
+import {
+  reviseOrderLines,
+  updateOrderDetails,
+  type RevisedLine,
+} from "@/lib/admin/order";
 import type { RequestForEdit } from "@/lib/admin/loadOrder";
 import { BuscadorArticulos } from "../../../nueva/BuscadorArticulos";
 import { LineaArticulo } from "../../../nueva/LineaArticulo";
 
 /**
- * Editing the articles on an online request before it is confirmed.
+ * Editing an order in place — its articles, its dates and its money terms.
  *
  * It reuses the exact pieces of Nueva proforma — the same forgiving search, the
  * same line with its inline missing-price and warn-don't-block availability —
  * so there is one way to build an order's lines, whether it starts blank or
- * starts from what a customer asked for. The only thing it does NOT touch is
- * the customer, the dates, or the money terms: those belong to confirmation.
+ * from what already exists. The open window is a quote, a website request, or a
+ * confirmed order: the common "already agreed, now needs changes" case is
+ * handled here rather than by cancelling and starting over.
  */
 
 export function EditarArticulos({ request }: { request: RequestForEdit }) {
@@ -32,33 +39,38 @@ export function EditarArticulos({ request }: { request: RequestForEdit }) {
   const detailHref = `/panel/pedidos/${request.id}`;
 
   const [lines, setLines] = useState<DraftLine[]>(request.lines);
+  const [pickupDate, setPickupDate] = useState(request.pickupDate);
+  const [returnDate, setReturnDate] = useState(request.returnDate);
+  const [pickupTime, setPickupTime] = useState(request.pickupTime ?? "");
+  const [returnTime, setReturnTime] = useState(request.returnTime ?? "");
+  const [securityDeposit, setSecurityDeposit] = useState(
+    request.securityDeposit != null ? String(request.securityDeposit) : "",
+  );
+  const [notes, setNotes] = useState(request.notes ?? "");
   const [availability, setAvailability] = useState<Map<string, Availability>>(
     new Map(),
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const billedDays = request.billedDays;
+  const badDates = !pickupDate || !returnDate || returnDate < pickupDate;
+  const billedDays = badDates ? request.billedDays : daysBetween(pickupDate, returnDate);
 
-  // Availability for the request's dates, batched into one query, recomputed as
-  // the lines change. Advisory only, exactly as in Nueva.
+  // Availability for the (possibly edited) dates, batched into one query,
+  // recomputed as the lines or dates change. Advisory only, exactly as in Nueva.
   const variantIds = useMemo(() => lines.map((l) => l.variantId), [lines]);
   const variantKey = variantIds.join(",");
   const requestId = useRef(0);
 
   useEffect(() => {
-    if (variantIds.length === 0) {
+    if (variantIds.length === 0 || badDates) {
       setAvailability(new Map());
       return;
     }
     const id = ++requestId.current;
     const timer = setTimeout(async () => {
       try {
-        const result = await availabilityFor(
-          variantIds,
-          request.pickupDate,
-          request.returnDate,
-        );
+        const result = await availabilityFor(variantIds, pickupDate, returnDate);
         if (id === requestId.current) setAvailability(result);
       } catch {
         // No warning is fine; the order still works.
@@ -66,7 +78,7 @@ export function EditarArticulos({ request }: { request: RequestForEdit }) {
     }, 250);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [variantKey, request.pickupDate, request.returnDate]);
+  }, [variantKey, pickupDate, returnDate, badDates]);
 
   const addedVariantIds = useMemo(
     () => new Set(lines.map((l) => l.variantId)),
@@ -108,8 +120,29 @@ export function EditarArticulos({ request }: { request: RequestForEdit }) {
   const unpriced = lines.filter((l) => l.unitPrice === null).length;
 
   async function onSave() {
+    if (badDates) {
+      setError("Revisá las fechas: el regreso no puede ser antes de la salida.");
+      return;
+    }
     setSaving(true);
     setError(null);
+
+    // Dates/terms first so the shortage recompute inside revise_order_lines
+    // reads the new window, then the lines.
+    const details = await updateOrderDetails(request.id, {
+      pickupDate,
+      returnDate,
+      pickupTime: pickupTime || null,
+      returnTime: returnTime || null,
+      securityDeposit: Number(securityDeposit) || null,
+      notes: notes.trim() || null,
+      physicalInvoiceNumber: request.physicalInvoiceNumber,
+    });
+    if (!details.ok) {
+      setError(details.message);
+      setSaving(false);
+      return;
+    }
 
     const payload: RevisedLine[] = lines.map((l) => ({
       variant_id: l.variantId,
@@ -136,13 +169,72 @@ export function EditarArticulos({ request }: { request: RequestForEdit }) {
       <Link href={detailHref} className="type-label text-stone-text hover:text-ink">
         ← Pedido #{request.number}
       </Link>
-      <h1 className="type-display mt-2 text-3xl text-ink">Editar artículos</h1>
+      <h1 className="type-display mt-2 text-3xl text-ink">Editar pedido</h1>
       <p className="mt-1 text-base text-stone-text">
-        {request.customerName} · sale {shortDate(request.pickupDate)}
+        {request.customerName}
         {billedDays > 1 && ` · ${billedDays} días`}
       </p>
 
+      {/* ---- Fechas y términos ---- */}
+      <section className="mt-8 grid grid-cols-2 gap-3">
+        <Field label="Sale" htmlFor="edit-salida">
+          <Input
+            id="edit-salida"
+            type="date"
+            value={pickupDate}
+            onChange={(e) => setPickupDate(e.target.value)}
+          />
+        </Field>
+        <Field label="Regresa" htmlFor="edit-regreso">
+          <Input
+            id="edit-regreso"
+            type="date"
+            min={pickupDate}
+            value={returnDate}
+            onChange={(e) => setReturnDate(e.target.value)}
+          />
+        </Field>
+        <Field label="Hora de salida" htmlFor="edit-hora-salida">
+          <Input
+            id="edit-hora-salida"
+            type="time"
+            value={pickupTime}
+            onChange={(e) => setPickupTime(e.target.value)}
+          />
+        </Field>
+        <Field label="Hora de regreso" htmlFor="edit-hora-regreso">
+          <Input
+            id="edit-hora-regreso"
+            type="time"
+            value={returnTime}
+            onChange={(e) => setReturnTime(e.target.value)}
+          />
+        </Field>
+        <Field label="Depósito de garantía" htmlFor="edit-deposito" optional>
+          <Input
+            id="edit-deposito"
+            type="number"
+            inputMode="decimal"
+            min={0}
+            value={securityDeposit}
+            onChange={(e) => setSecurityDeposit(e.target.value)}
+          />
+        </Field>
+        <div className="col-span-2">
+          <Field label="Notas" htmlFor="edit-notas" optional>
+            <Textarea
+              id="edit-notas"
+              rows={2}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
+          </Field>
+        </div>
+      </section>
+
+      {/* ---- Artículos ---- */}
       <div className="mt-8 flex flex-col gap-4">
+        <h2 className="type-label text-stone-text">Artículos</h2>
         <BuscadorArticulos onAdd={addItem} addedVariantIds={addedVariantIds} />
 
         {lines.length > 0 ? (

@@ -76,10 +76,16 @@ type RawOrder = {
 export type RequestForEdit = {
   id: string;
   number: number;
+  status: OrderDetail["status"];
   customerName: string;
   pickupDate: string;
   returnDate: string;
+  pickupTime: string | null;
+  returnTime: string | null;
   billedDays: number;
+  securityDeposit: number | null;
+  notes: string | null;
+  physicalInvoiceNumber: string | null;
   lines: DraftLine[];
 };
 
@@ -112,7 +118,9 @@ export async function loadRequestForEdit(
     .from("orders")
     .select(
       `
-      id, number, status, pickup_date, agreed_return_date, billed_days,
+      id, number, status, pickup_date, agreed_return_date,
+      pickup_time, agreed_return_time, billed_days,
+      security_deposit, notes, physical_invoice_number,
       customer:customers ( name ),
       order_lines (
         id, variant_id, quantity, unit_price, discount_type, discount_value, option_choice,
@@ -137,12 +145,25 @@ export async function loadRequestForEdit(
     status: OrderDetail["status"];
     pickup_date: string;
     agreed_return_date: string;
+    pickup_time: string | null;
+    agreed_return_time: string | null;
     billed_days: number;
+    security_deposit: number | string | null;
+    notes: string | null;
+    physical_invoice_number: string | null;
     customer: { name: string } | null;
     order_lines: EditLineRow[];
   };
 
-  if (order.status !== "pending_request") return null;
+  // Editable while the order is still a quote, a website request, or confirmed —
+  // before anything has left the warehouse.
+  if (
+    order.status !== "quote" &&
+    order.status !== "pending_request" &&
+    order.status !== "confirmed"
+  ) {
+    return null;
+  }
 
   const lines: DraftLine[] = (order.order_lines ?? []).map((l) => ({
     key: l.id,
@@ -164,10 +185,16 @@ export async function loadRequestForEdit(
   return {
     id: order.id,
     number: order.number,
+    status: order.status,
     customerName: order.customer?.name ?? "Cliente",
     pickupDate: order.pickup_date,
     returnDate: order.agreed_return_date,
+    pickupTime: order.pickup_time,
+    returnTime: order.agreed_return_time,
     billedDays: order.billed_days,
+    securityDeposit: order.security_deposit === null ? null : n(order.security_deposit),
+    notes: order.notes,
+    physicalInvoiceNumber: order.physical_invoice_number,
     lines,
   };
 }

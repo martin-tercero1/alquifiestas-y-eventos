@@ -22,6 +22,7 @@ import {
   type DiscountType,
   type Draft,
   type DraftLine,
+  type NewOrderStatus,
 } from "@/lib/admin/proforma";
 import type { CatalogGroup } from "@/lib/admin/loadInventory";
 import { ClienteSection } from "./ClienteSection";
@@ -155,7 +156,7 @@ export function NuevaProforma({ catalog }: { catalog: CatalogGroup[] }) {
 
   const missingTimes = !draft.pickupTime || !draft.returnTime;
 
-  async function onSave() {
+  async function onSave(status: NewOrderStatus = "confirmed") {
     // The parents always agree a pickup and a return time — the order isn't
     // ready to hand off without them, so require them here (§4).
     if (missingTimes) {
@@ -167,7 +168,7 @@ export function NuevaProforma({ catalog }: { catalog: CatalogGroup[] }) {
     setSaving(true);
     setSaveError(null);
 
-    const result = await saveProforma(draft);
+    const result = await saveProforma(draft, status);
 
     if (!result.ok) {
       setSaveError(result.message);

@@ -667,6 +667,19 @@ export type Database = {
         };
         Returns: Json;
       };
+      update_order_details: {
+        Args: {
+          p_order_id: string;
+          p_pickup_date: string;
+          p_return_date: string;
+          p_pickup_time?: string | null;
+          p_return_time?: string | null;
+          p_security_deposit?: number | null;
+          p_notes?: string | null;
+          p_physical_invoice_number?: string | null;
+        };
+        Returns: Json;
+      };
       record_payment: {
         Args: {
           p_order_id: string;
@@ -717,6 +730,7 @@ export type Database = {
       document_type: "proforma" | "comprobante";
       fulfilment_method: "pickup" | "delivery";
       order_status:
+        | "quote"
         | "pending_request"
         | "confirmed"
         | "picked_up"
