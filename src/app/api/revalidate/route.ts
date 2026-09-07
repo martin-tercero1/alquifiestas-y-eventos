@@ -1,6 +1,19 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { currentStaff } from "@/lib/supabase/server";
+
+// TEMP diagnostic: verify revalidatePath purges these pages on Vercel. Removed
+// in the follow-up commit.
+const TEMP_TEST_KEY = "74e2bb0dd8ab86363ca564a5ceb00097";
+
+export async function GET(req: NextRequest) {
+  if (req.nextUrl.searchParams.get("key") !== TEMP_TEST_KEY) {
+    return NextResponse.json({ ok: false, error: "no_autorizado" }, { status: 401 });
+  }
+  revalidatePath("/catalogo", "layout");
+  revalidatePath("/");
+  return NextResponse.json({ ok: true, revalidated: true, via: "test" });
+}
 
 /**
  * On-demand catalog revalidation.
