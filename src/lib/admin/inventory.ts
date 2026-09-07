@@ -30,6 +30,17 @@ function fail(error: { message?: string } | null): { ok: false; message: string 
   return { ok: false, message: offline ? OFFLINE : FAILED };
 }
 
+/**
+ * Nudges the server to rebuild the statically-cached public catalog after an
+ * edit, so hiding a variant or changing a price shows on the site right away
+ * instead of waiting for the ISR window. Fire-and-forget: the edit already
+ * succeeded, and a failed refresh only means the change lands a few minutes
+ * later on its own — never a reason to error the save.
+ */
+function requestCatalogRevalidation(): void {
+  void fetch("/api/revalidate", { method: "POST" }).catch(() => {});
+}
+
 // ---------------------------------------------------------------------------
 // Variant fields
 // ---------------------------------------------------------------------------
@@ -59,7 +70,9 @@ export async function saveVariant(
     .update(patch)
     .eq("id", variantId);
 
-  return error ? fail(error) : { ok: true };
+  if (error) return fail(error);
+  requestCatalogRevalidation();
+  return { ok: true };
 }
 
 // ---------------------------------------------------------------------------
@@ -80,7 +93,9 @@ export async function saveProduct(
     .update(patch)
     .eq("id", productId);
 
-  return error ? fail(error) : { ok: true };
+  if (error) return fail(error);
+  requestCatalogRevalidation();
+  return { ok: true };
 }
 
 // ---------------------------------------------------------------------------
@@ -155,6 +170,7 @@ export async function createProduct(
   };
   if (!result.ok) return createFail(result.error ?? null);
 
+  requestCatalogRevalidation();
   return {
     ok: true,
     data: {
@@ -200,6 +216,7 @@ export async function addVariant(
   };
   if (!result.ok) return createFail(result.error ?? null);
 
+  requestCatalogRevalidation();
   return {
     ok: true,
     data: { variantId: result.variant_id!, label: result.label ?? null },
@@ -238,6 +255,7 @@ export async function saveProductOption(
   };
   if (!result.ok) return createFail(result.error ?? null);
 
+  requestCatalogRevalidation();
   return {
     ok: true,
     data: {
@@ -274,6 +292,7 @@ export async function createCategory(input: {
   };
   if (!result.ok) return createFail(result.error ?? null);
 
+  requestCatalogRevalidation();
   return {
     ok: true,
     data: {
@@ -399,5 +418,7 @@ export async function uploadProductPhoto(
     .from("product_photos")
     .upsert(rows, { onConflict: "product_id,crop" });
 
-  return error ? fail(error) : { ok: true, path };
+  if (error) return fail(error);
+  requestCatalogRevalidation();
+  return { ok: true, path };
 }
