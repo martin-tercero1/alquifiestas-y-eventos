@@ -182,6 +182,7 @@ export function RequestFlow() {
       p_lines: hoja.resolved.map((l) => ({
         variant_id: l.variantId,
         quantity: l.quantity,
+        option_choice: l.optionChoice ?? null,
       })),
       p_delivery_address: delivery === "entrega" ? address.trim() : null,
       p_notes: notes.trim() || null,

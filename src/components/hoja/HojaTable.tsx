@@ -53,11 +53,11 @@ export function HojaTable({
       <ul>
         {resolved.map((line) => (
           <HojaRow
-            key={line.variantId}
+            key={line.key}
             line={line}
             editable={editable}
-            onQuantity={(q) => setQuantity(line.variantId, q)}
-            onRemove={() => remove(line.variantId)}
+            onQuantity={(q) => setQuantity(line.key, q)}
+            onRemove={() => remove(line.key)}
           />
         ))}
       </ul>

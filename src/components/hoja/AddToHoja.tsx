@@ -6,16 +6,21 @@ import { QuantityStepper } from "@/components/ui/QuantityStepper";
 import { CheckIcon, PlusIcon } from "@/components/ui/icons";
 import type { CatalogVariant } from "@/lib/catalog";
 import { variantName } from "@/lib/catalog";
-import { useHoja, type HojaLine } from "./HojaProvider";
+import { useHoja, lineKey, type HojaLine } from "./HojaProvider";
 
 /** Everything the sheet needs to render a line without a round-trip. */
-function toLine(variant: CatalogVariant): Omit<HojaLine, "quantity"> {
+function toLine(
+  variant: CatalogVariant,
+  optionChoice?: string | null,
+): Omit<HojaLine, "quantity"> {
+  const base = variantName(variant.productName, variant.variantLabel);
   return {
     variantId: variant.variantId,
-    name: variantName(variant.productName, variant.variantLabel),
+    name: optionChoice ? `${base} — ${optionChoice}` : base,
     productSlug: variant.productSlug,
     categorySlug: variant.parentCategorySlug ?? variant.categorySlug,
     pricePerDay: variant.pricePerDay,
+    optionChoice: optionChoice ?? null,
   };
 }
 
@@ -28,7 +33,8 @@ function toLine(variant: CatalogVariant): Omit<HojaLine, "quantity"> {
  */
 export function AddToHoja({ variant }: { variant: CatalogVariant }) {
   const { quantityOf, add, setQuantity } = useHoja();
-  const quantity = quantityOf(variant.variantId);
+  const key = lineKey(variant.variantId);
+  const quantity = quantityOf(key);
   const name = variantName(variant.productName, variant.variantLabel);
 
   if (quantity === 0) {
@@ -48,7 +54,7 @@ export function AddToHoja({ variant }: { variant: CatalogVariant }) {
   return (
     <QuantityStepper
       value={quantity}
-      onChange={(q) => setQuantity(variant.variantId, q)}
+      onChange={(q) => setQuantity(key, q)}
       label={name}
       min={0}
       className="justify-between"
@@ -62,10 +68,19 @@ export function AddToHoja({ variant }: { variant: CatalogVariant }) {
  * The stepper takes a typed number, not only +/- taps — renting 150 chairs is
  * an ordinary order here, and nobody is tapping "+" 150 times.
  */
-export function AddToHojaDetail({ variant }: { variant: CatalogVariant }) {
+export function AddToHojaDetail({
+  variant,
+  optionChoice = null,
+}: {
+  variant: CatalogVariant;
+  /** The chosen option value (e.g. a colour), folded into the line identity. */
+  optionChoice?: string | null;
+}) {
   const { quantityOf, add, setQuantity } = useHoja();
-  const onSheet = quantityOf(variant.variantId);
-  const name = variantName(variant.productName, variant.variantLabel);
+  const key = lineKey(variant.variantId, optionChoice);
+  const onSheet = quantityOf(key);
+  const base = variantName(variant.productName, variant.variantLabel);
+  const name = optionChoice ? `${base} — ${optionChoice}` : base;
   const [draft, setDraft] = useState(variant.pricePerDay > 200 ? 1 : 10);
   const [justAdded, setJustAdded] = useState(false);
 
@@ -78,7 +93,7 @@ export function AddToHojaDetail({ variant }: { variant: CatalogVariant }) {
 
   function commit() {
     if (draft < 1) return;
-    add(toLine(variant), draft);
+    add(toLine(variant, optionChoice), draft);
     setJustAdded(true);
     window.setTimeout(() => setJustAdded(false), 2400);
   }
@@ -139,7 +154,7 @@ export function AddToHojaDetail({ variant }: { variant: CatalogVariant }) {
           hoja.{" "}
           <button
             type="button"
-            onClick={() => setQuantity(variant.variantId, 0)}
+            onClick={() => setQuantity(key, 0)}
             className="font-semibold text-mamey-text underline underline-offset-4 hover:text-mamey-dark"
           >
             Quitarlos

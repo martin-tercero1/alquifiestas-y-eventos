@@ -30,6 +30,16 @@ export type CatalogVariant = {
   categoryDisplayOrder: number;
   photoSquare: string | null;
   photoPortrait: string | null;
+  /** A rental-time choice shared by the product (e.g. "Color"); null if none. */
+  optionName: string | null;
+  optionValues: string[] | null;
+};
+
+/** One value of a product's option, with its own image when we have one. */
+export type OptionChoice = {
+  value: string;
+  photoSquare: string | null;
+  photoPortrait: string | null;
 };
 
 /** A product as the catalogue shows it: one card, one or more bookable variants. */
@@ -46,6 +56,9 @@ export type CatalogProduct = {
   /** Cheapest bookable variant, for the "desde C$…" figure on a card. */
   fromPrice: number;
   hasRealVariants: boolean;
+  /** The product's rental-time option, with a per-value image when available. */
+  optionName: string | null;
+  options: OptionChoice[];
 };
 
 export type CatalogCategory = {
@@ -76,6 +89,8 @@ function toVariant(row: Record<string, unknown>): CatalogVariant {
     categoryDisplayOrder: Number(row.category_display_order ?? 0),
     photoSquare: (row.photo_square as string | null) ?? null,
     photoPortrait: (row.photo_portrait as string | null) ?? null,
+    optionName: (row.option_name as string | null) ?? null,
+    optionValues: (row.option_values as string[] | null) ?? null,
   };
 }
 
@@ -99,6 +114,14 @@ function groupIntoProducts(variants: CatalogVariant[]): CatalogProduct[] {
         variants: [],
         fromPrice: v.pricePerDay,
         hasRealVariants: false,
+        optionName: v.optionName,
+        // Values start from the product's declared list; per-value photos are
+        // filled in by getProduct (the only place that needs them).
+        options: (v.optionValues ?? []).map((value) => ({
+          value,
+          photoSquare: null,
+          photoPortrait: null,
+        })),
       };
       byProduct.set(v.productId, product);
     }
@@ -158,7 +181,44 @@ export async function getProduct(slug: string): Promise<CatalogProduct | null> {
     .order("variant_label", { ascending: true, nullsFirst: true });
 
   if (error || !data || data.length === 0) return null;
-  return groupIntoProducts(data.map(toVariant))[0] ?? null;
+  const product = groupIntoProducts(data.map(toVariant))[0] ?? null;
+  if (!product) return null;
+
+  // Fill in per-option-value images, so the page can swap the picture when a
+  // customer picks a value (e.g. a mantel colour). Only the detail page needs
+  // these, so the extra query lives here and nowhere else.
+  if (product.optionName && product.options.length > 0) {
+    const { data: photos } = await supabase
+      .from("product_option_photos")
+      .select("option_value, crop, storage_path")
+      .eq("product_id", product.productId)
+      .in("crop", ["square", "portrait"]);
+
+    if (photos && photos.length > 0) {
+      const byValue = new Map<string, { square: string | null; portrait: string | null }>();
+      for (const row of photos as {
+        option_value: string;
+        crop: string;
+        storage_path: string;
+      }[]) {
+        const entry = byValue.get(row.option_value) ?? {
+          square: null,
+          portrait: null,
+        };
+        if (row.crop === "square") entry.square = row.storage_path;
+        if (row.crop === "portrait") entry.portrait = row.storage_path;
+        byValue.set(row.option_value, entry);
+      }
+      product.options = product.options.map((o) => {
+        const p = byValue.get(o.value);
+        return p
+          ? { ...o, photoSquare: p.square, photoPortrait: p.portrait }
+          : o;
+      });
+    }
+  }
+
+  return product;
 }
 
 /**

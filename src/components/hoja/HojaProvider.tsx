@@ -36,12 +36,24 @@ export type HojaLine = {
   productSlug: string;
   categorySlug: string;
   pricePerDay: number;
+  /** A chosen rental-time option value (e.g. a mantel colour); null if none. */
+  optionChoice?: string | null;
 };
 
 export type ResolvedLine = HojaLine & {
   /** quantity × price, for one 24-hour period. */
   perDay: number;
+  /** Stable identity: same variant in two colours is two distinct lines. */
+  key: string;
 };
+
+/**
+ * A line's identity. The same variant chosen in two option values (two mantel
+ * colours) is two separate lines, so the key folds the option choice in.
+ */
+export function lineKey(variantId: string, optionChoice?: string | null): string {
+  return optionChoice ? `${variantId}::${optionChoice}` : variantId;
+}
 
 type HojaState = {
   lines: HojaLine[];
@@ -58,12 +70,13 @@ type HojaContext = HojaState & {
   total: number;
   ready: boolean;
   add: (line: Omit<HojaLine, "quantity">, quantity?: number) => void;
-  setQuantity: (variantId: string, quantity: number) => void;
-  remove: (variantId: string) => void;
+  /** All keys are lineKey(variantId, optionChoice). */
+  setQuantity: (key: string, quantity: number) => void;
+  remove: (key: string) => void;
   clear: () => void;
   setEventDate: (date: string | null) => void;
   setDays: (days: number) => void;
-  quantityOf: (variantId: string) => number;
+  quantityOf: (key: string) => number;
 };
 
 const Context = createContext<HojaContext | null>(null);
@@ -107,11 +120,14 @@ export function HojaProvider({ children }: { children: React.ReactNode }) {
 
   const add = useCallback(
     (line: Omit<HojaLine, "quantity">, quantity = 1) => {
+      const key = lineKey(line.variantId, line.optionChoice);
       setState((prev) => {
-        const existing = prev.lines.find((l) => l.variantId === line.variantId);
+        const existing = prev.lines.find(
+          (l) => lineKey(l.variantId, l.optionChoice) === key,
+        );
         const lines = existing
           ? prev.lines.map((l) =>
-              l.variantId === line.variantId
+              lineKey(l.variantId, l.optionChoice) === key
                 ? { ...l, ...line, quantity: l.quantity + quantity }
                 : l,
             )
@@ -122,22 +138,26 @@ export function HojaProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
-  const setQuantity = useCallback((variantId: string, quantity: number) => {
+  const setQuantity = useCallback((key: string, quantity: number) => {
     setState((prev) => ({
       ...prev,
       lines:
         quantity <= 0
-          ? prev.lines.filter((l) => l.variantId !== variantId)
+          ? prev.lines.filter((l) => lineKey(l.variantId, l.optionChoice) !== key)
           : prev.lines.map((l) =>
-              l.variantId === variantId ? { ...l, quantity } : l,
+              lineKey(l.variantId, l.optionChoice) === key
+                ? { ...l, quantity }
+                : l,
             ),
     }));
   }, []);
 
-  const remove = useCallback((variantId: string) => {
+  const remove = useCallback((key: string) => {
     setState((prev) => ({
       ...prev,
-      lines: prev.lines.filter((l) => l.variantId !== variantId),
+      lines: prev.lines.filter(
+        (l) => lineKey(l.variantId, l.optionChoice) !== key,
+      ),
     }));
   }, []);
 
@@ -155,6 +175,7 @@ export function HojaProvider({ children }: { children: React.ReactNode }) {
     const resolved: ResolvedLine[] = state.lines.map((line) => ({
       ...line,
       perDay: line.pricePerDay * line.quantity,
+      key: lineKey(line.variantId, line.optionChoice),
     }));
 
     const subtotalPerDay = resolved.reduce((sum, l) => sum + l.perDay, 0);
@@ -173,8 +194,9 @@ export function HojaProvider({ children }: { children: React.ReactNode }) {
       clear,
       setEventDate,
       setDays,
-      quantityOf: (variantId: string) =>
-        state.lines.find((l) => l.variantId === variantId)?.quantity ?? 0,
+      quantityOf: (key: string) =>
+        state.lines.find((l) => lineKey(l.variantId, l.optionChoice) === key)
+          ?.quantity ?? 0,
     };
   }, [state, ready, add, setQuantity, remove, clear, setEventDate, setDays]);
 

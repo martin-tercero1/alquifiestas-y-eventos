@@ -151,6 +151,32 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["product_photos"]["Insert"]>;
         Relationships: [];
       };
+      product_option_photos: {
+        Row: {
+          id: string;
+          product_id: string;
+          option_value: string;
+          crop: string;
+          storage_path: string;
+          width: number;
+          height: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          option_value: string;
+          crop: string;
+          storage_path: string;
+          width: number;
+          height: number;
+          created_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["product_option_photos"]["Insert"]
+        >;
+        Relationships: [];
+      };
       customers: {
         Row: {
           id: string;
@@ -508,6 +534,8 @@ export type Database = {
           category_display_order: number | null;
           photo_square: string | null;
           photo_portrait: string | null;
+          option_name: string | null;
+          option_values: string[] | null;
         };
         Relationships: [];
       };

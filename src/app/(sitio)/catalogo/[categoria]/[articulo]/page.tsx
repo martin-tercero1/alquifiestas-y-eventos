@@ -1,19 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  getProduct,
-  getProductsByCategory,
-  photoUrl,
-} from "@/lib/catalog";
+import { getProduct, getProductsByCategory } from "@/lib/catalog";
 import { money } from "@/lib/format";
-import { whatsappLink, whatsappMessages } from "@/lib/business";
 import { Container } from "@/components/layout/Container";
-import { PhotoFrame } from "@/components/ui/PhotoFrame";
-import { Button } from "@/components/ui/Button";
 import { ProductCard } from "@/components/catalog/ProductCard";
-import { WhatsAppIcon } from "@/components/ui/icons";
-import { VariantPicker } from "./VariantPicker";
+import { ProductView } from "./ProductView";
 
 type Params = { params: Promise<{ categoria: string; articulo: string }> };
 
@@ -63,44 +55,7 @@ export default async function ProductPage({ params }: Params) {
             </Link>
           </nav>
 
-          <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-14">
-            {/* The one place a photo is allowed to be large: the visitor has
-                explicitly asked to see this thing. */}
-            <PhotoFrame
-              src={photoUrl(product.photoPortrait ?? product.photoSquare)}
-              alt={`${product.name} — Alquifiestas y Eventos, San Marcos`}
-              ratio="portrait"
-              priority
-              className="lg:sticky lg:top-28"
-            />
-
-            <div>
-              <h1 className="type-display text-[clamp(1.75rem,6vw,3rem)] text-ink">
-                {product.name}
-              </h1>
-
-              {product.description && (
-                <p className="mt-4 text-lg text-stone-text">
-                  {product.description}
-                </p>
-              )}
-
-              <div className="mt-7">
-                <VariantPicker variants={product.variants} />
-              </div>
-
-              <p className="mt-4">
-                <Button
-                  href={whatsappLink(whatsappMessages.item(product.name))}
-                  variant="secondary"
-                  full
-                >
-                  <WhatsAppIcon className="size-5" />
-                  Consultar disponibilidad
-                </Button>
-              </p>
-            </div>
-          </div>
+          <ProductView product={product} />
         </Container>
       </section>
 
