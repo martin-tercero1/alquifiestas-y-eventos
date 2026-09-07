@@ -7,7 +7,9 @@ import { Button } from "@/components/ui/Button";
 import { ArrowIcon, WhatsAppIcon } from "@/components/ui/icons";
 import { VitrinaWall } from "@/components/catalog/VitrinaWall";
 
-export const revalidate = 300;
+// Rendered per request so catalog edits show immediately (see the category
+// page for the full rationale).
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const [categories, products] = await Promise.all([

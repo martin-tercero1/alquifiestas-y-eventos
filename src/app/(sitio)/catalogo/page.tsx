@@ -13,7 +13,9 @@ export const metadata: Metadata = {
 };
 
 // The catalog changes when staff edit it, not on every request.
-export const revalidate = 300;
+// Rendered per request so catalog edits show immediately (see the category
+// page for the full rationale).
+export const dynamic = "force-dynamic";
 
 export default async function CatalogPage() {
   const [categories, products] = await Promise.all([

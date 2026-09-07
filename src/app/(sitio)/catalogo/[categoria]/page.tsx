@@ -11,12 +11,11 @@ import { ArrowIcon, WhatsAppIcon } from "@/components/ui/icons";
 
 type Params = { params: Promise<{ categoria: string }> };
 
-export const revalidate = 300;
-
-export async function generateStaticParams() {
-  const categories = await getCategories();
-  return categories.map((category) => ({ categoria: category.slug }));
-}
+// Rendered per request so a catalog edit in the panel (hiding a variant, a price
+// or quantity change) shows immediately. On-demand revalidation of the
+// statically pre-rendered pages did not reliably purge on this host, and the
+// catalog is low-traffic, so live rendering is the simplest correct choice.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { categoria } = await params;

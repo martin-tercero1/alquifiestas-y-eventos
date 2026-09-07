@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   getProduct,
-  getProducts,
   getProductsByCategory,
   photoUrl,
 } from "@/lib/catalog";
@@ -18,15 +17,9 @@ import { VariantPicker } from "./VariantPicker";
 
 type Params = { params: Promise<{ categoria: string; articulo: string }> };
 
-export const revalidate = 300;
-
-export async function generateStaticParams() {
-  const products = await getProducts();
-  return products.map((product) => ({
-    categoria: product.categorySlug,
-    articulo: product.slug,
-  }));
-}
+// Rendered per request so a catalog edit in the panel shows immediately (see the
+// category page for the full rationale).
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { articulo } = await params;
