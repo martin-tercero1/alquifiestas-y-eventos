@@ -22,13 +22,16 @@ const BUCKET = "catalog";
 const PRODUCT_ID = "8c854a89-937e-44a5-82ca-438cfbeca92f"; // Mantel Cuadrado
 const ODOO = "https://alquifiestas.odoo.com/web/image/product.product";
 
-// colour name (exactly as stored in products.option_values) -> Odoo product.product id
+// colour name (exactly as stored in products.option_values) -> Odoo product.product id.
+// The ids are the REAL colour of each variant, taken from get_combination_info's
+// display_name ("Mantel Cuadrado (Lila)") — NOT the swatch's attribute-value id,
+// which is permuted relative to the labels and caused mismatched images.
 const COLORS = {
   Celeste: 19,
-  Plateado: 22,
-  Rosado: 20,
-  "Verde Oscuro": 23,
-  Lila: 21,
+  Plateado: 20,
+  Rosado: 21,
+  "Verde Oscuro": 22,
+  Lila: 23,
   Morado: 24,
   Azul: 25,
   Fuscia: 26,
@@ -78,6 +81,9 @@ async function upload(path, body, contentType) {
 async function run() {
   let ok = 0;
   const failures = [];
+  // Cache-buster kept only in the stored path (never in the object key), so a
+  // re-import with corrected images is served fresh instead of a stale CDN copy.
+  const stamp = Date.now().toString(36);
 
   for (const [color, odooId] of Object.entries(COLORS)) {
     const url = `${ODOO}/${odooId}/image_1920`;
@@ -108,7 +114,7 @@ async function run() {
       product_id: PRODUCT_ID,
       option_value: color,
       crop: "original",
-      storage_path: originalPath,
+      storage_path: `${originalPath}?v=${stamp}`,
       width: meta.width ?? 0,
       height: meta.height ?? 0,
     });
@@ -127,7 +133,7 @@ async function run() {
         product_id: PRODUCT_ID,
         option_value: color,
         crop: crop.name,
-        storage_path: path,
+        storage_path: `${path}?v=${stamp}`,
         width: crop.width,
         height: crop.height,
       });
