@@ -218,6 +218,42 @@ export async function getProduct(slug: string): Promise<CatalogProduct | null> {
     }
   }
 
+  // Per-variant images (fabrics like Camino de Mesa's), so the picture can swap
+  // when a customer picks a variant. Overrides the product's default photo on
+  // each variant that has its own.
+  const { data: variantPhotos } = await supabase
+    .from("variant_photos")
+    .select("variant_id, crop, storage_path")
+    .in(
+      "variant_id",
+      product.variants.map((v) => v.variantId),
+    )
+    .in("crop", ["square", "portrait"]);
+
+  if (variantPhotos && variantPhotos.length > 0) {
+    const byVariant = new Map<string, { square: string | null; portrait: string | null }>();
+    for (const row of variantPhotos as {
+      variant_id: string;
+      crop: string;
+      storage_path: string;
+    }[]) {
+      const entry = byVariant.get(row.variant_id) ?? { square: null, portrait: null };
+      if (row.crop === "square") entry.square = row.storage_path;
+      if (row.crop === "portrait") entry.portrait = row.storage_path;
+      byVariant.set(row.variant_id, entry);
+    }
+    product.variants = product.variants.map((v) => {
+      const p = byVariant.get(v.variantId);
+      return p
+        ? {
+            ...v,
+            photoSquare: p.square ?? v.photoSquare,
+            photoPortrait: p.portrait ?? v.photoPortrait,
+          }
+        : v;
+    });
+  }
+
   return product;
 }
 

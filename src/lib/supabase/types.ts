@@ -177,6 +177,30 @@ export type Database = {
         >;
         Relationships: [];
       };
+      variant_photos: {
+        Row: {
+          id: string;
+          variant_id: string;
+          crop: string;
+          storage_path: string;
+          width: number;
+          height: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          variant_id: string;
+          crop: string;
+          storage_path: string;
+          width: number;
+          height: number;
+          created_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["variant_photos"]["Insert"]
+        >;
+        Relationships: [];
+      };
       customers: {
         Row: {
           id: string;

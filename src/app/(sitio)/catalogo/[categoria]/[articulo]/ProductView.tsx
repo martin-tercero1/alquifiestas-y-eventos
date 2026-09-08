@@ -35,9 +35,11 @@ export function ProductView({ product }: { product: CatalogProduct }) {
 
   const hasVariantChoice = product.variants.length > 1;
 
-  // The selected colour's photo wins; otherwise the product's default image.
+  // The selected option value's photo wins (a mantel colour), then the selected
+  // variant's own photo (a camino fabric), then the product's default image.
   const image =
     photoUrl(chosen?.photoPortrait ?? null) ??
+    photoUrl(variant.photoPortrait ?? variant.photoSquare) ??
     photoUrl(product.photoPortrait ?? product.photoSquare);
 
   const consultName = optionValue
