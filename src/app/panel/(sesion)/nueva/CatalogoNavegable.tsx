@@ -2,6 +2,7 @@
 
 import { Collapsible } from "@/components/ui/Collapsible";
 import { ArticuloBoton } from "./ArticuloBoton";
+import { hasOptions } from "@/lib/admin/proforma";
 import type { CatalogGroup } from "@/lib/admin/loadInventory";
 import type { CatalogHit } from "@/lib/admin/proforma";
 
@@ -38,7 +39,7 @@ export function CatalogoNavegable({
               <li key={hit.variantId}>
                 <ArticuloBoton
                   hit={hit}
-                  added={addedVariantIds.has(hit.variantId)}
+                  added={addedVariantIds.has(hit.variantId) && !hasOptions(hit)}
                   onAdd={() => onAdd(hit)}
                 />
               </li>

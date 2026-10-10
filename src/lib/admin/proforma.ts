@@ -149,6 +149,95 @@ export type Totals = {
   unpricedLines: number;
 };
 
+// ---------------------------------------------------------------------------
+// Building the line list — shared by Nueva proforma and Editar pedido
+// ---------------------------------------------------------------------------
+
+let lineSeq = 0;
+
+/** A fresh draft line for a catalog item, before any choice is made. */
+export function lineFromHit(hit: CatalogHit): DraftLine {
+  lineSeq += 1;
+  return {
+    key: `${hit.variantId}-${Date.now()}-${lineSeq}`,
+    variantId: hit.variantId,
+    productName: hit.productName,
+    variantLabel: hit.variantLabel,
+    categoryName: hit.categoryName,
+    quantity: 1,
+    unitPrice: hit.pricePerDay,
+    priceWasMissing: hit.pricePerDay === null,
+    savePriceToCatalog: false,
+    discountType: null,
+    discountValue: null,
+    optionName: hit.optionName,
+    optionValues: hit.optionValues,
+    optionChoice: null,
+  };
+}
+
+/** Does this item carry a per-line choice (a colour, a pattern, a shape)? */
+export function hasOptions(item: { optionValues: string[] | null }): boolean {
+  return Boolean(item.optionValues && item.optionValues.length > 0);
+}
+
+/**
+ * Adds a catalog item to the order.
+ *
+ * Tapping a plain item that is already on the order means "one more" — the
+ * existing line's quantity goes up. An item with options is different: the same
+ * mantel in six colours is six lines. So tapping it again opens a NEW line for
+ * the next choice — unless there is still a line waiting for its choice, in which
+ * case that line just gets one more (no stack of blank lines).
+ */
+export function addCatalogHit(lines: DraftLine[], hit: CatalogHit): DraftLine[] {
+  const same = lines.filter((l) => l.variantId === hit.variantId);
+
+  const target = hasOptions(hit)
+    ? same.find((l) => l.optionChoice === null)
+    : same[0];
+
+  if (target) {
+    return lines.map((l) =>
+      l.key === target.key ? { ...l, quantity: l.quantity + 1 } : l,
+    );
+  }
+  return [...lines, lineFromHit(hit)];
+}
+
+/**
+ * Collapses lines that ended up identical — same item AND same choice (two rows
+ * both set to "Rojo") — into one, summing the quantity. Run before saving: the
+ * database keeps one line per (item, choice).
+ */
+export function mergeIdenticalLines(lines: DraftLine[]): DraftLine[] {
+  const out: DraftLine[] = [];
+  const index = new Map<string, number>();
+  for (const line of lines) {
+    const id = `${line.variantId}::${line.optionChoice ?? ""}`;
+    const at = index.get(id);
+    if (at === undefined) {
+      index.set(id, out.length);
+      out.push({ ...line });
+    } else {
+      out[at] = { ...out[at], quantity: out[at].quantity + line.quantity };
+    }
+  }
+  return out;
+}
+
+/**
+ * Total requested per item across all its lines. Availability is per item, so
+ * six one-colour lines of the same mantel must be checked as one demand.
+ */
+export function requestedByVariant(lines: DraftLine[]): Map<string, number> {
+  const totals = new Map<string, number>();
+  for (const l of lines) {
+    totals.set(l.variantId, (totals.get(l.variantId) ?? 0) + l.quantity);
+  }
+  return totals;
+}
+
 export function lineCents(line: DraftLine, billedDays: number): number {
   if (line.unitPrice === null) return 0;
   const base = toCents(line.unitPrice) * line.quantity * billedDays;
@@ -357,7 +446,7 @@ export async function saveProforma(
     physical_invoice_number: draft.physicalInvoiceNumber.trim() || null,
     notes: draft.notes.trim() || null,
     override_reason: draft.overrideReason.trim() || null,
-    lines: draft.lines.map((line) => ({
+    lines: mergeIdenticalLines(draft.lines).map((line) => ({
       variant_id: line.variantId,
       quantity: line.quantity,
       unit_price: line.unitPrice ?? 0,

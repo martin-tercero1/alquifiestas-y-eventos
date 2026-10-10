@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/Field";
 import { searchCatalog, type CatalogHit } from "@/lib/admin/proforma";
 import { ArticuloBoton } from "./ArticuloBoton";
+import { hasOptions } from "@/lib/admin/proforma";
 
 /**
  * Item search.
@@ -82,7 +83,7 @@ export function BuscadorArticulos({ onAdd, addedVariantIds }: Props) {
             <li key={hit.variantId}>
               <ArticuloBoton
                 hit={hit}
-                added={addedVariantIds.has(hit.variantId)}
+                added={addedVariantIds.has(hit.variantId) && !hasOptions(hit)}
                 onAdd={() => {
                   onAdd(hit);
                   // Clearing the box collapses the results, so the line she just

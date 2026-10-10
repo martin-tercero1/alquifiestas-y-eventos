@@ -543,8 +543,13 @@ export function RetornoSheet({
         <ul className="flex flex-col gap-4">
           {outstanding.map((line) => {
             const remaining = line.quantity - line.accounted;
-            const name = line.variantLabel
-              ? `${line.productName} — ${line.variantLabel}`
+            // The colour/pattern too: one item can be on the order several times,
+            // once per choice, and each comes back separately.
+            const detail = [line.variantLabel, line.optionChoice]
+              .filter(Boolean)
+              .join(" · ");
+            const name = detail
+              ? `${line.productName} — ${detail}`
               : line.productName;
             const row = get(line.id);
             return (

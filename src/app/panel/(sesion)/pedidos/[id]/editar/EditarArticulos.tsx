@@ -11,6 +11,9 @@ import {
   daysBetween,
   fromCents,
   lineCents,
+  addCatalogHit,
+  mergeIdenticalLines,
+  requestedByVariant,
   type CatalogHit,
   type DraftLine,
 } from "@/lib/admin/proforma";
@@ -85,36 +88,13 @@ export function EditarArticulos({ request }: { request: RequestForEdit }) {
     [lines],
   );
 
+  // Plain item tapped again → one more on its line. Item with options (a
+  // mantel's colour) tapped again → a new line for the next choice.
   function addItem(hit: CatalogHit) {
-    const existing = lines.find((l) => l.variantId === hit.variantId);
-    if (existing) {
-      setLines((ls) =>
-        ls.map((l) =>
-          l.key === existing.key ? { ...l, quantity: l.quantity + 1 } : l,
-        ),
-      );
-      return;
-    }
-    setLines((ls) => [
-      ...ls,
-      {
-        key: `${hit.variantId}-${Date.now()}`,
-        variantId: hit.variantId,
-        productName: hit.productName,
-        variantLabel: hit.variantLabel,
-        categoryName: hit.categoryName,
-        quantity: 1,
-        unitPrice: hit.pricePerDay,
-        priceWasMissing: hit.pricePerDay === null,
-        savePriceToCatalog: false,
-        discountType: null,
-        discountValue: null,
-        optionName: hit.optionName,
-        optionValues: hit.optionValues,
-        optionChoice: null,
-      },
-    ]);
+    setLines((ls) => addCatalogHit(ls, hit));
   }
+
+  const requested = useMemo(() => requestedByVariant(lines), [lines]);
 
   const subtotalCents = lines.reduce((s, l) => s + lineCents(l, billedDays), 0);
   const unpriced = lines.filter((l) => l.unitPrice === null).length;
@@ -144,7 +124,7 @@ export function EditarArticulos({ request }: { request: RequestForEdit }) {
       return;
     }
 
-    const payload: RevisedLine[] = lines.map((l) => ({
+    const payload: RevisedLine[] = mergeIdenticalLines(lines).map((l) => ({
       variant_id: l.variantId,
       quantity: l.quantity,
       unit_price: l.unitPrice ?? 0,
@@ -245,6 +225,7 @@ export function EditarArticulos({ request }: { request: RequestForEdit }) {
                 line={line}
                 billedDays={billedDays}
                 availability={availability.get(line.variantId)}
+                requested={requested.get(line.variantId)}
                 onChange={(patch) =>
                   setLines((ls) =>
                     ls.map((l) => (l.key === line.key ? { ...l, ...patch } : l)),

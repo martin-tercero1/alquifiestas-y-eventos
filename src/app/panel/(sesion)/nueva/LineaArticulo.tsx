@@ -32,6 +32,9 @@ type Props = {
   line: DraftLine;
   billedDays: number;
   availability: Availability | undefined;
+  /** Total of this item across ALL its lines (e.g. six colours of one mantel).
+   *  Availability is per item, so the warning is about the whole demand. */
+  requested?: number;
   onChange: (patch: Partial<DraftLine>) => void;
   onRemove: () => void;
 };
@@ -40,6 +43,7 @@ export function LineaArticulo({
   line,
   billedDays,
   availability,
+  requested,
   onChange,
   onRemove,
 }: Props) {
@@ -47,7 +51,8 @@ export function LineaArticulo({
     line.discountType !== null,
   );
 
-  const result = check(availability, line.quantity);
+  const total = requested ?? line.quantity;
+  const result = check(availability, total);
   const needsPrice = line.unitPrice === null;
 
   const name = line.variantLabel
@@ -171,7 +176,9 @@ export function LineaArticulo({
         <p className="mt-3 rounded-md border border-mamey/30 bg-mamey/[0.06] px-3 py-2.5 text-sm font-medium text-mamey-text">
           {result.available === 0
             ? "No hay ninguno libre para esas fechas."
-            : `Solo hay ${result.available} libres para esas fechas y pediste ${result.requested}.`}{" "}
+            : total > line.quantity
+              ? `Solo hay ${result.available} libres para esas fechas y entre todas las líneas de este artículo pediste ${result.requested}.`
+              : `Solo hay ${result.available} libres para esas fechas y pediste ${result.requested}.`}{" "}
           Podés seguir igual si sabés que se puede.
         </p>
       )}

@@ -17,11 +17,12 @@ import {
   loadDraft,
   saveDraft,
   saveProforma,
+  addCatalogHit,
+  requestedByVariant,
   totals as computeTotals,
   type CatalogHit,
   type DiscountType,
   type Draft,
-  type DraftLine,
   type NewOrderStatus,
 } from "@/lib/admin/proforma";
 import type { CatalogGroup } from "@/lib/admin/loadInventory";
@@ -118,38 +119,13 @@ export function NuevaProforma({ catalog }: { catalog: CatalogGroup[] }) {
     [draft.lines],
   );
 
+  // Plain item tapped again → one more on its line. Item with options (a
+  // mantel's colour) tapped again → a new line for the next choice.
   function addItem(hit: CatalogHit) {
-    const existing = draft.lines.find((l) => l.variantId === hit.variantId);
-
-    // Tapping the same item again means "one more", not a duplicate row.
-    if (existing) {
-      update({
-        lines: draft.lines.map((l) =>
-          l.key === existing.key ? { ...l, quantity: l.quantity + 1 } : l,
-        ),
-      });
-      return;
-    }
-
-    const line: DraftLine = {
-      key: `${hit.variantId}-${Date.now()}`,
-      variantId: hit.variantId,
-      productName: hit.productName,
-      variantLabel: hit.variantLabel,
-      categoryName: hit.categoryName,
-      quantity: 1,
-      unitPrice: hit.pricePerDay,
-      priceWasMissing: hit.pricePerDay === null,
-      savePriceToCatalog: false,
-      discountType: null,
-      discountValue: null,
-      optionName: hit.optionName,
-      optionValues: hit.optionValues,
-      optionChoice: null,
-    };
-
-    update({ lines: [...draft.lines, line] });
+    update({ lines: addCatalogHit(draft.lines, hit) });
   }
+
+  const requested = useMemo(() => requestedByVariant(draft.lines), [draft.lines]);
 
   const totals = computeTotals(draft);
   const canSave = draft.lines.length > 0 && draft.customerName.trim() !== "";
@@ -334,6 +310,7 @@ export function NuevaProforma({ catalog }: { catalog: CatalogGroup[] }) {
                   line={line}
                   billedDays={totals.billedDays}
                   availability={availability.get(line.variantId)}
+                  requested={requested.get(line.variantId)}
                   onChange={(patch) =>
                     update({
                       lines: draft.lines.map((l) =>
