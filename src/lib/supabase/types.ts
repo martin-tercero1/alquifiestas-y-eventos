@@ -753,6 +753,7 @@ export type Database = {
           p_lines: Json;
           p_returned_on?: string;
           p_notes?: string | null;
+          p_write_off?: boolean;
         };
         Returns: Json;
       };

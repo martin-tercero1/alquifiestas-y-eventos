@@ -237,11 +237,14 @@ export const recordReturn = (
   orderId: string,
   lines: { order_line_id: string; returned: number; missing: number; damaged: number }[],
   returnedOn: string,
+  /** Take missing + damaged units off the inventory (stock adjustment). */
+  writeOff = true,
 ) =>
   callRpc("record_return", {
     p_order_id: orderId,
     p_lines: lines,
     p_returned_on: returnedOn,
+    p_write_off: writeOff,
   });
 
 export const addCharge = (

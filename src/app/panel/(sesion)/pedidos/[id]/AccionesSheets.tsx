@@ -494,12 +494,20 @@ export function RetornoSheet({
   const outstanding = order.lines.filter((l) => l.accounted < l.quantity);
   const [rows, setRows] = useState<Record<string, ReturnRow>>({});
   const [returnedOn, setReturnedOn] = useState(todayISO());
+  // Lost or broken units are gone from the bodega — take them off the count by
+  // default. Unticked when something damaged will be repaired and come back.
+  const [writeOff, setWriteOff] = useState(true);
   const { busy, error, run, setError } = useAction(onSaved, onClose);
 
   const get = (id: string): ReturnRow =>
     rows[id] ?? { returned: "", missing: "", damaged: "" };
   const set = (id: string, patch: Partial<ReturnRow>) =>
     setRows((r) => ({ ...r, [id]: { ...get(id), ...patch } }));
+
+  const losses = outstanding.reduce((sum, line) => {
+    const row = get(line.id);
+    return sum + (Number(row.missing) || 0) + (Number(row.damaged) || 0);
+  }, 0);
 
   function submit() {
     const lines = outstanding
@@ -519,7 +527,7 @@ export function RetornoSheet({
       return;
     }
     run(
-      () => recordReturn(order.id, lines, returnedOn),
+      () => recordReturn(order.id, lines, returnedOn, writeOff),
       (data) => {
         if (data.return_cedula) {
           onCedulaReminder?.((data.customer_name as string | null) ?? null);
@@ -597,6 +605,24 @@ export function RetornoSheet({
             );
           })}
         </ul>
+
+        {losses > 0 && (
+          <label className="flex items-start gap-3 rounded-md border border-rule bg-paper p-3">
+            <input
+              type="checkbox"
+              checked={writeOff}
+              onChange={(e) => setWriteOff(e.target.checked)}
+              className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--color-green)]"
+            />
+            <span className="text-sm text-ink">
+              Descontar {losses === 1 ? "esta unidad" : `estas ${losses} unidades`}{" "}
+              (faltantes y dañadas) del inventario
+              <span className="mt-0.5 block text-stone-text">
+                Desmarcalo si algo dañado se va a reparar y vuelve a la bodega.
+              </span>
+            </span>
+          </label>
+        )}
 
         <ErrorNote message={error} />
 
