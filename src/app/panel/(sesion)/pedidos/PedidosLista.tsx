@@ -26,6 +26,8 @@ export type OrderRow = {
   status: OrderStatus;
   source: string;
   pickupDate: string;
+  missingPickupTime: boolean;
+  missingReturnTime: boolean;
   customerName: string;
   balance: number;
 };
@@ -67,6 +69,27 @@ function fold(text: string): string {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
+}
+
+/** Statuses where the agreed hours still matter (the items haven't come back). */
+const NEEDS_TIMES: ReadonlySet<OrderStatus> = new Set<OrderStatus>([
+  "quote",
+  "pending_request",
+  "confirmed",
+  "picked_up",
+  "partially_returned",
+]);
+
+function missingTimesLabel(o: OrderRow): string | null {
+  if (!NEEDS_TIMES.has(o.status)) return null;
+  // Once picked up, only the return hour is still to be agreed.
+  const out = o.status === "picked_up" || o.status === "partially_returned";
+  const pickup = !out && o.missingPickupTime;
+  const ret = o.missingReturnTime;
+  if (pickup && ret) return "Sin hora de retiro ni de entrega";
+  if (pickup) return "Sin hora de retiro";
+  if (ret) return "Sin hora de entrega";
+  return null;
 }
 
 export function PedidosLista({ orders }: { orders: OrderRow[] }) {
@@ -163,6 +186,11 @@ export function PedidosLista({ orders }: { orders: OrderRow[] }) {
                     </span>
                     {order.source === "website" && " · web"}
                   </p>
+                  {missingTimesLabel(order) && (
+                    <p className="mt-1 text-sm font-medium text-mamey-text">
+                      ⚠ {missingTimesLabel(order)}
+                    </p>
+                  )}
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-1">
                   <Badge variant={VARIANT[order.status]}>

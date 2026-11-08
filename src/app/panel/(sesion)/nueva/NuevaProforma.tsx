@@ -54,7 +54,6 @@ export function NuevaProforma({ catalog }: { catalog: CatalogGroup[] }) {
   );
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const [attempted, setAttempted] = useState(false);
   const [showOptional, setShowOptional] = useState(false);
 
   // ---- Draft persistence -------------------------------------------------
@@ -130,17 +129,9 @@ export function NuevaProforma({ catalog }: { catalog: CatalogGroup[] }) {
   const totals = computeTotals(draft);
   const canSave = draft.lines.length > 0 && draft.customerName.trim() !== "";
 
-  const missingTimes = !draft.pickupTime || !draft.returnTime;
-
   async function onSave(status: NewOrderStatus = "confirmed") {
-    // The parents always agree a pickup and a return time — the order isn't
-    // ready to hand off without them, so require them here (§4).
-    if (missingTimes) {
-      setAttempted(true);
-      setSaveError("Poné la hora de salida y la de regreso antes de guardar.");
-      return;
-    }
-
+    // Pickup/return times are optional: often they're agreed later. The
+    // Pedidos list flags orders still missing them.
     setSaving(true);
     setSaveError(null);
 
@@ -234,9 +225,7 @@ export function NuevaProforma({ catalog }: { catalog: CatalogGroup[] }) {
             <Field
               label="Hora de salida"
               htmlFor="hora-salida"
-              error={
-                attempted && !draft.pickupTime ? "Poné la hora." : undefined
-              }
+              optional
             >
               <Input
                 id="hora-salida"
@@ -249,9 +238,7 @@ export function NuevaProforma({ catalog }: { catalog: CatalogGroup[] }) {
             <Field
               label="Hora de regreso"
               htmlFor="hora-regreso"
-              error={
-                attempted && !draft.returnTime ? "Poné la hora." : undefined
-              }
+              optional
             >
               <Input
                 id="hora-regreso"

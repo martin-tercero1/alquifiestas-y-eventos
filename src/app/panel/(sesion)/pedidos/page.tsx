@@ -20,6 +20,8 @@ type RawRow = {
   status: OrderStatus;
   source: string;
   pickup_date: string;
+  pickup_time: string | null;
+  agreed_return_time: string | null;
   customer: { name: string } | null;
 };
 
@@ -30,7 +32,7 @@ export default async function PedidosPage() {
     .from("orders")
     // order_totals is a view PostgREST cannot embed from orders; its balance is
     // fetched separately below and joined in.
-    .select("id, number, status, source, pickup_date, customer:customers ( name )")
+    .select("id, number, status, source, pickup_date, pickup_time, agreed_return_time, customer:customers ( name )")
     .order("created_at", { ascending: false })
     .limit(200);
 
@@ -59,6 +61,8 @@ export default async function PedidosPage() {
     status: r.status,
     source: r.source,
     pickupDate: r.pickup_date,
+    missingPickupTime: r.pickup_time == null,
+    missingReturnTime: r.agreed_return_time == null,
     customerName: r.customer?.name ?? "Cliente",
     balance: balances.get(r.id) ?? 0,
   }));

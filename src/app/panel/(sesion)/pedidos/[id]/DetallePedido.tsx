@@ -219,9 +219,13 @@ export function DetallePedido({
           <dt className="type-label text-stone-text">Sale</dt>
           <dd className="text-base font-semibold text-ink">
             {shortDate(order.pickupDate)}
-            {order.pickupTime && (
+            {order.pickupTime ? (
               <span className="block type-mono text-sm font-normal text-stone-text">
                 {shortTime(order.pickupTime)}
+              </span>
+            ) : (
+              <span className="block text-sm font-medium text-mamey-text">
+                Hora por acordar
               </span>
             )}
           </dd>
@@ -230,9 +234,13 @@ export function DetallePedido({
           <dt className="type-label text-stone-text">Regresa</dt>
           <dd className="text-base font-semibold text-ink">
             {shortDate(order.agreedReturnDate)}
-            {order.agreedReturnTime && (
+            {order.agreedReturnTime ? (
               <span className="block type-mono text-sm font-normal text-stone-text">
                 {shortTime(order.agreedReturnTime)}
+              </span>
+            ) : (
+              <span className="block text-sm font-medium text-mamey-text">
+                Hora por acordar
               </span>
             )}
           </dd>
