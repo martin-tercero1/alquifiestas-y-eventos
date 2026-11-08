@@ -63,6 +63,24 @@ const MONTHS_LONG = [
   "diciembre",
 ];
 
+const WEEKDAYS_LONG = [
+  "domingo",
+  "lunes",
+  "martes",
+  "miércoles",
+  "jueves",
+  "viernes",
+  "sábado",
+];
+
+/** "viernes 4 de septiembre de 2026" — the full form, for where there is room. */
+export function fullDate(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return "";
+  const date = new Date(Date.UTC(y, m - 1, d));
+  return `${WEEKDAYS_LONG[date.getUTCDay()]} ${d} de ${MONTHS_LONG[m - 1]} de ${y}`;
+}
+
 export function longDate(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
   if (!y || !m || !d) return "";

@@ -50,6 +50,7 @@ export function EditarArticulos({ request }: { request: RequestForEdit }) {
     request.securityDeposit != null ? String(request.securityDeposit) : "",
   );
   const [notes, setNotes] = useState(request.notes ?? "");
+  const [invoice, setInvoice] = useState(request.physicalInvoiceNumber ?? "");
   const [availability, setAvailability] = useState<Map<string, Availability>>(
     new Map(),
   );
@@ -116,7 +117,7 @@ export function EditarArticulos({ request }: { request: RequestForEdit }) {
       returnTime: returnTime || null,
       securityDeposit: Number(securityDeposit) || null,
       notes: notes.trim() || null,
-      physicalInvoiceNumber: request.physicalInvoiceNumber,
+      physicalInvoiceNumber: invoice.trim() || null,
     });
     if (!details.ok) {
       setError(details.message);
@@ -198,6 +199,18 @@ export function EditarArticulos({ request }: { request: RequestForEdit }) {
             min={0}
             value={securityDeposit}
             onChange={(e) => setSecurityDeposit(e.target.value)}
+          />
+        </Field>
+        <Field
+          label="Número de factura membretada"
+          htmlFor="edit-factura"
+          optional
+        >
+          <Input
+            id="edit-factura"
+            autoComplete="off"
+            value={invoice}
+            onChange={(e) => setInvoice(e.target.value)}
           />
         </Field>
         <div className="col-span-2">

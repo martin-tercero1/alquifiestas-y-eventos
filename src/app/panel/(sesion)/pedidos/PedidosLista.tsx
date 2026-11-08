@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/cn";
-import { money, shortDate } from "@/lib/format";
+import { fullDate, money, shortDate } from "@/lib/format";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Field";
 import { STATUS_LABEL, type OrderStatus } from "@/lib/admin/order";
@@ -41,12 +41,18 @@ const VARIANT: Record<OrderStatus, "neutral" | "scarce" | "brand" | "quote"> = {
   cancelled: "neutral",
 };
 
-type Segment = "activos" | "solicitudes" | "historial" | "todos";
+type Segment =
+  | "activos"
+  | "solicitudes"
+  | "cotizaciones"
+  | "historial"
+  | "todos";
 
 const IN_SEGMENT: Record<Segment, (s: OrderStatus) => boolean> = {
-  // Quotes live here with website requests: both are orders awaiting a decision
-  // to confirm, and neither reserves any stock yet.
-  solicitudes: (s) => s === "pending_request" || s === "quote",
+  solicitudes: (s) => s === "pending_request",
+  // Quotes get their own list: a price given, nothing reserved yet, waiting
+  // on the customer to say yes.
+  cotizaciones: (s) => s === "quote",
   activos: (s) =>
     s === "confirmed" ||
     s === "picked_up" ||
@@ -89,6 +95,7 @@ export function PedidosLista({ orders }: { orders: OrderRow[] }) {
   const segments: { key: Segment; label: string; count?: number }[] = [
     { key: "activos", label: "Activos" },
     { key: "solicitudes", label: "Solicitudes", count: requestCount },
+    { key: "cotizaciones", label: "Cotizaciones" },
     { key: "historial", label: "Historial" },
     { key: "todos", label: "Todos" },
   ];
@@ -142,12 +149,18 @@ export function PedidosLista({ orders }: { orders: OrderRow[] }) {
                 href={`/panel/pedidos/${order.id}`}
                 className="flex items-center gap-3 rounded-lg border border-rule bg-paper p-4 transition-colors duration-fast ease-out hover:border-rule-strong"
               >
-                <div className="min-w-0 flex-1">
+                {/* @container: the date below switches to its full form based on
+                    the room this column actually has, not the screen size. */}
+                <div className="@container min-w-0 flex-1">
                   <p className="truncate text-base font-semibold text-ink">
                     {order.customerName}
                   </p>
                   <p className="type-mono text-sm text-stone-text">
-                    #{order.number} · {shortDate(order.pickupDate)}
+                    #{order.number} ·{" "}
+                    <span className="@md:hidden">{shortDate(order.pickupDate)}</span>
+                    <span className="hidden @md:inline">
+                      {fullDate(order.pickupDate)}
+                    </span>
                     {order.source === "website" && " · web"}
                   </p>
                 </div>
