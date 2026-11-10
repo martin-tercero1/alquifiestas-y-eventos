@@ -757,6 +757,10 @@ export type Database = {
         };
         Returns: Json;
       };
+      mark_missing_found: {
+        Args: { p_order_line_id: string; p_quantity?: number };
+        Returns: Json;
+      };
       add_order_charge: {
         Args: {
           p_order_id: string;

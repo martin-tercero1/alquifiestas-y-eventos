@@ -247,6 +247,10 @@ export const recordReturn = (
     p_write_off: writeOff,
   });
 
+/** A unit recorded as missing came back after all (any status, even closed). */
+export const markMissingFound = (orderLineId: string, quantity = 1) =>
+  callRpc("mark_missing_found", { p_order_line_id: orderLineId, p_quantity: quantity });
+
 export const addCharge = (
   orderId: string,
   kind: ChargeKind,

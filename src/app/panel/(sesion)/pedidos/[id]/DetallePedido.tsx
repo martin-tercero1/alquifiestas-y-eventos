@@ -11,6 +11,7 @@ import {
   closeOrder,
   deleteOrder,
   isOverdue,
+  markMissingFound,
   CHARGE_LABEL,
   PAYMENT_KIND_LABEL,
   STATUS_LABEL,
@@ -340,6 +341,16 @@ export function DetallePedido({
                   )}
                   {returnedNote && (
                     <p className="mt-1 text-sm text-green">Regresó: {returnedNote}</p>
+                  )}
+                  {line.missing > 0 && (
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => direct(() => markMissingFound(line.id, 1))}
+                      className="mt-2 min-h-10 rounded-md border border-rule px-3 text-sm font-semibold text-ink hover:border-rule-strong disabled:opacity-45"
+                    >
+                      Apareció 1 faltante
+                    </button>
                   )}
                 </div>
                 <div className="shrink-0 text-right">
